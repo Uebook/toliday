@@ -41,6 +41,18 @@ export class HotelService {
            return this.ratePlanRepository.find({ where: { roomTypeId } });
        }
 
+        async updateRatePlan(id: string, dto: any): Promise<RatePlan> {
+            await this.ratePlanRepository.update(id, dto);
+            const plan = await this.ratePlanRepository.findOne({ where: { id } });
+            if (!plan) throw new NotFoundException('Rate Plan not found');
+            return plan;
+        }
+
+        async deleteRatePlan(id: string): Promise<void> {
+            const result = await this.ratePlanRepository.delete(id);
+            if (result.affected === 0) throw new NotFoundException('Rate Plan not found');
+        }
+
        // Review Methods
         async createReview(dto: any): Promise<Review> {
             const review = this.reviewRepository.create(dto) as any;

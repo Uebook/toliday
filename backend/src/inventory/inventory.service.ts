@@ -80,7 +80,10 @@ export class InventoryService {
 
               for (let dt = new Date(start); dt < end; dt.setDate(dt.getDate() + 1)) {
                      const dateStr = dt.toISOString().split('T')[0];
-                     const inv = await repo.findOne({ where: { roomTypeId, date: dateStr } });
+                     const inv = await repo.findOne({ 
+                            where: { roomTypeId, date: dateStr },
+                            lock: { mode: 'pessimistic_write' }
+                     });
 
                      if (!inv || inv.availableRooms < count) {
                             throw new BadRequestException(`Rooms not available for date: ${dateStr}`);
@@ -91,5 +94,22 @@ export class InventoryService {
 
               await repo.save(records);
        }
-}
 
+       async increaseInventory(roomTypeId: string, startDate: string, endDate: string, count: number, manager?: any) {
+              const repo = manager ? manager.getRepository(Inventory) : this.inventoryRepository;
+              const start = new Date(startDate);
+              const end = new Date(endDate);
+              const records: Inventory[] = [];
+
+              for (let dt = new Date(start); dt < end; dt.setDate(dt.getDate() + 1)) {
+                     const dateStr = dt.toISOString().split('T')[0];
+                     const inv = await repo.findOne({ where: { roomTypeId, date: dateStr } });
+                     if (inv) {
+                            inv.availableRooms += count;
+                            records.push(inv);
+                     }
+              }
+
+              await repo.save(records);
+       }
+}

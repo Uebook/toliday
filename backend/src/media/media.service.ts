@@ -31,8 +31,8 @@ export class MediaService {
               );
        }
 
-       async uploadAndCreate(data: { hotelId?: string; tourPartnerId?: string; packageId?: string; file: Express.Multer.File; category?: string }) {
-              const url = await this.s3Service.uploadFile(data.file);
+       async uploadAndCreate(data: { hotelId?: string; tourPartnerId?: string; packageId?: string; file: Express.Multer.File; category?: string; baseUrl?: string }) {
+              const url = await this.s3Service.uploadFile(data.file, data.baseUrl);
               const media = this.mediaRepository.create({
                      hotelId: data.hotelId,
                      tourPartnerId: data.tourPartnerId,

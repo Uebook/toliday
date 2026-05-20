@@ -30,4 +30,8 @@ export class CreateRoomTypeDto {
        @IsArray()
        @IsOptional()
        images?: string[];
+
+       @IsNumber()
+       @IsOptional()
+       totalRooms?: number;
 }

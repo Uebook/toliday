@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException, OnModuleInit } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource } from 'typeorm';
 import { Booking, BookingStatus } from './entities/booking.entity';
@@ -7,7 +7,7 @@ import { UpdateBookingStatusDto } from './dto/update-booking-status.dto';
 import { InventoryService } from '../inventory/inventory.service';
 
 @Injectable()
-export class BookingService {
+export class BookingService implements OnModuleInit {
        constructor(
               @InjectRepository(Booking)
               private bookingRepository: Repository<Booking>,
@@ -67,8 +67,86 @@ export class BookingService {
               return booking;
        }
 
+       onModuleInit() {
+              // Run cleanup job every 1 minute
+              setInterval(() => {
+                     this.cleanupExpiredPendingBookings().catch(err => {
+                            console.error('Error in expired pending bookings cleanup job:', err);
+                     });
+              }, 60000);
+       }
+
+       async cleanupExpiredPendingBookings() {
+              const tenMinutesAgo = new Date(Date.now() - 10 * 60 * 1000);
+              const expiredBookings = await this.bookingRepository
+                     .createQueryBuilder('booking')
+                     .where('booking.status = :status', { status: BookingStatus.PENDING })
+                     .andWhere('booking.createdAt <= :tenMinutesAgo', { tenMinutesAgo })
+                     .getMany();
+
+              if (expiredBookings.length === 0) return;
+
+              console.log(`Found ${expiredBookings.length} expired pending bookings. Cleaning up...`);
+
+              for (const booking of expiredBookings) {
+                     const queryRunner = this.dataSource.createQueryRunner();
+                     await queryRunner.connect();
+                     await queryRunner.startTransaction();
+
+                     try {
+                            if (booking.roomTypeId && booking.startDate && booking.endDate) {
+                                   await this.inventoryService.increaseInventory(
+                                          booking.roomTypeId,
+                                          booking.startDate,
+                                          booking.endDate,
+                                          1,
+                                          queryRunner.manager
+                                   );
+                            }
+
+                            booking.status = BookingStatus.CANCELLED;
+                            await queryRunner.manager.save(booking);
+                            await queryRunner.commitTransaction();
+                            console.log(`Cancelled expired booking: ${booking.id} and restored inventory.`);
+                     } catch (err) {
+                            await queryRunner.rollbackTransaction();
+                            console.error(`Failed to cancel expired booking ${booking.id}:`, err);
+                     } finally {
+                            await queryRunner.release();
+                     }
+              }
+       }
+
        async updateStatus(id: string, hotelId: string, updateDto: UpdateBookingStatusDto): Promise<Booking> {
               const booking = await this.findOne(id, hotelId);
+
+              if (updateDto.status === BookingStatus.CANCELLED && booking.status !== BookingStatus.CANCELLED) {
+                     const queryRunner = this.dataSource.createQueryRunner();
+                     await queryRunner.connect();
+                     await queryRunner.startTransaction();
+
+                     try {
+                            if (booking.roomTypeId && booking.startDate && booking.endDate) {
+                                   await this.inventoryService.increaseInventory(
+                                          booking.roomTypeId,
+                                          booking.startDate,
+                                          booking.endDate,
+                                          1,
+                                          queryRunner.manager
+                                   );
+                            }
+                            booking.status = updateDto.status;
+                            const savedBooking = await queryRunner.manager.save(booking);
+                            await queryRunner.commitTransaction();
+                            return savedBooking;
+                     } catch (err) {
+                            await queryRunner.rollbackTransaction();
+                            throw err;
+                     } finally {
+                            await queryRunner.release();
+                     }
+              }
+
               booking.status = updateDto.status;
               return this.bookingRepository.save(booking);
        }
@@ -91,6 +169,34 @@ export class BookingService {
 
        async updateStatusForTourPartner(id: string, tourPartnerId: string, status: BookingStatus): Promise<Booking> {
               const booking = await this.findOneForTourPartner(id, tourPartnerId);
+
+              if (status === BookingStatus.CANCELLED && booking.status !== BookingStatus.CANCELLED) {
+                     const queryRunner = this.dataSource.createQueryRunner();
+                     await queryRunner.connect();
+                     await queryRunner.startTransaction();
+
+                     try {
+                            if (booking.roomTypeId && booking.startDate && booking.endDate) {
+                                   await this.inventoryService.increaseInventory(
+                                          booking.roomTypeId,
+                                          booking.startDate,
+                                          booking.endDate,
+                                          1,
+                                          queryRunner.manager
+                                   );
+                            }
+                            booking.status = status;
+                            const savedBooking = await queryRunner.manager.save(booking);
+                            await queryRunner.commitTransaction();
+                            return savedBooking;
+                     } catch (err) {
+                            await queryRunner.rollbackTransaction();
+                            throw err;
+                     } finally {
+                            await queryRunner.release();
+                     }
+              }
+
               booking.status = status;
               return this.bookingRepository.save(booking);
        }

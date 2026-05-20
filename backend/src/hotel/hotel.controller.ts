@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Patch, Body, Param, UseGuards, Request } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Delete, Body, Param, UseGuards, Request } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { HotelService } from './hotel.service';
 import { PromotionsService } from '../promotions/promotions.service';
@@ -31,6 +31,16 @@ export class HotelController {
        @Get('rooms/:id/rate-plans')
        findRatePlansByRoom(@Param('id') id: string) {
            return this.hotelService.findRatePlansByRoom(id);
+       }
+
+       @Patch('rate-plans/:id')
+       updateRatePlan(@Param('id') id: string, @Body() body: any) {
+           return this.hotelService.updateRatePlan(id, body);
+       }
+
+       @Delete('rate-plans/:id')
+       deleteRatePlan(@Param('id') id: string) {
+           return this.hotelService.deleteRatePlan(id);
        }
 
        // Reviews

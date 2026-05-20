@@ -33,6 +33,9 @@ export class RoomType {
        @Column({ type: 'jsonb', nullable: true })
        images: string[];
 
+       @Column({ type: 'int', default: 10 })
+       totalRooms: number;
+
        @Column()
        hotelId: string;
 

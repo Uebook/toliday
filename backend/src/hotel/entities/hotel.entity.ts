@@ -31,6 +31,12 @@ export class Hotel {
        @Column({ nullable: true })
        pinCode: string;
 
+       @Column({ nullable: true, type: 'decimal', precision: 10, scale: 7 })
+       latitude: number;
+
+       @Column({ nullable: true, type: 'decimal', precision: 10, scale: 7 })
+       longitude: number;
+
        @Column({ nullable: true })
        contactNumber: string;
 
@@ -66,6 +72,9 @@ export class Hotel {
 
        @Column({ type: 'simple-array', nullable: true })
        amenities: string[];
+
+       @Column({ type: 'simple-array', nullable: true })
+       images: string[];
 
        // Owner / profile info
        @Column({ nullable: true })

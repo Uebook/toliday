@@ -38,12 +38,17 @@ export class MediaController {
               @Body('packageId') packageId?: string,
               @Body('category') category?: string,
        ) {
+              const protocol = req.protocol || 'http';
+              const host = req.get('host');
+              const baseUrl = `${protocol}://${host}`;
+
               return this.mediaService.uploadAndCreate({
                      file,
                      hotelId,
                      packageId,
                      tourPartnerId: req.user.tourPartnerId,
                      category,
+                     baseUrl,
               });
        }
 
