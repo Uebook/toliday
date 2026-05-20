@@ -1,0 +1,17 @@
+{
+  "name": "extranetportel-monorepo",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend",
+    "website"
+  ],
+  "scripts": {
+    "dev:frontend": "npm run dev -w frontend",
+    "dev:backend": "npm run start:dev -w backend",
+    "dev:website": "npm run dev -w website",
+    "build:frontend": "npm run build -w frontend",
+    "build:backend": "npm run build -w backend",
+    "build:website": "npm run build -w website"
+  }
+}

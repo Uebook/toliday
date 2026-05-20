@@ -1,10 +1,92 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import * as fs from 'fs';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { HotelModule } from './hotel/hotel.module';
+import { StaffModule } from './staff/staff.module';
+import { AuthModule } from './auth/auth.module';
+import { RoomTypeModule } from './room-type/room-type.module';
+import { InventoryModule } from './inventory/inventory.module';
+import { BookingModule } from './booking/booking.module';
+import { StatsModule } from './stats/stats.module';
+import { RatesModule } from './rates/rates.module';
+import { NotificationsModule } from './notifications/notifications.module';
+import { MediaModule } from './media/media.module';
+import { AdminModule } from './admin/admin.module';
+import { SupportModule } from './support/support.module';
+import { MailModule } from './mail/mail.module';
+import { PackagesModule } from './packages/packages.module';
+import { BusesModule } from './buses/buses.module';
+import { CabsModule } from './cabs/cabs.module';
+import { FinanceModule } from './finance/finance.module';
+import { PromotionsModule } from './promotions/promotions.module';
+import { SettingsModule } from './settings/settings.module';
 
 @Module({
-  imports: [],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => {
+        const caPath = configService.get<string>('DB_SSL_CA_PATH');
+        console.log(`DB SSL CA Path: ${caPath}`);
+        let ca: string | undefined;
+        if (caPath) {
+          try {
+            ca = fs.readFileSync(caPath).toString();
+            console.log('Successfully read SSL CA certificate');
+          } catch (error) {
+            console.error(`Failed to read SSL CA certificate at ${caPath}:`, error.message);
+          }
+        } else {
+          console.warn('DB_SSL_CA_PATH is not defined');
+        }
+
+        return {
+          type: 'postgres',
+          host: configService.get<string>('DB_HOST'),
+          port: configService.get<number>('DB_PORT'),
+          username: configService.get<string>('DB_USER'),
+          password: configService.get<string>('DB_PASSWORD'),
+          database: configService.get<string>('DB_NAME'),
+          ssl: ca ? {
+            rejectUnauthorized: true,
+            ca,
+          } : {
+            rejectUnauthorized: false,
+          },
+          autoLoadEntities: true,
+          synchronize: true, // Be careful with this in production
+          connectTimeoutMS: 5000, // Shorten timeout for faster failure
+        };
+      },
+    }),
+    HotelModule,
+    StaffModule,
+    AuthModule,
+    RoomTypeModule,
+    InventoryModule,
+    BookingModule,
+    StatsModule,
+    RatesModule,
+    NotificationsModule,
+    MediaModule,
+    AdminModule,
+    SupportModule,
+    MailModule,
+    PackagesModule,
+    BusesModule,
+    CabsModule,
+    FinanceModule,
+    PromotionsModule,
+    SettingsModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }
