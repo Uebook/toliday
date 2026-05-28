@@ -8,6 +8,6 @@ import { Inventory } from './entities/inventory.entity';
   imports: [TypeOrmModule.forFeature([Inventory])],
   controllers: [InventoryController],
   providers: [InventoryService],
-  exports: [TypeOrmModule, InventoryService]
+  exports: [TypeOrmModule, InventoryService],
 })
-export class InventoryModule { }
+export class InventoryModule {}

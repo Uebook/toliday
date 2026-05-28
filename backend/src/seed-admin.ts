@@ -12,7 +12,9 @@ async function bootstrap() {
   const adminPassword = 'adminpassword123';
   const passwordHash = await bcrypt.hash(adminPassword, 10);
 
-  const existing = await staffRepository.findOne({ where: { email: adminEmail } });
+  const existing = await staffRepository.findOne({
+    where: { email: adminEmail },
+  });
   if (existing) {
     console.log('Admin already exists');
   } else {

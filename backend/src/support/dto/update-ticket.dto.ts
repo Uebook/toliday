@@ -2,11 +2,11 @@ import { IsEnum, IsOptional, IsString } from 'class-validator';
 import { TicketStatus } from '../entities/support-ticket.entity';
 
 export class UpdateTicketDto {
-       @IsEnum(TicketStatus)
-       @IsOptional()
-       status?: TicketStatus;
+  @IsEnum(TicketStatus)
+  @IsOptional()
+  status?: TicketStatus;
 
-       @IsString()
-       @IsOptional()
-       adminComment?: string;
+  @IsString()
+  @IsOptional()
+  adminComment?: string;
 }

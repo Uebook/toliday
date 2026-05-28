@@ -1,30 +1,37 @@
-import { IsString, IsEmail, IsNotEmpty, IsNumber, IsDateString, IsOptional } from 'class-validator';
+import {
+  IsString,
+  IsEmail,
+  IsNotEmpty,
+  IsNumber,
+  IsDateString,
+  IsOptional,
+} from 'class-validator';
 
 export class CreateBookingDto {
-       @IsString()
-       @IsNotEmpty()
-       guestName: string;
+  @IsString()
+  @IsNotEmpty()
+  guestName: string;
 
-       @IsEmail()
-       guestEmail: string;
+  @IsEmail()
+  guestEmail: string;
 
-       @IsString()
-       @IsOptional()
-       guestContact?: string;
+  @IsString()
+  @IsOptional()
+  guestContact?: string;
 
-       @IsDateString()
-       startDate: string;
+  @IsDateString()
+  startDate: string;
 
-       @IsDateString()
-       endDate: string;
+  @IsDateString()
+  endDate: string;
 
-       @IsNumber()
-       numberOfGuests: number;
+  @IsNumber()
+  numberOfGuests: number;
 
-       @IsNumber()
-       totalAmount: number;
+  @IsNumber()
+  totalAmount: number;
 
-       @IsString()
-       @IsNotEmpty()
-       roomTypeId: string;
+  @IsString()
+  @IsNotEmpty()
+  roomTypeId: string;
 }

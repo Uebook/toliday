@@ -1,61 +1,71 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
 import { TourPartner } from './tour-partner.entity';
 
 export enum TourStatus {
-       ACTIVE = 'ACTIVE',
-       DRAFT = 'DRAFT',
-       INACTIVE = 'INACTIVE'
+  ACTIVE = 'ACTIVE',
+  DRAFT = 'DRAFT',
+  INACTIVE = 'INACTIVE',
 }
 
 @Entity('tours')
 export class Tour {
-       @PrimaryGeneratedColumn('uuid')
-       id: string;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
-       @Column()
-       title: string;
+  @Column()
+  title: string;
 
-       @Column({ type: 'text', nullable: true })
-       description: string;
+  @Column({ type: 'text', nullable: true })
+  description: string;
 
-       @Column()
-       location: string;
+  @Column()
+  location: string;
 
-       @Column({ nullable: true })
-       duration: string; // e.g., "4 hours", "Full day"
+  @Column({ nullable: true })
+  duration: string; // e.g., "4 hours", "Full day"
 
-       @Column({ type: 'decimal', precision: 10, scale: 2 })
-       basePrice: number;
+  @Column({ type: 'decimal', precision: 10, scale: 2 })
+  basePrice: number;
 
-       @Column({ default: 0 })
-       maxCapacity: number;
+  @Column({ default: 0 })
+  maxCapacity: number;
 
-       @Column({ type: 'simple-array', nullable: true })
-       includes: string[];
+  @Column({ type: 'simple-array', nullable: true })
+  includes: string[];
 
-       @Column({ type: 'simple-array', nullable: true })
-       excludes: string[];
+  @Column({ type: 'simple-array', nullable: true })
+  excludes: string[];
 
-       @Column({ type: 'jsonb', nullable: true })
-       itinerary: any[];
+  @Column({ type: 'jsonb', nullable: true })
+  itinerary: any[];
 
-       @Column({
-              type: 'enum',
-              enum: TourStatus,
-              default: TourStatus.DRAFT
-       })
-       status: TourStatus;
+  @Column({
+    type: 'enum',
+    enum: TourStatus,
+    default: TourStatus.DRAFT,
+  })
+  status: TourStatus;
 
-       @Column()
-       partnerId: string;
+  @Column()
+  partnerId: string;
 
-       @ManyToOne(() => TourPartner, (partner) => partner.tours, { onDelete: 'CASCADE' })
-       @JoinColumn({ name: 'partnerId' })
-       partner: TourPartner;
+  @ManyToOne(() => TourPartner, (partner) => partner.tours, {
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn({ name: 'partnerId' })
+  partner: TourPartner;
 
-       @CreateDateColumn()
-       createdAt: Date;
+  @CreateDateColumn()
+  createdAt: Date;
 
-       @UpdateDateColumn()
-       updatedAt: Date;
+  @UpdateDateColumn()
+  updatedAt: Date;
 }

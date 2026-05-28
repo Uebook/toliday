@@ -8,15 +8,15 @@ import { Roles } from '../auth/decorators/roles.decorator';
 @Roles('ADMIN')
 @Controller('admin/settings')
 export class SettingsController {
-       constructor(private readonly settingsService: SettingsService) { }
+  constructor(private readonly settingsService: SettingsService) {}
 
-       @Get()
-       findAll() {
-              return this.settingsService.findAll();
-       }
+  @Get()
+  findAll() {
+    return this.settingsService.findAll();
+  }
 
-       @Post('bulk')
-       updateMany(@Body() body: { settings: { key: string, value: string }[] }) {
-              return this.settingsService.updateMany(body.settings);
-       }
+  @Post('bulk')
+  updateMany(@Body() body: { settings: { key: string; value: string }[] }) {
+    return this.settingsService.updateMany(body.settings);
+  }
 }

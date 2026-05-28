@@ -5,9 +5,9 @@ import { SettingsService } from './settings.service';
 import { SettingsController } from './settings.controller';
 
 @Module({
-       imports: [TypeOrmModule.forFeature([GlobalSetting])],
-       providers: [SettingsService],
-       controllers: [SettingsController],
-       exports: [SettingsService],
+  imports: [TypeOrmModule.forFeature([GlobalSetting])],
+  providers: [SettingsService],
+  controllers: [SettingsController],
+  exports: [SettingsService],
 })
-export class SettingsModule { }
+export class SettingsModule {}

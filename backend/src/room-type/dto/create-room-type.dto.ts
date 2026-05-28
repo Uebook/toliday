@@ -1,37 +1,43 @@
-import { IsString, IsNotEmpty, IsNumber, IsOptional, IsArray } from 'class-validator';
+import {
+  IsString,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsArray,
+} from 'class-validator';
 
 export class CreateRoomTypeDto {
-       @IsString()
-       @IsNotEmpty()
-       name: string;
+  @IsString()
+  @IsNotEmpty()
+  name: string;
 
-       @IsString()
-       @IsOptional()
-       description?: string;
+  @IsString()
+  @IsOptional()
+  description?: string;
 
-       @IsNumber()
-       price: number;
+  @IsNumber()
+  price: number;
 
-       @IsNumber()
-       capacity: number;
+  @IsNumber()
+  capacity: number;
 
-       @IsNumber()
-       @IsOptional()
-       extraPersonPrice?: number;
+  @IsNumber()
+  @IsOptional()
+  extraPersonPrice?: number;
 
-       @IsString()
-       @IsOptional()
-       size?: string;
+  @IsString()
+  @IsOptional()
+  size?: string;
 
-       @IsArray()
-       @IsOptional()
-       amenities?: string[];
+  @IsArray()
+  @IsOptional()
+  amenities?: string[];
 
-       @IsArray()
-       @IsOptional()
-       images?: string[];
+  @IsArray()
+  @IsOptional()
+  images?: string[];
 
-       @IsNumber()
-       @IsOptional()
-       totalRooms?: number;
+  @IsNumber()
+  @IsOptional()
+  totalRooms?: number;
 }

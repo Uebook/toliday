@@ -12,7 +12,18 @@ import { PackagesController } from './packages.controller';
 import { PackagesService } from './packages.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([TourPartner, TourPackage, Tour, Booking, Lead, ItineraryActivity, PackageDeparture, PackageTier])],
+  imports: [
+    TypeOrmModule.forFeature([
+      TourPartner,
+      TourPackage,
+      Tour,
+      Booking,
+      Lead,
+      ItineraryActivity,
+      PackageDeparture,
+      PackageTier,
+    ]),
+  ],
   controllers: [PackagesController],
   providers: [PackagesService],
   exports: [TypeOrmModule, PackagesService],

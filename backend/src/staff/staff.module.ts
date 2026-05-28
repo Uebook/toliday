@@ -10,7 +10,6 @@ import { TourPartner } from '../packages/entities/tour-partner.entity';
   imports: [TypeOrmModule.forFeature([Staff, Hotel, TourPartner])],
   controllers: [StaffController],
   providers: [StaffService],
-  exports: [StaffService]
+  exports: [StaffService],
 })
-export class StaffModule { }
-
+export class StaffModule {}

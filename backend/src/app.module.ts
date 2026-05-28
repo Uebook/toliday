@@ -23,12 +23,16 @@ import { CabsModule } from './cabs/cabs.module';
 import { FinanceModule } from './finance/finance.module';
 import { PromotionsModule } from './promotions/promotions.module';
 import { SettingsModule } from './settings/settings.module';
+import { RoomModule } from './room/room.module';
+import { PaymentModule } from './payment/payment.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    ScheduleModule.forRoot(),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -41,7 +45,10 @@ import { SettingsModule } from './settings/settings.module';
             ca = fs.readFileSync(caPath).toString();
             console.log('Successfully read SSL CA certificate');
           } catch (error) {
-            console.error(`Failed to read SSL CA certificate at ${caPath}:`, error.message);
+            console.error(
+              `Failed to read SSL CA certificate at ${caPath}:`,
+              error.message,
+            );
           }
         } else {
           console.warn('DB_SSL_CA_PATH is not defined');
@@ -54,12 +61,14 @@ import { SettingsModule } from './settings/settings.module';
           username: configService.get<string>('DB_USER'),
           password: configService.get<string>('DB_PASSWORD'),
           database: configService.get<string>('DB_NAME'),
-          ssl: ca ? {
-            rejectUnauthorized: true,
-            ca,
-          } : {
-            rejectUnauthorized: false,
-          },
+          ssl: ca
+            ? {
+                rejectUnauthorized: true,
+                ca,
+              }
+            : {
+                rejectUnauthorized: false,
+              },
           autoLoadEntities: true,
           synchronize: true, // Be careful with this in production
           connectTimeoutMS: 5000, // Shorten timeout for faster failure
@@ -85,8 +94,10 @@ import { SettingsModule } from './settings/settings.module';
     FinanceModule,
     PromotionsModule,
     SettingsModule,
+    RoomModule,
+    PaymentModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {}

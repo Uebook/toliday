@@ -7,14 +7,26 @@ import { Bus } from './entities/bus.entity';
 import { BusRoute } from './entities/bus-route.entity';
 import { BusSchedule } from './entities/bus-schedule.entity';
 import { SeatLayout } from './entities/seat-layout.entity';
+import { PublicBusesController } from './public-buses.controller';
 import { BusBooking } from './entities/bus-booking.entity';
 import { YieldRule } from './entities/yield-rule.entity';
 import { Crew } from './entities/crew.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([BusVendor, Bus, BusRoute, BusSchedule, SeatLayout, Crew, BusBooking, YieldRule])],
+  imports: [
+    TypeOrmModule.forFeature([
+      BusVendor,
+      Bus,
+      BusRoute,
+      BusSchedule,
+      SeatLayout,
+      Crew,
+      BusBooking,
+      YieldRule,
+    ]),
+  ],
+  controllers: [BusesController, PublicBusesController],
   providers: [BusesService],
-  controllers: [BusesController],
   exports: [BusesService],
 })
 export class BusesModule {}

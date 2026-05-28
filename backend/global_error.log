@@ -1,0 +1,62 @@
+
+--- GLOBAL ERROR 2026-03-15T18:45:13.792Z ---
+Path: /auth/login
+Status: 401
+Error: We are verifying your details. Only approved accounts can login.
+Stack: UnauthorizedException: We are verifying your details. Only approved accounts can login.
+    at AuthService.login (/Users/vansh/Toliday/Extranetportel/backend/src/auth/auth.service.ts:107:35)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async /Users/vansh/Toliday/Extranetportel/backend/node_modules/@nestjs/core/router/router-execution-context.js:46:28
+    at async /Users/vansh/Toliday/Extranetportel/backend/node_modules/@nestjs/core/router/router-proxy.js:9:17
+Body: {"email":"rt@gmail.com","password":"12345678"}
+-------------------------------
+
+--- GLOBAL ERROR 2026-03-15T18:54:20.059Z ---
+Path: /admin/hotels/9b08fbd5-698d-4bd0-a87c-4f8fba1f2a6a
+Status: 401
+Error: Unauthorized
+Stack: UnauthorizedException: Unauthorized
+    at JwtAuthGuard.handleRequest (/Users/vansh/Toliday/Extranetportel/backend/node_modules/@nestjs/passport/dist/auth.guard.js:60:30)
+    at /Users/vansh/Toliday/Extranetportel/backend/node_modules/@nestjs/passport/dist/auth.guard.js:44:124
+    at /Users/vansh/Toliday/Extranetportel/backend/node_modules/@nestjs/passport/dist/auth.guard.js:83:24
+    at allFailed (/Users/vansh/Toliday/Extranetportel/backend/node_modules/passport/lib/middleware/authenticate.js:110:18)
+    at attempt (/Users/vansh/Toliday/Extranetportel/backend/node_modules/passport/lib/middleware/authenticate.js:183:28)
+    at strategy.fail (/Users/vansh/Toliday/Extranetportel/backend/node_modules/passport/lib/middleware/authenticate.js:314:9)
+    at JwtStrategy.authenticate (/Users/vansh/Toliday/Extranetportel/backend/node_modules/passport-jwt/lib/strategy.js:96:21)
+    at attempt (/Users/vansh/Toliday/Extranetportel/backend/node_modules/passport/lib/middleware/authenticate.js:378:16)
+    at authenticate (/Users/vansh/Toliday/Extranetportel/backend/node_modules/passport/lib/middleware/authenticate.js:379:7)
+    at /Users/vansh/Toliday/Extranetportel/backend/node_modules/@nestjs/passport/dist/auth.guard.js:88:3
+Body: undefined
+-------------------------------
+
+--- GLOBAL ERROR 2026-03-15T18:54:29.270Z ---
+Path: /admin/dashboard/stats
+Status: 500
+Error: column booking.totalprice does not exist
+Stack: QueryFailedError: column booking.totalprice does not exist
+    at PostgresQueryRunner.query (/Users/vansh/Toliday/Extranetportel/backend/node_modules/typeorm/driver/src/driver/postgres/PostgresQueryRunner.ts:325:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async SelectQueryBuilder.loadRawResults (/Users/vansh/Toliday/Extranetportel/backend/node_modules/typeorm/query-builder/src/query-builder/SelectQueryBuilder.ts:3868:25)
+    at async SelectQueryBuilder.getRawMany (/Users/vansh/Toliday/Extranetportel/backend/node_modules/typeorm/query-builder/src/query-builder/SelectQueryBuilder.ts:1627:29)
+    at async SelectQueryBuilder.getRawOne (/Users/vansh/Toliday/Extranetportel/backend/node_modules/typeorm/query-builder/src/query-builder/SelectQueryBuilder.ts:1604:17)
+    at async AdminService.getDashboardStats (/Users/vansh/Toliday/Extranetportel/backend/src/admin/admin.service.ts:65:37)
+    at async /Users/vansh/Toliday/Extranetportel/backend/node_modules/@nestjs/core/router/router-execution-context.js:46:28
+    at async /Users/vansh/Toliday/Extranetportel/backend/node_modules/@nestjs/core/router/router-proxy.js:9:17
+Body: undefined
+-------------------------------
+
+--- GLOBAL ERROR 2026-03-15T18:54:31.096Z ---
+Path: /admin/dashboard/stats
+Status: 500
+Error: column booking.totalprice does not exist
+Stack: QueryFailedError: column booking.totalprice does not exist
+    at PostgresQueryRunner.query (/Users/vansh/Toliday/Extranetportel/backend/node_modules/typeorm/driver/src/driver/postgres/PostgresQueryRunner.ts:325:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async SelectQueryBuilder.loadRawResults (/Users/vansh/Toliday/Extranetportel/backend/node_modules/typeorm/query-builder/src/query-builder/SelectQueryBuilder.ts:3868:25)
+    at async SelectQueryBuilder.getRawMany (/Users/vansh/Toliday/Extranetportel/backend/node_modules/typeorm/query-builder/src/query-builder/SelectQueryBuilder.ts:1627:29)
+    at async SelectQueryBuilder.getRawOne (/Users/vansh/Toliday/Extranetportel/backend/node_modules/typeorm/query-builder/src/query-builder/SelectQueryBuilder.ts:1604:17)
+    at async AdminService.getDashboardStats (/Users/vansh/Toliday/Extranetportel/backend/src/admin/admin.service.ts:65:37)
+    at async /Users/vansh/Toliday/Extranetportel/backend/node_modules/@nestjs/core/router/router-execution-context.js:46:28
+    at async /Users/vansh/Toliday/Extranetportel/backend/node_modules/@nestjs/core/router/router-proxy.js:9:17
+Body: undefined
+-------------------------------

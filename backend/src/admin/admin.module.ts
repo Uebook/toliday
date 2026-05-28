@@ -21,16 +21,28 @@ import { GlobalSetting } from '../settings/entities/global-setting.entity';
 import { LedgerEntry } from '../finance/entities/ledger-entry.entity';
 
 @Module({
-       imports: [
-              TypeOrmModule.forFeature([
-                     Hotel, Booking, Staff, TourPartner, BusVendor, CabVendor, 
-                     BusBooking, CabBooking, Promotion, RoomType, TourPackage, 
-                     Bus, Vehicle, GlobalSetting, LedgerEntry
-              ]), 
-              SupportModule
-       ],
-       controllers: [AdminController],
-       providers: [AdminService],
-       exports: [AdminService],
+  imports: [
+    TypeOrmModule.forFeature([
+      Hotel,
+      Booking,
+      Staff,
+      TourPartner,
+      BusVendor,
+      CabVendor,
+      BusBooking,
+      CabBooking,
+      Promotion,
+      RoomType,
+      TourPackage,
+      Bus,
+      Vehicle,
+      GlobalSetting,
+      LedgerEntry,
+    ]),
+    SupportModule,
+  ],
+  controllers: [AdminController],
+  providers: [AdminService],
+  exports: [AdminService],
 })
-export class AdminModule { }
+export class AdminModule {}

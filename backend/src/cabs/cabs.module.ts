@@ -9,9 +9,17 @@ import { CabPricing } from './entities/cab-pricing.entity';
 import { CabBooking } from './entities/cab-booking.entity';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([CabVendor, Vehicle, Driver, CabPricing, CabBooking])],
-    controllers: [CabsController],
-    providers: [CabsService],
-    exports: [TypeOrmModule, CabsService]
+  imports: [
+    TypeOrmModule.forFeature([
+      CabVendor,
+      Vehicle,
+      Driver,
+      CabPricing,
+      CabBooking,
+    ]),
+  ],
+  controllers: [CabsController],
+  providers: [CabsService],
+  exports: [TypeOrmModule, CabsService],
 })
 export class CabsModule {}

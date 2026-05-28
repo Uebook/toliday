@@ -1,36 +1,47 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
 import { Hotel } from '../../hotel/entities/hotel.entity';
 
 export enum NotificationType {
-       BOOKING = 'booking',
-       PAYMENT = 'payment',
-       SYSTEM = 'system',
+  BOOKING = 'booking',
+  PAYMENT = 'payment',
+  SYSTEM = 'system',
 }
 
 @Entity('notifications')
 export class Notification {
-       @PrimaryGeneratedColumn('uuid')
-       id: string;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
-       @Column()
-       hotelId: string;
+  @Column()
+  hotelId: string;
 
-       @ManyToOne(() => Hotel, { onDelete: 'CASCADE' })
-       @JoinColumn({ name: 'hotelId' })
-       hotel: Hotel;
+  @ManyToOne(() => Hotel, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'hotelId' })
+  hotel: Hotel;
 
-       @Column({ type: 'enum', enum: NotificationType, default: NotificationType.SYSTEM })
-       type: NotificationType;
+  @Column({
+    type: 'enum',
+    enum: NotificationType,
+    default: NotificationType.SYSTEM,
+  })
+  type: NotificationType;
 
-       @Column()
-       title: string;
+  @Column()
+  title: string;
 
-       @Column({ type: 'text' })
-       message: string;
+  @Column({ type: 'text' })
+  message: string;
 
-       @Column({ default: false })
-       read: boolean;
+  @Column({ default: false })
+  read: boolean;
 
-       @CreateDateColumn()
-       createdAt: Date;
+  @CreateDateColumn()
+  createdAt: Date;
 }

@@ -1,0 +1,8 @@
+[2026-04-26T07:04:56.212Z] --- SIGNUP START ---
+[2026-04-26T07:04:56.214Z] Files keys: 
+[2026-04-26T07:04:56.214Z] Calling AuthService.signup for wow@gmail.com
+[2026-04-26T07:04:56.214Z] (Service) AuthService.signup for wow@gmail.com as PACKAGES
+[2026-04-26T07:34:13.333Z] --- SIGNUP START ---
+[2026-04-26T07:34:13.333Z] Files keys: 
+[2026-04-26T07:34:13.333Z] Calling AuthService.signup for dsds@gmail.com
+[2026-04-26T07:34:13.333Z] (Service) AuthService.signup for dsds@gmail.com as PACKAGES

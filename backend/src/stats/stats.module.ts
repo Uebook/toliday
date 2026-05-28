@@ -8,6 +8,6 @@ import { Inventory } from '../inventory/entities/inventory.entity';
 @Module({
   imports: [TypeOrmModule.forFeature([Booking, Inventory])],
   controllers: [StatsController],
-  providers: [StatsService]
+  providers: [StatsService],
 })
-export class StatsModule { }
+export class StatsModule {}

@@ -5,8 +5,8 @@ import { RatesService } from './rates.service';
 import { Rate } from './entities/rate.entity';
 
 @Module({
-       imports: [TypeOrmModule.forFeature([Rate])],
-       controllers: [RatesController],
-       providers: [RatesService],
+  imports: [TypeOrmModule.forFeature([Rate])],
+  controllers: [RatesController],
+  providers: [RatesService],
 })
-export class RatesModule { }
+export class RatesModule {}

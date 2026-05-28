@@ -7,8 +7,9 @@ import { BusRoute } from './entities/bus-route.entity';
 import { BusSchedule } from './entities/bus-schedule.entity';
 import { SeatLayout } from './entities/seat-layout.entity';
 import { Crew } from './entities/crew.entity';
-import { BusBooking } from './entities/bus-booking.entity';
+import { BusBooking, BookingStatus } from './entities/bus-booking.entity';
 import { YieldRule } from './entities/yield-rule.entity';
+import { Cron, CronExpression } from '@nestjs/schedule';
 
 @Injectable()
 export class BusesService {
@@ -37,7 +38,10 @@ export class BusesService {
   }
 
   async findVendorById(id: string) {
-    const vendor = await this.vendorRepo.findOne({ where: { id }, relations: ['staffs', 'buses'] });
+    const vendor = await this.vendorRepo.findOne({
+      where: { id },
+      relations: ['staffs', 'buses'],
+    });
     if (!vendor) throw new NotFoundException('Vendor not found');
     return vendor;
   }
@@ -54,7 +58,10 @@ export class BusesService {
 
   // Bus Methods
   async findBusesByVendor(vendorId: string) {
-    return this.busRepo.find({ where: { vendorId }, relations: ['seatLayouts'] });
+    return this.busRepo.find({
+      where: { vendorId },
+      relations: ['seatLayouts'],
+    });
   }
 
   async createBus(data: Partial<Bus>) {
@@ -74,7 +81,10 @@ export class BusesService {
 
   // Schedule Methods
   async findSchedulesByRoute(routeId: string) {
-    return this.scheduleRepo.find({ where: { routeId }, relations: ['bus', 'driver', 'conductor'] });
+    return this.scheduleRepo.find({
+      where: { routeId },
+      relations: ['bus', 'driver', 'conductor'],
+    });
   }
 
   async createSchedule(data: Partial<BusSchedule>) {
@@ -84,12 +94,17 @@ export class BusesService {
 
   // Seat Layout Methods
   async findSeatLayout(busId: string) {
-    return this.layoutRepo.find({ where: { busId }, order: { deck: 'ASC', row: 'ASC', column: 'ASC' } });
+    return this.layoutRepo.find({
+      where: { busId },
+      order: { deck: 'ASC', row: 'ASC', column: 'ASC' },
+    });
   }
 
   async saveSeatLayout(busId: string, layouts: Partial<SeatLayout>[]) {
     await this.layoutRepo.delete({ busId });
-    const entities = layouts.map(l => this.layoutRepo.create({ ...l, busId }));
+    const entities = layouts.map((l) =>
+      this.layoutRepo.create({ ...l, busId }),
+    );
     return this.layoutRepo.save(entities);
   }
 
@@ -127,14 +142,18 @@ export class BusesService {
   async getStats(vendorId: string) {
     const totalBuses = await this.busRepo.count({ where: { vendorId } });
     const totalRoutes = await this.routeRepo.count();
-    
-    const bookings = await this.bookingRepo.createQueryBuilder('booking')
+
+    const bookings = await this.bookingRepo
+      .createQueryBuilder('booking')
       .innerJoinAndSelect('booking.schedule', 'schedule')
       .innerJoinAndSelect('schedule.bus', 'bus')
       .where('bus.vendorId = :vendorId', { vendorId })
       .getMany();
 
-    const totalRevenue = bookings.reduce((sum, b) => sum + (Number(b.totalFare) || 0), 0);
+    const totalRevenue = bookings.reduce(
+      (sum, b) => sum + (Number(b.totalFare) || 0),
+      0,
+    );
     const totalTickets = bookings.length;
 
     return {
@@ -144,5 +163,84 @@ export class BusesService {
       totalTickets,
       activeTrips: 5, // Mock for now or calculate from schedules
     };
+  }
+
+  // PUBLIC APIs (B2C)
+  async searchPublicBuses(query: { origin: string; destination: string; date: string }) {
+    const qb = this.scheduleRepo.createQueryBuilder('schedule')
+      .innerJoinAndSelect('schedule.route', 'route')
+      .innerJoinAndSelect('schedule.bus', 'bus')
+      .where('route.originCity ILIKE :origin', { origin: `%${query.origin}%` })
+      .andWhere('route.destinationCity ILIKE :dest', { dest: `%${query.destination}%` })
+      .andWhere('schedule.status = :status', { status: 'SCHEDULED' });
+      
+    if (query.date) {
+      qb.andWhere('schedule.departureDate = :date', { date: query.date });
+    }
+    
+    return qb.getMany();
+  }
+
+  async getSeatMatrix(scheduleId: string) {
+    const schedule = await this.scheduleRepo.findOne({
+      where: { id: scheduleId },
+      relations: ['bus', 'bus.seatLayouts']
+    });
+    
+    if (!schedule) throw new NotFoundException('Schedule not found');
+    
+    // Get all bookings (PENDING & CONFIRMED) to find locked/booked seats
+    const activeBookings = await this.bookingRepo.find({
+      where: [
+        { scheduleId, status: BookingStatus.CONFIRMED },
+        { scheduleId, status: BookingStatus.PENDING }
+      ]
+    });
+    
+    const lockedSeats = activeBookings.flatMap(b => b.selectedSeats);
+    
+    return {
+      layout: schedule.bus.seatLayouts,
+      lockedSeats,
+      schedule
+    };
+  }
+
+  async lockSeats(data: any) {
+    // Check if seats are already locked
+    const matrix = await this.getSeatMatrix(data.scheduleId);
+    const requestedSeats: string[] = data.selectedSeats;
+    
+    const conflict = requestedSeats.some(seat => matrix.lockedSeats.includes(seat));
+    if (conflict) {
+      throw new Error('Some of the selected seats have just been booked by another user.');
+    }
+    
+    const booking = this.bookingRepo.create({
+      ...data,
+      pnr: `PNR${Date.now().toString().substring(4)}`,
+      status: BookingStatus.PENDING,
+    });
+    
+    return this.bookingRepo.save(booking);
+  }
+
+  // Auto-Release 10-Minute Seat Locks
+  @Cron(CronExpression.EVERY_MINUTE)
+  async cleanupExpiredPendingBookings() {
+    const tenMinutesAgo = new Date(Date.now() - 10 * 60 * 1000);
+    const expiredBookings = await this.bookingRepo.find({
+      where: {
+        status: BookingStatus.PENDING,
+      },
+    });
+
+    const strictlyExpired = expiredBookings.filter(b => b.createdAt < tenMinutesAgo);
+
+    for (const booking of strictlyExpired) {
+      booking.status = BookingStatus.CANCELLED;
+      await this.bookingRepo.save(booking);
+      console.log(`[Bus System] Released locked seats for expired booking: ${booking.id}`);
+    }
   }
 }

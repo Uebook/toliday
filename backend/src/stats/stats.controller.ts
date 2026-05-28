@@ -5,17 +5,20 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 @UseGuards(JwtAuthGuard)
 @Controller('stats')
 export class StatsController {
-       constructor(private readonly statsService: StatsService) { }
+  constructor(private readonly statsService: StatsService) {}
 
-       @Get('summary')
-       getSummary(@Request() req) {
-              const hotelId = req.user.hotelId;
-              return this.statsService.getSummary(hotelId);
-       }
+  @Get('summary')
+  getSummary(@Request() req) {
+    const hotelId = req.user.hotelId;
+    return this.statsService.getSummary(hotelId);
+  }
 
-       @Get('reports')
-       getReports(@Request() req, @Query('period') period: '7d' | '30d' | '90d' = '7d') {
-              const hotelId = req.user.hotelId;
-              return this.statsService.getReports(hotelId, period);
-       }
+  @Get('reports')
+  getReports(
+    @Request() req,
+    @Query('period') period: '7d' | '30d' | '90d' = '7d',
+  ) {
+    const hotelId = req.user.hotelId;
+    return this.statsService.getReports(hotelId, period);
+  }
 }
