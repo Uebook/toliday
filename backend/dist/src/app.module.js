@@ -68,6 +68,8 @@ const settings_module_1 = require("./settings/settings.module");
 const room_module_1 = require("./room/room.module");
 const payment_module_1 = require("./payment/payment.module");
 const schedule_1 = require("@nestjs/schedule");
+const reviews_module_1 = require("./reviews/reviews.module");
+const global_inventory_module_1 = require("./global-inventory/global-inventory.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -139,6 +141,8 @@ exports.AppModule = AppModule = __decorate([
             settings_module_1.SettingsModule,
             room_module_1.RoomModule,
             payment_module_1.PaymentModule,
+            reviews_module_1.ReviewsModule,
+            global_inventory_module_1.GlobalInventoryModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],

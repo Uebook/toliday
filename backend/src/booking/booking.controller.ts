@@ -7,6 +7,7 @@ import {
   Param,
   UseGuards,
   Request,
+  ForbiddenException,
 } from '@nestjs/common';
 import { BookingService } from './booking.service';
 import { CreateBookingDto } from './dto/create-booking.dto';
@@ -38,6 +39,14 @@ export class BookingController {
   create(@Request() req, @Body() createDto: CreateBookingDto) {
     const hotelId = req.user.hotelId;
     return this.bookingService.create(hotelId, createDto);
+  }
+
+  @Get('admin/all')
+  findAllGlobal(@Request() req) {
+    if (req.user.role !== 'ADMIN' && req.user.role !== 'OWNER') {
+      throw new ForbiddenException('Unauthorized');
+    }
+    return this.bookingService.findAllGlobal();
   }
 
   @Get()
@@ -83,4 +92,13 @@ export class BookingController {
   ) {
     return this.bookingService.assignRoom(id, req.user.hotelId, roomId);
   }
+
+  @Get('admin/consumers')
+  getAdminConsumers(@Request() req) {
+    if (req.user.role !== 'ADMIN' && req.user.role !== 'OWNER') {
+      throw new ForbiddenException('Unauthorized');
+    }
+    return this.bookingService.getAdminConsumers();
+  }
+
 }

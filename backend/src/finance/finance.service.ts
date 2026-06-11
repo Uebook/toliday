@@ -136,8 +136,10 @@ export class FinanceService {
     return this.payoutRepo.update(id, { status });
   }
 
-  async findAllLedgerEntries() {
+  async findAllLedgerEntries(vertical?: VerticalType) {
+    const where = vertical ? { vertical } : {};
     return this.ledgerRepo.find({
+      where,
       order: { createdAt: 'DESC' },
       take: 100,
     });

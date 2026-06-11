@@ -45,9 +45,9 @@ export class FinanceController {
   }
 
   @Get('admin/ledger')
-  getGlobalLedger(@Request() req: any) {
+  getGlobalLedger(@Request() req: any, @Query('vertical') vertical?: VerticalType) {
     this.checkAdmin(req);
-    return this.financeService.findAllLedgerEntries();
+    return this.financeService.findAllLedgerEntries(vertical);
   }
 
   // Helper to determine vendorId and vertical from JWT token

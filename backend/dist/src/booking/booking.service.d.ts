@@ -15,12 +15,24 @@ export declare class BookingService implements OnModuleInit {
     }): Promise<Booking>;
     findAllByEmail(guestEmail: string): Promise<Booking[]>;
     findAll(hotelId: string): Promise<Booking[]>;
-    findOne(id: string, hotelId: string): Promise<Booking>;
+    findAllGlobal(): Promise<Booking[]>;
+    findOne(id: string, hotelId?: string): Promise<Booking>;
     onModuleInit(): void;
     cleanupExpiredPendingBookings(): Promise<void>;
-    updateStatus(id: string, hotelId: string, updateDto: UpdateBookingStatusDto): Promise<Booking>;
+    updateStatus(id: string, hotelId: string | undefined, updateDto: UpdateBookingStatusDto): Promise<Booking>;
     findAllForTourPartner(tourPartnerId: string): Promise<Booking[]>;
     findOneForTourPartner(id: string, tourPartnerId: string): Promise<Booking>;
     updateStatusForTourPartner(id: string, tourPartnerId: string, status: BookingStatus): Promise<Booking>;
     assignRoom(id: string, hotelId: string, roomId: string): Promise<Booking>;
+    getAdminConsumers(): Promise<{
+        id: any;
+        name: any;
+        email: any;
+        phone: any;
+        totalBookings: number;
+        ltv: number;
+        status: string;
+        lastActive: any;
+        kycStatus: string;
+    }[]>;
 }

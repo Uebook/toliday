@@ -13,8 +13,20 @@ export declare class BookingController {
     private readonly bookingService;
     constructor(bookingService: BookingService);
     create(req: any, createDto: CreateBookingDto): Promise<import("./entities/booking.entity").Booking>;
+    findAllGlobal(req: any): Promise<import("./entities/booking.entity").Booking[]>;
     findAll(req: any): Promise<import("./entities/booking.entity").Booking[]>;
     findOne(req: any, id: string): Promise<import("./entities/booking.entity").Booking>;
     updateStatus(req: any, id: string, updateDto: UpdateBookingStatusDto): Promise<import("./entities/booking.entity").Booking>;
     assignRoom(req: any, id: string, roomId: string): Promise<import("./entities/booking.entity").Booking>;
+    getAdminConsumers(req: any): Promise<{
+        id: any;
+        name: any;
+        email: any;
+        phone: any;
+        totalBookings: number;
+        ltv: number;
+        status: string;
+        lastActive: any;
+        kycStatus: string;
+    }[]>;
 }

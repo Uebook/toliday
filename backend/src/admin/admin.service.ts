@@ -276,6 +276,20 @@ export class AdminService {
     return this.hotelRepository.save(hotel);
   }
 
+  async updateHotelDetails(id: string, data: any) {
+    const hotel = await this.hotelRepository.findOne({ where: { id } });
+    if (!hotel) throw new NotFoundException('Hotel not found');
+    Object.assign(hotel, data);
+    return this.hotelRepository.save(hotel);
+  }
+
+  async updateHotelRoom(roomId: string, data: any) {
+    const room = await this.roomTypeRepository.findOne({ where: { id: roomId } });
+    if (!room) throw new NotFoundException('Room not found');
+    Object.assign(room, data);
+    return this.roomTypeRepository.save(room);
+  }
+
   async addHotelRoom(hotelId: string, data: any) {
     const room = this.roomTypeRepository.create({ ...data, hotelId });
     return this.roomTypeRepository.save(room);

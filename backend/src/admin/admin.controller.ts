@@ -60,6 +60,22 @@ export class AdminController {
     return this.adminService.updateHotelStatus(id, status);
   }
 
+  @Patch('hotels/:id')
+  updateHotelDetails(
+    @Param('id') id: string,
+    @Body() data: any,
+  ) {
+    return this.adminService.updateHotelDetails(id, data);
+  }
+
+  @Patch('hotels/rooms/:roomId')
+  updateHotelRoom(
+    @Param('roomId') roomId: string,
+    @Body() data: any,
+  ) {
+    return this.adminService.updateHotelRoom(roomId, data);
+  }
+
   @Post('hotels/:id/rooms')
   addHotelRoom(@Param('id') hotelId: string, @Body() data: any) {
     return this.adminService.addHotelRoom(hotelId, data);

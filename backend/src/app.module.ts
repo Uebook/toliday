@@ -26,6 +26,8 @@ import { SettingsModule } from './settings/settings.module';
 import { RoomModule } from './room/room.module';
 import { PaymentModule } from './payment/payment.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { ReviewsModule } from './reviews/reviews.module';
+import { GlobalInventoryModule } from './global-inventory/global-inventory.module';
 
 @Module({
   imports: [
@@ -96,6 +98,8 @@ import { ScheduleModule } from '@nestjs/schedule';
     SettingsModule,
     RoomModule,
     PaymentModule,
+    ReviewsModule,
+    GlobalInventoryModule,
   ],
   controllers: [AppController],
   providers: [AppService],

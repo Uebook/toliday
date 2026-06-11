@@ -58,6 +58,12 @@ let BookingController = class BookingController {
         const hotelId = req.user.hotelId;
         return this.bookingService.create(hotelId, createDto);
     }
+    findAllGlobal(req) {
+        if (req.user.role !== 'ADMIN' && req.user.role !== 'OWNER') {
+            throw new common_1.ForbiddenException('Unauthorized');
+        }
+        return this.bookingService.findAllGlobal();
+    }
     findAll(req) {
         if (req.user.tourPartnerId) {
             return this.bookingService.findAllForTourPartner(req.user.tourPartnerId);
@@ -79,6 +85,12 @@ let BookingController = class BookingController {
     assignRoom(req, id, roomId) {
         return this.bookingService.assignRoom(id, req.user.hotelId, roomId);
     }
+    getAdminConsumers(req) {
+        if (req.user.role !== 'ADMIN' && req.user.role !== 'OWNER') {
+            throw new common_1.ForbiddenException('Unauthorized');
+        }
+        return this.bookingService.getAdminConsumers();
+    }
 };
 exports.BookingController = BookingController;
 __decorate([
@@ -89,6 +101,13 @@ __decorate([
     __metadata("design:paramtypes", [Object, create_booking_dto_1.CreateBookingDto]),
     __metadata("design:returntype", void 0)
 ], BookingController.prototype, "create", null);
+__decorate([
+    (0, common_1.Get)('admin/all'),
+    __param(0, (0, common_1.Request)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], BookingController.prototype, "findAllGlobal", null);
 __decorate([
     (0, common_1.Get)(),
     __param(0, (0, common_1.Request)()),
@@ -122,6 +141,13 @@ __decorate([
     __metadata("design:paramtypes", [Object, String, String]),
     __metadata("design:returntype", void 0)
 ], BookingController.prototype, "assignRoom", null);
+__decorate([
+    (0, common_1.Get)('admin/consumers'),
+    __param(0, (0, common_1.Request)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], BookingController.prototype, "getAdminConsumers", null);
 exports.BookingController = BookingController = __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Controller)('bookings'),

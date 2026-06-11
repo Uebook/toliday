@@ -3,7 +3,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '@/lib/api';
 import { 
-    DollarSign, Wallet, ArrowUpRight, ArrowDownRight, Clock, 
+    IndianRupee, Wallet, ArrowUpRight, ArrowDownRight, Clock, 
     CheckCircle2, AlertCircle, FileText, Filter, Zap, RefreshCcw
 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
@@ -63,7 +63,7 @@ export default function AdminFinancePage() {
                 <div>
                     <div className="flex items-center gap-3 mb-2">
                         <div className="p-2 bg-emerald-600 rounded-xl text-white shadow-lg shadow-emerald-600/20">
-                            <DollarSign size={20} />
+                            <IndianRupee size={20} />
                         </div>
                         <span className="text-slate-400 font-black uppercase tracking-[0.2em] text-[10px]">Finance OS v2.0</span>
                     </div>
@@ -127,7 +127,7 @@ export default function AdminFinancePage() {
                         </div>
                     </div>
                     <div className="absolute -right-4 -bottom-4 opacity-5 group-hover:scale-110 transition-transform duration-1000">
-                        <DollarSign size={120} color="white" />
+                        <IndianRupee size={120} color="white" />
                     </div>
                 </div>
             </div>

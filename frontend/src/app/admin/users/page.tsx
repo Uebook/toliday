@@ -16,23 +16,62 @@ export default function AdminUsersPage() {
        const [filter, setFilter] = useState('');
 
        const { data: users = [], isLoading } = useQuery({
-              queryKey: ['admin-users'],
+              queryKey: ['staff'],
               queryFn: async () => {
-                     const res = await api.get('/admin/users');
+                     const res = await api.get('/staff');
                      return res.data;
               }
        });
 
        const toggleStatusMutation = useMutation({
               mutationFn: async ({ id, active }: { id: string, active: boolean }) => {
-                     // Assuming we have an endpoint for this, or using a patch
-                     return api.patch(`/admin/users/${id}/status`, { isActive: !active });
+                     return api.patch(`/staff/${id}`, { isActive: !active });
               },
               onSuccess: () => {
-                     queryClient.invalidateQueries({ queryKey: ['admin-users'] });
+                     queryClient.invalidateQueries({ queryKey: ['staff'] });
                      toast.success('User access status updated');
               }
        });
+
+       const [isModalOpen, setIsModalOpen] = useState(false);
+       const [formData, setFormData] = useState({
+              name: '', email: '', password: '', role: 'ADMIN', serviceType: 'global',
+              permissions: {
+                     global_dashboard: false,
+                     hotels_manage: false,
+                     tours_manage: false,
+                     buses_manage: false,
+                     cabs_manage: false,
+                     finance_manage: false,
+                     users_manage: false,
+              }
+       });
+
+       const createStaffMutation = useMutation({
+              mutationFn: async (data: any) => {
+                     return api.post('/staff', data);
+              },
+              onSuccess: () => {
+                     queryClient.invalidateQueries({ queryKey: ['staff'] });
+                     toast.success('Admin registered successfully');
+                     setIsModalOpen(false);
+                     setFormData({
+                            name: '', email: '', password: '', role: 'ADMIN', serviceType: 'global',
+                            permissions: {
+                                   global_dashboard: false, hotels_manage: false, tours_manage: false,
+                                   buses_manage: false, cabs_manage: false, finance_manage: false, users_manage: false
+                            }
+                     });
+              },
+              onError: (err: any) => {
+                     toast.error(err.response?.data?.message || 'Failed to register admin');
+              }
+       });
+
+       const handleCreateStaff = (e: React.FormEvent) => {
+              e.preventDefault();
+              createStaffMutation.mutate(formData);
+       };
 
        const filteredUsers = users.filter((u: any) =>
               (u.name || '').toLowerCase().includes(filter.toLowerCase()) ||
@@ -58,10 +97,64 @@ export default function AdminUsersPage() {
                                    <h1 className="text-4xl font-black text-slate-900 tracking-tight">Identity Directory</h1>
                                    <p className="text-slate-400 font-bold mt-2">Manage permissions and system access for all staff and admins</p>
                             </div>
-                            <button className="px-8 py-4 bg-slate-900 hover:bg-indigo-600 text-white rounded-[1.5rem] font-black text-xs uppercase tracking-widest flex items-center gap-3 transition-all shadow-xl active:scale-95 group">
+                            <button onClick={() => setIsModalOpen(true)} className="px-8 py-4 bg-slate-900 hover:bg-indigo-600 text-white rounded-[1.5rem] font-black text-xs uppercase tracking-widest flex items-center gap-3 transition-all shadow-xl active:scale-95 group">
                                    <UserPlus size={18} className="group-hover:rotate-12 transition-transform" /> Register Admin
                             </button>
                      </header>
+
+                     {isModalOpen && (
+                            <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
+                                   <div className="bg-white rounded-[2rem] p-8 w-full max-w-lg shadow-2xl animate-fadeIn">
+                                          <div className="flex items-center justify-between mb-6">
+                                                 <h2 className="text-2xl font-black text-slate-900 tracking-tight">Register New Admin</h2>
+                                                 <button onClick={() => setIsModalOpen(false)} className="text-slate-400 hover:text-slate-900"><AlertCircle size={24} /></button>
+                                          </div>
+                                          <form onSubmit={handleCreateStaff} className="space-y-4">
+                                                 <div>
+                                                        <label className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-2 block">Full Name</label>
+                                                        <input required type="text" value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} className="w-full bg-slate-50 border border-slate-100 rounded-xl py-3 px-4 font-bold focus:ring-2 focus:ring-indigo-500/20" />
+                                                 </div>
+                                                 <div>
+                                                        <label className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-2 block">Email Address</label>
+                                                        <input required type="email" value={formData.email} onChange={e => setFormData({ ...formData, email: e.target.value })} className="w-full bg-slate-50 border border-slate-100 rounded-xl py-3 px-4 font-bold focus:ring-2 focus:ring-indigo-500/20" />
+                                                 </div>
+                                                 <div>
+                                                        <label className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-2 block">Temporary Password</label>
+                                                        <input required type="password" value={formData.password} onChange={e => setFormData({ ...formData, password: e.target.value })} className="w-full bg-slate-50 border border-slate-100 rounded-xl py-3 px-4 font-bold focus:ring-2 focus:ring-indigo-500/20" />
+                                                 </div>
+                                                 
+                                                 <div className="pt-2">
+                                                        <label className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-4 block">Module Access Permissions</label>
+                                                        <div className="grid grid-cols-2 gap-3">
+                                                               {Object.keys(formData.permissions).map((key) => (
+                                                                      <label key={key} className="flex items-center gap-3 p-3 rounded-xl border border-slate-100 bg-slate-50 cursor-pointer hover:border-indigo-500/50 transition-colors">
+                                                                             <input
+                                                                                    type="checkbox"
+                                                                                    checked={(formData.permissions as any)[key]}
+                                                                                    onChange={(e) => setFormData({
+                                                                                           ...formData,
+                                                                                           permissions: { ...formData.permissions, [key]: e.target.checked }
+                                                                                    })}
+                                                                                    className="w-4 h-4 text-indigo-600 rounded border-slate-300 focus:ring-indigo-500"
+                                                                             />
+                                                                             <span className="text-xs font-bold text-slate-700 capitalize">
+                                                                                    {key.replace('_', ' ')}
+                                                                             </span>
+                                                                      </label>
+                                                               ))}
+                                                        </div>
+                                                 </div>
+
+                                                 <div className="pt-4 flex gap-4">
+                                                        <button type="button" onClick={() => setIsModalOpen(false)} className="flex-1 py-4 bg-slate-100 text-slate-600 font-black rounded-xl hover:bg-slate-200">CANCEL</button>
+                                                        <button type="submit" disabled={createStaffMutation.isPending} className="flex-1 py-4 bg-indigo-600 text-white font-black rounded-xl hover:bg-indigo-700 shadow-lg shadow-indigo-600/20">
+                                                               {createStaffMutation.isPending ? 'CREATING...' : 'REGISTER'}
+                                                        </button>
+                                                 </div>
+                                          </form>
+                                   </div>
+                            </div>
+                     )}
 
                      <div className="bg-white p-6 rounded-[2.5rem] border border-slate-100 shadow-xl mb-12 flex flex-col md:flex-row items-center gap-6">
                             <div className="relative flex-1 w-full group">
@@ -118,16 +211,17 @@ export default function AdminUsersPage() {
                                                         <ShieldCheck size={16} className={user.isActive ? 'text-emerald-500' : 'text-slate-200'} />
                                                         <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Access Protocol</span>
                                                  </div>
-                                                 <button
-                                                        onClick={() => toast.error('Security Protocol: Status modification requires Root Access')}
-                                                        className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-[10px] font-black transition-all uppercase tracking-widest ${user.isActive
-                                                                       ? 'text-red-500 bg-red-50 hover:bg-red-500 hover:text-white shadow-lg shadow-red-500/10'
-                                                                       : 'text-emerald-500 bg-emerald-50 hover:bg-emerald-500 hover:text-white shadow-lg shadow-emerald-500/10'
+                                                  <button
+                                                         onClick={() => toggleStatusMutation.mutate({ id: user.id, active: user.isActive })}
+                                                         disabled={toggleStatusMutation.isPending}
+                                                         className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-[10px] font-black transition-all uppercase tracking-widest ${user.isActive
+                                                                        ? 'text-red-500 bg-red-50 hover:bg-red-500 hover:text-white shadow-lg shadow-red-500/10'
+                                                                        : 'text-emerald-500 bg-emerald-50 hover:bg-emerald-500 hover:text-white shadow-lg shadow-emerald-500/10'
                                                                 }`}
-                                                 >
-                                                        {user.isActive ? <Lock size={12} /> : <Unlock size={12} />}
-                                                        {user.isActive ? 'Revoke' : 'Authorize'}
-                                                 </button>
+                                                  >
+                                                         {user.isActive ? <Lock size={12} /> : <Unlock size={12} />}
+                                                         {user.isActive ? 'Revoke' : 'Authorize'}
+                                                  </button>
                                           </div>
                                    </div>
                             ))}

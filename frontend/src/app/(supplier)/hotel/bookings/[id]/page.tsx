@@ -131,6 +131,15 @@ export default function BookingDetailsPage({ params }: { params: Promise<{ id: s
 
                             {/* Action Buttons based on status */}
                             <div className="flex flex-col sm:flex-row gap-3">
+                                {booking.status === 'PENDING' && (
+                                    <button
+                                        onClick={() => updateStatusMutation.mutate('CONFIRMED')}
+                                        disabled={updateStatusMutation.isPending}
+                                        className="btn-primary px-5 py-2.5 text-sm flex items-center gap-2"
+                                    >
+                                        <CheckCircle2 size={16} /> Confirm Booking
+                                    </button>
+                                )}
                                 {booking.status === 'CONFIRMED' && (
                                     <button
                                         onClick={() => updateStatusMutation.mutate('CHECKED_IN')}

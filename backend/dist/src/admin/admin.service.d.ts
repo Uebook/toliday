@@ -174,6 +174,8 @@ export declare class AdminService {
         updatedAt: Date;
     }>;
     updateHotelStatus(id: string, status: HotelStatus): Promise<Hotel>;
+    updateHotelDetails(id: string, data: any): Promise<Hotel>;
+    updateHotelRoom(roomId: string, data: any): Promise<RoomType>;
     addHotelRoom(hotelId: string, data: any): Promise<RoomType[]>;
     deleteHotelRoom(id: string): Promise<import("typeorm").DeleteResult>;
     findAllTourPartners(status?: TourPartnerStatus): Promise<TourPartner[]>;

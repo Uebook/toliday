@@ -135,9 +135,21 @@ export class BookingService implements OnModuleInit {
     });
   }
 
-  async findOne(id: string, hotelId: string): Promise<Booking> {
+  async findAllGlobal(): Promise<Booking[]> {
+    return this.bookingRepository.find({
+      relations: ['roomType', 'hotel', 'tourPartner', 'busVendor', 'cabVendor'],
+      order: { createdAt: 'DESC' },
+    });
+  }
+
+  async findOne(id: string, hotelId?: string): Promise<Booking> {
+    const whereClause: any = { id };
+    if (hotelId) {
+      whereClause.hotelId = hotelId;
+    }
+    
     const booking = await this.bookingRepository.findOne({
-      where: { id, hotelId },
+      where: whereClause,
       relations: ['roomType', 'assignedRoom'],
     });
     if (!booking) {
@@ -202,7 +214,7 @@ export class BookingService implements OnModuleInit {
 
   async updateStatus(
     id: string,
-    hotelId: string,
+    hotelId: string | undefined,
     updateDto: UpdateBookingStatusDto,
   ): Promise<Booking> {
     const booking = await this.findOne(id, hotelId);
@@ -310,4 +322,30 @@ export class BookingService implements OnModuleInit {
     booking.assignedRoomId = roomId;
     return this.bookingRepository.save(booking);
   }
+
+  async getAdminConsumers() {
+    const consumers = await this.bookingRepository
+      .createQueryBuilder('booking')
+      .select('booking.guestEmail', 'email')
+      .addSelect('MAX(booking.guestName)', 'name')
+      .addSelect('MAX(booking.guestContact)', 'phone')
+      .addSelect('COUNT(booking.id)', 'totalBookings')
+      .addSelect('SUM(booking.totalAmount)', 'ltv')
+      .addSelect('MAX(booking.createdAt)', 'lastActive')
+      .groupBy('booking.guestEmail')
+      .getRawMany();
+
+    return consumers.map(c => ({
+      id: c.email,
+      name: c.name,
+      email: c.email,
+      phone: c.phone || 'N/A',
+      totalBookings: parseInt(c.totalBookings, 10),
+      ltv: parseFloat(c.ltv),
+      status: 'ACTIVE',
+      lastActive: c.lastActive,
+      kycStatus: 'VERIFIED',
+    }));
+  }
+
 }

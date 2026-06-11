@@ -147,6 +147,8 @@ export declare class AdminController {
         updatedAt: Date;
     }>;
     updateHotelStatus(id: string, status: HotelStatus): Promise<import("../hotel/entities/hotel.entity").Hotel>;
+    updateHotelDetails(id: string, data: any): Promise<import("../hotel/entities/hotel.entity").Hotel>;
+    updateHotelRoom(roomId: string, data: any): Promise<import("../room-type/entities/room-type.entity").RoomType>;
     addHotelRoom(hotelId: string, data: any): Promise<import("../room-type/entities/room-type.entity").RoomType[]>;
     deleteHotelRoom(roomId: string): Promise<import("typeorm").DeleteResult>;
     findAllTourPartners(status?: TourPartnerStatus): Promise<import("../packages/entities/tour-partner.entity").TourPartner[]>;

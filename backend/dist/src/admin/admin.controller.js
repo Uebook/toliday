@@ -44,6 +44,12 @@ let AdminController = class AdminController {
     updateHotelStatus(id, status) {
         return this.adminService.updateHotelStatus(id, status);
     }
+    updateHotelDetails(id, data) {
+        return this.adminService.updateHotelDetails(id, data);
+    }
+    updateHotelRoom(roomId, data) {
+        return this.adminService.updateHotelRoom(roomId, data);
+    }
     addHotelRoom(hotelId, data) {
         return this.adminService.addHotelRoom(hotelId, data);
     }
@@ -145,6 +151,22 @@ __decorate([
     __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", void 0)
 ], AdminController.prototype, "updateHotelStatus", null);
+__decorate([
+    (0, common_1.Patch)('hotels/:id'),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:returntype", void 0)
+], AdminController.prototype, "updateHotelDetails", null);
+__decorate([
+    (0, common_1.Patch)('hotels/rooms/:roomId'),
+    __param(0, (0, common_1.Param)('roomId')),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:returntype", void 0)
+], AdminController.prototype, "updateHotelRoom", null);
 __decorate([
     (0, common_1.Post)('hotels/:id/rooms'),
     __param(0, (0, common_1.Param)('id')),

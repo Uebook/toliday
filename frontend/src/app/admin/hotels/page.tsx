@@ -19,6 +19,9 @@ export default function AdminHotelsPage() {
        const [selectedHotelId, setSelectedHotelId] = useState<string | null>(null);
        const [activeTab, setActiveTab] = useState<'PROFILE' | 'INVENTORY' | 'BOOKINGS' | 'OFFERS'>('PROFILE');
        const [isAddRoomModalOpen, setIsAddRoomModalOpen] = useState(false);
+       const [isEditHotelModalOpen, setIsEditHotelModalOpen] = useState(false);
+       const [isEditRoomModalOpen, setIsEditRoomModalOpen] = useState(false);
+       const [selectedRoom, setSelectedRoom] = useState<any>(null);
 
        const { data: hotels = [], isLoading } = useQuery({
               queryKey: ['admin-hotels', statusFilter],
@@ -69,6 +72,29 @@ export default function AdminHotelsPage() {
                      queryClient.invalidateQueries({ queryKey: ['admin-hotel-detail', selectedHotelId] });
                      queryClient.invalidateQueries({ queryKey: ['admin-hotels'] });
                      toast.success('Property status updated');
+              }
+       });
+
+       const updateHotelMutation = useMutation({
+              mutationFn: async (data: any) => {
+                     await api.patch(`/admin/hotels/${selectedHotelId}`, data);
+              },
+              onSuccess: () => {
+                     queryClient.invalidateQueries({ queryKey: ['admin-hotel-detail', selectedHotelId] });
+                     queryClient.invalidateQueries({ queryKey: ['admin-hotels'] });
+                     setIsEditHotelModalOpen(false);
+                     toast.success('Hotel details updated successfully');
+              }
+       });
+
+       const updateRoomMutation = useMutation({
+              mutationFn: async ({ roomId, data }: { roomId: string, data: any }) => {
+                     await api.patch(`/admin/hotels/rooms/${roomId}`, data);
+              },
+              onSuccess: () => {
+                     queryClient.invalidateQueries({ queryKey: ['admin-hotel-detail', selectedHotelId] });
+                     setIsEditRoomModalOpen(false);
+                     toast.success('Room updated successfully');
               }
        });
 
@@ -161,6 +187,75 @@ export default function AdminHotelsPage() {
                                 </div>
                             )}
 
+                            {/* Edit Hotel Modal */}
+                            {isEditHotelModalOpen && (
+                                <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
+                                    <div className="bg-white rounded-[2.5rem] w-full max-w-lg p-10 shadow-2xl animate-scaleUp">
+                                        <div className="flex items-center justify-between mb-8">
+                                            <h3 className="text-2xl font-black text-slate-900 tracking-tight">Edit Hotel Details</h3>
+                                            <button onClick={() => setIsEditHotelModalOpen(false)} className="p-2 hover:bg-slate-100 rounded-xl transition-colors"><X size={24} /></button>
+                                        </div>
+                                        <form className="space-y-6" onSubmit={(e) => {
+                                            e.preventDefault();
+                                            const formData = new FormData(e.currentTarget);
+                                            updateHotelMutation.mutate({
+                                                name: formData.get('name'),
+                                            });
+                                        }}>
+                                            <div className="space-y-2">
+                                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Hotel Name</label>
+                                                <input name="name" defaultValue={selectedHotel.name} required className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all" />
+                                            </div>
+                                            <button type="submit" disabled={updateHotelMutation.isPending} className="w-full py-5 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl font-black text-xs uppercase tracking-[0.2em] shadow-xl shadow-blue-600/20 transition-all flex items-center justify-center gap-2">
+                                                {updateHotelMutation.isPending ? 'Saving...' : 'Save Details'}
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Edit Room Modal */}
+                            {isEditRoomModalOpen && selectedRoom && (
+                                <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
+                                    <div className="bg-white rounded-[2.5rem] w-full max-w-lg p-10 shadow-2xl animate-scaleUp">
+                                        <div className="flex items-center justify-between mb-8">
+                                            <h3 className="text-2xl font-black text-slate-900 tracking-tight">Edit Room Category</h3>
+                                            <button onClick={() => setIsEditRoomModalOpen(false)} className="p-2 hover:bg-slate-100 rounded-xl transition-colors"><X size={24} /></button>
+                                        </div>
+                                        <form className="space-y-6" onSubmit={(e) => {
+                                            e.preventDefault();
+                                            const formData = new FormData(e.currentTarget);
+                                            updateRoomMutation.mutate({
+                                                roomId: selectedRoom.id,
+                                                data: {
+                                                    name: formData.get('name'),
+                                                    price: Number(formData.get('price')),
+                                                    capacity: Number(formData.get('capacity')),
+                                                }
+                                            });
+                                        }}>
+                                            <div className="space-y-2">
+                                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Room Category Name</label>
+                                                <input name="name" defaultValue={selectedRoom.name} required className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all" />
+                                            </div>
+                                            <div className="grid grid-cols-2 gap-4">
+                                                <div className="space-y-2">
+                                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Price / Night</label>
+                                                    <input name="price" type="number" defaultValue={selectedRoom.price} required className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all" />
+                                                </div>
+                                                <div className="space-y-2">
+                                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Max Guests</label>
+                                                    <input name="capacity" type="number" defaultValue={selectedRoom.capacity} required className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all" />
+                                                </div>
+                                            </div>
+                                            <button type="submit" disabled={updateRoomMutation.isPending} className="w-full py-5 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl font-black text-xs uppercase tracking-[0.2em] shadow-xl shadow-blue-600/20 transition-all flex items-center justify-center gap-2">
+                                                {updateRoomMutation.isPending ? 'Saving...' : 'Save Room Category'}
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            )}
+
                             <div className="flex items-center justify-between mb-8">
                                 <button 
                                        onClick={() => setSelectedHotelId(null)}
@@ -213,7 +308,10 @@ export default function AdminHotelsPage() {
                                                                     <Ban size={16} /> Suspend Property
                                                                 </button>
                                                             )}
-                                                            <button className="w-full py-4 bg-slate-50 text-slate-400 hover:bg-slate-900 hover:text-white rounded-2xl font-black text-xs uppercase tracking-widest transition-all flex items-center justify-center gap-2">
+                                                            <button 
+                                                                onClick={() => setIsEditHotelModalOpen(true)}
+                                                                className="w-full py-4 bg-slate-50 text-slate-400 hover:bg-slate-900 hover:text-white rounded-2xl font-black text-xs uppercase tracking-widest transition-all flex items-center justify-center gap-2"
+                                                            >
                                                                 <Edit size={16} /> Edit Details
                                                             </button>
                                                         </div>
@@ -269,7 +367,13 @@ export default function AdminHotelsPage() {
                                                                   </div>
                                                               </div>
                                                               <div className="flex items-center gap-2">
-                                                                  <button className="p-3 bg-white text-slate-400 hover:text-blue-600 hover:shadow-md rounded-xl transition-all">
+                                                                  <button 
+                                                                      onClick={() => {
+                                                                          setSelectedRoom(room);
+                                                                          setIsEditRoomModalOpen(true);
+                                                                      }}
+                                                                      className="p-3 bg-white text-slate-400 hover:text-blue-600 hover:shadow-md rounded-xl transition-all"
+                                                                  >
                                                                       <Edit size={18} />
                                                                   </button>
                                                                   <button 

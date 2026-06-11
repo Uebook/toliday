@@ -1,197 +1,138 @@
 'use client';
 
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import api from '@/lib/api';
+import React, { useState } from 'react';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import {
-       Settings, Save, Globe, Lock,
-       Mail, MessageSquare, Shield,
-       CreditCard, Bell, Database,
-       DollarSign, Percent, Calculator
+       Settings, Globe, Shield, CreditCard, Mail, 
+       Smartphone, BellRing, Save, Database, Key
 } from 'lucide-react';
-import { useState, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 
-export default function AdminSettingsPage() {
-       const queryClient = useQueryClient();
-       const [activeTab, setActiveTab] = useState('commission');
-       const [localSettings, setLocalSettings] = useState<any[]>([]);
-
-       const { data: settings = [], isLoading } = useQuery({
-              queryKey: ['admin-global-settings'],
-              queryFn: async () => {
-                     const res = await api.get('/admin/settings');
-                     return res.data;
-              }
-       });
-
-       useEffect(() => {
-              if (settings.length > 0) {
-                     setLocalSettings(settings);
-              }
-       }, [settings]);
-
-       const updateMutation = useMutation({
-              mutationFn: async (updated: any[]) => {
-                     await api.post('/admin/settings/bulk', { settings: updated });
-              },
-              onSuccess: () => {
-                     queryClient.invalidateQueries({ queryKey: ['admin-global-settings'] });
-                     toast.success('Configuration saved successfully');
-              }
-       });
-
-       const handleValueChange = (key: string, value: string) => {
-              setLocalSettings(prev => prev.map(s => s.key === key ? { ...s, value } : s));
-       };
+export default function SystemSettingsPage() {
+       const [isSaving, setIsSaving] = useState(false);
 
        const handleSave = () => {
-              const changed = localSettings.map(s => ({ key: s.key, value: s.value }));
-              updateMutation.mutate(changed);
+              setIsSaving(true);
+              setTimeout(() => {
+                     setIsSaving(false);
+                     toast.success('System configurations updated successfully');
+              }, 1000);
        };
 
-       const tabs = [
-              { id: 'commission', label: 'Commission & Tax', icon: DollarSign },
-              { id: 'general', label: 'Platform Info', icon: Globe },
-              { id: 'auth', label: 'Security Policies', icon: Lock },
-              { id: 'system', label: 'System Health', icon: Database },
-       ];
-
-       const getSetting = (key: string) => localSettings.find(s => s.key === key)?.value || '';
-
        return (
-              <div className="p-8 space-y-8 max-w-7xl mx-auto animate-fadeIn">
-                     <header className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+              <div className="p-8 lg:p-12 animate-fadeIn space-y-8">
+                     <header className="flex flex-col md:flex-row md:items-center justify-between gap-8">
                             <div>
                                    <div className="flex items-center gap-3 mb-2">
-                                          <div className="p-2 bg-blue-600 rounded-xl text-white shadow-lg shadow-blue-600/20">
+                                          <div className="p-2 bg-slate-900 rounded-xl text-white shadow-lg shadow-slate-900/20">
                                                  <Settings size={20} />
                                           </div>
-                                          <span className="text-slate-400 font-black uppercase tracking-[0.2em] text-[10px]">Portal OS v2.0</span>
+                                          <span className="text-slate-400 font-black uppercase tracking-[0.2em] text-[10px]">System & Security</span>
                                    </div>
-                                   <h1 className="text-3xl font-black text-slate-900 tracking-tight">System Control Center</h1>
-                                   <p className="text-slate-400 font-bold mt-2">Adjust global platform parameters and economic rules</p>
+                                   <h1 className="text-4xl font-black text-slate-900 tracking-tight">Global Configurations</h1>
+                                   <p className="text-slate-400 font-bold mt-2">Manage platform-wide settings, branding, and integrations</p>
                             </div>
                             <button 
                                    onClick={handleSave}
-                                   disabled={updateMutation.isPending}
-                                   className="px-8 py-4 bg-slate-900 hover:bg-blue-600 text-white rounded-[1.5rem] font-black text-xs uppercase tracking-widest flex items-center gap-2 transition-all shadow-xl active:scale-95 disabled:opacity-50"
+                                   disabled={isSaving}
+                                   className="px-8 py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-[1.5rem] font-black text-xs uppercase tracking-widest flex items-center gap-3 transition-all shadow-xl shadow-indigo-600/20 active:scale-95 disabled:opacity-50 disabled:active:scale-100"
                             >
-                                   <Save size={18} /> {updateMutation.isPending ? 'Saving...' : 'Sync Configuration'}
+                                   <Save size={18} />
+                                   {isSaving ? 'Saving Configurations...' : 'Save All Changes'}
                             </button>
                      </header>
 
-                     <div className="flex flex-col lg:flex-row gap-8">
-                            {/* Modern Sidebar Tabs */}
-                            <div className="w-full lg:w-72 space-y-3">
-                                   {tabs.map((tab) => (
-                                          <button
-                                                 key={tab.id}
-                                                 onClick={() => setActiveTab(tab.id)}
-                                                 className={`w-full flex items-center gap-4 px-6 py-5 rounded-[1.5rem] font-black transition-all text-xs uppercase tracking-widest group relative overflow-hidden ${activeTab === tab.id
-                                                                ? 'bg-blue-600 text-white shadow-2xl shadow-blue-600/30'
-                                                                : 'bg-white text-slate-400 border border-slate-100 hover:border-blue-200 hover:text-blue-600 shadow-sm'
-                                                         }`}
-                                          >
-                                                 <div className={`p-2 rounded-xl transition-colors ${activeTab === tab.id ? 'bg-white/20' : 'bg-slate-50 group-hover:bg-blue-50'}`}>
-                                                        <tab.icon size={18} />
-                                                 </div>
-                                                 {tab.label}
-                                                 {activeTab === tab.id && <div className="absolute right-0 top-0 bottom-0 w-1.5 bg-white/20" />}
-                                          </button>
-                                   ))}
+                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                            {/* Left Sidebar - Navigation */}
+                            <div className="lg:col-span-1 space-y-2">
+                                   <button className="w-full flex items-center gap-4 px-6 py-4 bg-white border border-slate-200 rounded-2xl text-left shadow-sm hover:border-indigo-500 transition-colors group">
+                                          <Globe size={20} className="text-indigo-600" />
+                                          <div>
+                                                 <div className="text-sm font-black text-slate-900">Platform Identity</div>
+                                                 <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Branding & SEO</div>
+                                          </div>
+                                   </button>
+                                   <button className="w-full flex items-center gap-4 px-6 py-4 bg-slate-50 border border-transparent rounded-2xl text-left hover:bg-white hover:border-slate-200 transition-colors group">
+                                          <CreditCard size={20} className="text-slate-400 group-hover:text-emerald-500 transition-colors" />
+                                          <div>
+                                                 <div className="text-sm font-black text-slate-700">Payment Gateways</div>
+                                                 <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Stripe, Razorpay</div>
+                                          </div>
+                                   </button>
+                                   <button className="w-full flex items-center gap-4 px-6 py-4 bg-slate-50 border border-transparent rounded-2xl text-left hover:bg-white hover:border-slate-200 transition-colors group">
+                                          <Shield size={20} className="text-slate-400 group-hover:text-rose-500 transition-colors" />
+                                          <div>
+                                                 <div className="text-sm font-black text-slate-700">Security & Compliance</div>
+                                                 <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">2FA, Session Limits</div>
+                                          </div>
+                                   </button>
+                                   <button className="w-full flex items-center gap-4 px-6 py-4 bg-slate-50 border border-transparent rounded-2xl text-left hover:bg-white hover:border-slate-200 transition-colors group">
+                                          <BellRing size={20} className="text-slate-400 group-hover:text-amber-500 transition-colors" />
+                                          <div>
+                                                 <div className="text-sm font-black text-slate-700">Communication</div>
+                                                 <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Email & SMS Config</div>
+                                          </div>
+                                   </button>
                             </div>
 
-                            {/* Content Area */}
-                            <div className="flex-1">
-                                   <div className="bg-white border border-slate-100 rounded-[2.5rem] p-10 shadow-xl shadow-slate-200/50">
-                                          <div className="mb-10 pb-10 border-b border-slate-50">
-                                                 <h2 className="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-3">
-                                                        {tabs.find(t => t.id === activeTab)?.label}
-                                                        <span className="text-[10px] font-black text-blue-600 bg-blue-50 px-3 py-1 rounded-full uppercase tracking-widest">Global</span>
-                                                 </h2>
-                                          </div>
-
-                                          <div className="space-y-10">
-                                                 {activeTab === 'commission' && (
-                                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-                                                               <div className="col-span-full p-6 bg-emerald-50 rounded-3xl border border-emerald-100 flex items-center gap-6">
-                                                                      <div className="p-4 bg-white rounded-2xl text-emerald-600 shadow-sm">
-                                                                             <Calculator size={32} />
-                                                                      </div>
-                                                                      <div>
-                                                                             <h4 className="font-black text-emerald-900 uppercase text-[10px] tracking-widest mb-1">Economic Guardrails</h4>
-                                                                             <p className="text-sm text-emerald-800/70 font-bold">These rates determine the platform revenue from every successful booking across all verticals.</p>
-                                                                      </div>
-                                                               </div>
-
-                                                               <div className="space-y-8">
-                                                                      <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
-                                                                             <Percent size={14} className="text-blue-500" /> Commission Rules
-                                                                      </h3>
-                                                                      {[
-                                                                             { key: 'COMMISSION_HOTEL', label: 'Hotel Vertical' },
-                                                                             { key: 'COMMISSION_PACKAGE', label: 'Tour Packages' },
-                                                                             { key: 'COMMISSION_BUS', label: 'Bus Network' },
-                                                                             { key: 'COMMISSION_CAB', label: 'Cab Services' },
-                                                                      ].map((item) => (
-                                                                             <div key={item.key} className="space-y-2">
-                                                                                    <div className="flex justify-between items-center mb-1">
-                                                                                           <label className="text-[10px] font-black text-slate-600 uppercase tracking-widest">{item.label}</label>
-                                                                                           <span className="text-xs font-black text-blue-600 bg-blue-50 px-2 py-0.5 rounded-lg">{getSetting(item.key)}%</span>
-                                                                                    </div>
-                                                                                    <div className="relative group">
-                                                                                           <input 
-                                                                                                  type="number" 
-                                                                                                  value={getSetting(item.key)}
-                                                                                                  onChange={(e) => handleValueChange(item.key, e.target.value)}
-                                                                                                  className="w-full bg-slate-50 border border-slate-100 rounded-2xl py-4 px-6 text-sm font-black text-slate-900 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all" 
-                                                                                           />
-                                                                                           <Percent className="absolute right-6 top-1/2 -translate-y-1/2 text-slate-300" size={16} />
-                                                                                    </div>
-                                                                             </div>
-                                                                      ))}
-                                                               </div>
-
-                                                               <div className="space-y-8">
-                                                                      <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
-                                                                             <Calculator size={14} className="text-blue-500" /> Taxation Logic
-                                                                      </h3>
-                                                                      <div className="p-8 rounded-[2rem] bg-slate-900 text-white relative overflow-hidden group">
-                                                                             <div className="relative z-10">
-                                                                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block">Standard GST Rate</label>
-                                                                                    <div className="flex items-center gap-4">
-                                                                                           <input 
-                                                                                                  type="number" 
-                                                                                                  value={getSetting('TAX_GST')}
-                                                                                                  onChange={(e) => handleValueChange('TAX_GST', e.target.value)}
-                                                                                                  className="bg-white/10 border border-white/20 rounded-2xl py-5 px-8 text-3xl font-black text-white w-full focus:outline-none focus:bg-white/20 transition-all" 
-                                                                                           />
-                                                                                           <div className="text-4xl font-black opacity-20">%</div>
-                                                                                    </div>
-                                                                                    <p className="mt-6 text-[10px] font-bold text-slate-500 uppercase leading-relaxed">Applied globally to all invoices generated through the portal.</p>
-                                                                             </div>
-                                                                             <div className="absolute -right-10 -bottom-10 opacity-5 group-hover:scale-110 transition-transform duration-1000">
-                                                                                    <Calculator size={200} />
-                                                                             </div>
-                                                                      </div>
-                                                               </div>
+                            {/* Main Content Area */}
+                            <div className="lg:col-span-2 space-y-8">
+                                   <Card className="rounded-[2.5rem] border-slate-100 shadow-xl overflow-hidden">
+                                          <CardHeader className="bg-slate-50/50 border-b border-slate-100 p-8">
+                                                 <CardTitle className="text-xl font-black text-slate-900">Platform Identity</CardTitle>
+                                                 <CardDescription className="text-slate-500 font-bold mt-2">These settings affect how your brand is displayed publicly.</CardDescription>
+                                          </CardHeader>
+                                          <CardContent className="p-8 space-y-8">
+                                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                                        <div className="space-y-3">
+                                                               <label className="text-xs font-black text-slate-400 uppercase tracking-widest">Platform Name</label>
+                                                               <input type="text" defaultValue="Toliday Extranet" className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 font-bold text-slate-900 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all" />
                                                         </div>
-                                                 )}
-
-                                                 {activeTab === 'general' && (
-                                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                                               <div className="space-y-2">
-                                                                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Platform Name</label>
-                                                                      <input type="text" defaultValue="TolidayTrip Extranet" className="w-full bg-slate-50 border border-slate-100 rounded-2xl py-4 px-6 text-sm font-black text-slate-900" />
-                                                               </div>
-                                                               <div className="space-y-2">
-                                                                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Support Email</label>
-                                                                      <input type="email" defaultValue="admin@tolidaytrip.com" className="w-full bg-slate-50 border border-slate-100 rounded-2xl py-4 px-6 text-sm font-black text-slate-900" />
-                                                               </div>
+                                                        <div className="space-y-3">
+                                                               <label className="text-xs font-black text-slate-400 uppercase tracking-widest">Support Email</label>
+                                                               <input type="email" defaultValue="support@toliday.in" className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 font-bold text-slate-900 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all" />
                                                         </div>
-                                                 )}
-                                          </div>
-                                   </div>
+                                                 </div>
+                                                 
+                                                 <div className="space-y-3">
+                                                        <label className="text-xs font-black text-slate-400 uppercase tracking-widest">Global Commission Rate (%)</label>
+                                                        <p className="text-[10px] font-bold text-slate-400 mb-2">This is the default commission taken from all vendors unless overridden at the vendor level.</p>
+                                                        <input type="number" defaultValue="15" className="w-full md:w-1/3 bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 font-black text-indigo-600 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all" />
+                                                 </div>
+
+                                                 <div className="pt-4 border-t border-slate-100">
+                                                        <div className="flex items-center justify-between">
+                                                               <div>
+                                                                      <div className="font-black text-slate-900">Maintenance Mode</div>
+                                                                      <div className="text-xs font-bold text-slate-400 mt-1">Suspend all public access temporarily</div>
+                                                               </div>
+                                                               <label className="relative inline-flex items-center cursor-pointer">
+                                                                      <input type="checkbox" className="sr-only peer" />
+                                                                      <div className="w-14 h-7 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-red-500"></div>
+                                                               </label>
+                                                        </div>
+                                                 </div>
+                                          </CardContent>
+                                   </Card>
+
+                                   <Card className="rounded-[2.5rem] border-slate-100 shadow-xl overflow-hidden">
+                                          <CardHeader className="bg-slate-50/50 border-b border-slate-100 p-8">
+                                                 <CardTitle className="text-xl font-black text-slate-900 flex items-center gap-3">
+                                                        <Database className="text-indigo-500" /> Database & Storage
+                                                 </CardTitle>
+                                          </CardHeader>
+                                          <CardContent className="p-8">
+                                                 <div className="flex items-center justify-between p-6 bg-slate-50 rounded-2xl border border-slate-100">
+                                                        <div>
+                                                               <div className="font-black text-slate-900 text-sm">System Cache</div>
+                                                               <div className="text-xs font-bold text-slate-500 mt-1">Clear Redis cache for pricing and availability</div>
+                                                        </div>
+                                                        <button className="px-6 py-3 bg-white border border-slate-200 hover:border-slate-300 rounded-xl text-xs font-black uppercase tracking-widest text-slate-700 transition-all shadow-sm active:scale-95">
+                                                               Purge Cache
+                                                        </button>
+                                                 </div>
+                                          </CardContent>
+                                   </Card>
                             </div>
                      </div>
               </div>

@@ -36,9 +36,9 @@ let FinanceController = class FinanceController {
         this.checkAdmin(req);
         return this.financeService.updatePayoutStatus(id, status);
     }
-    getGlobalLedger(req) {
+    getGlobalLedger(req, vertical) {
         this.checkAdmin(req);
-        return this.financeService.findAllLedgerEntries();
+        return this.financeService.findAllLedgerEntries(vertical);
     }
     extractVendorContext(req) {
         if (req.user.hotelId)
@@ -95,8 +95,9 @@ __decorate([
 __decorate([
     (0, common_1.Get)('admin/ledger'),
     __param(0, (0, common_1.Request)()),
+    __param(1, (0, common_1.Query)('vertical')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [Object, String]),
     __metadata("design:returntype", void 0)
 ], FinanceController.prototype, "getGlobalLedger", null);
 __decorate([
