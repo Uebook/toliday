@@ -65,6 +65,12 @@ let AdminController = class AdminController {
     updateTourPartnerStatus(id, status) {
         return this.adminService.updateTourPartnerStatus(id, status);
     }
+    updateTourPartnerDetails(id, data) {
+        return this.adminService.updateTourPartnerDetails(id, data);
+    }
+    updateTourPackage(packageId, data) {
+        return this.adminService.updateTourPackage(packageId, data);
+    }
     addTourPackage(partnerId, data) {
         return this.adminService.addTourPackage(partnerId, data);
     }
@@ -80,6 +86,12 @@ let AdminController = class AdminController {
     updateBusVendorStatus(id, status) {
         return this.adminService.updateBusVendorStatus(id, status);
     }
+    updateBusVendorDetails(id, data) {
+        return this.adminService.updateBusVendorDetails(id, data);
+    }
+    updateBusFleet(busId, data) {
+        return this.adminService.updateBusFleet(busId, data);
+    }
     addBusFleet(vendorId, data) {
         return this.adminService.addBusFleet(vendorId, data);
     }
@@ -94,6 +106,12 @@ let AdminController = class AdminController {
     }
     updateCabVendorVerification(id, isVerified) {
         return this.adminService.updateCabVendorVerification(id, isVerified);
+    }
+    updateCabVendorDetails(id, data) {
+        return this.adminService.updateCabVendorDetails(id, data);
+    }
+    updateCabVehicle(vehicleId, data) {
+        return this.adminService.updateCabVehicle(vehicleId, data);
     }
     addCabVehicle(vendorId, data) {
         return this.adminService.addCabVehicle(vendorId, data);
@@ -205,6 +223,22 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], AdminController.prototype, "updateTourPartnerStatus", null);
 __decorate([
+    (0, common_1.Patch)('tour-partners/:id'),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:returntype", void 0)
+], AdminController.prototype, "updateTourPartnerDetails", null);
+__decorate([
+    (0, common_1.Patch)('tour-partners/packages/:packageId'),
+    __param(0, (0, common_1.Param)('packageId')),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:returntype", void 0)
+], AdminController.prototype, "updateTourPackage", null);
+__decorate([
     (0, common_1.Post)('tour-partners/:id/packages'),
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Body)()),
@@ -242,6 +276,22 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], AdminController.prototype, "updateBusVendorStatus", null);
 __decorate([
+    (0, common_1.Patch)('buses/:id'),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:returntype", void 0)
+], AdminController.prototype, "updateBusVendorDetails", null);
+__decorate([
+    (0, common_1.Patch)('buses/fleet/:busId'),
+    __param(0, (0, common_1.Param)('busId')),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:returntype", void 0)
+], AdminController.prototype, "updateBusFleet", null);
+__decorate([
     (0, common_1.Post)('buses/:id/fleet'),
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Body)()),
@@ -277,6 +327,22 @@ __decorate([
     __metadata("design:paramtypes", [String, Boolean]),
     __metadata("design:returntype", void 0)
 ], AdminController.prototype, "updateCabVendorVerification", null);
+__decorate([
+    (0, common_1.Patch)('cabs/:id'),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:returntype", void 0)
+], AdminController.prototype, "updateCabVendorDetails", null);
+__decorate([
+    (0, common_1.Patch)('cabs/vehicles/:vehicleId'),
+    __param(0, (0, common_1.Param)('vehicleId')),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:returntype", void 0)
+], AdminController.prototype, "updateCabVehicle", null);
 __decorate([
     (0, common_1.Post)('cabs/:id/vehicles'),
     __param(0, (0, common_1.Param)('id')),

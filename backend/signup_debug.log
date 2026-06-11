@@ -6,3 +6,41 @@
 [2026-04-26T07:34:13.333Z] Files keys: 
 [2026-04-26T07:34:13.333Z] Calling AuthService.signup for dsds@gmail.com
 [2026-04-26T07:34:13.333Z] (Service) AuthService.signup for dsds@gmail.com as PACKAGES
+[2026-06-11T09:06:19.943Z] --- SIGNUP START ---
+[2026-06-11T09:06:19.946Z] Files keys: 
+[2026-06-11T09:06:19.946Z] Calling AuthService.signup for tour_test_1781168779938@example.com
+[2026-06-11T09:06:19.947Z] (Service) AuthService.signup for tour_test_1781168779938@example.com as undefined
+[2026-06-11T09:06:20.984Z] Signup Error: null value in column "name" of relation "hotels" violates not-null constraint
+Stack: QueryFailedError: null value in column "name" of relation "hotels" violates not-null constraint
+    at PostgresQueryRunner.query (/Users/vansh/Toliday/Extranetportel/node_modules/typeorm/driver/src/driver/postgres/PostgresQueryRunner.ts:325:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async InsertQueryBuilder.execute (/Users/vansh/Toliday/Extranetportel/node_modules/typeorm/query-builder/src/query-builder/InsertQueryBuilder.ts:164:33)
+    at async SubjectExecutor.executeInsertOperations (/Users/vansh/Toliday/Extranetportel/node_modules/typeorm/persistence/src/persistence/SubjectExecutor.ts:435:42)
+    at async SubjectExecutor.execute (/Users/vansh/Toliday/Extranetportel/node_modules/typeorm/persistence/src/persistence/SubjectExecutor.ts:137:9)
+    at async EntityPersistExecutor.execute (/Users/vansh/Toliday/Extranetportel/node_modules/typeorm/persistence/src/persistence/EntityPersistExecutor.ts:182:21)
+    at async AuthService.signup (/Users/vansh/Toliday/Extranetportel/backend/src/auth/auth.service.ts:162:22)
+    at async AuthController.signup (/Users/vansh/Toliday/Extranetportel/backend/src/auth/auth.controller.ts:76:14)
+[2026-06-11T09:07:38.537Z] --- SIGNUP START ---
+[2026-06-11T09:07:38.537Z] Files keys: 
+[2026-06-11T09:07:38.538Z] Calling AuthService.signup for tour_test_1781168858531@example.com
+[2026-06-11T09:07:38.538Z] (Service) AuthService.signup for tour_test_1781168858531@example.com as PACKAGES
+[2026-06-11T09:07:40.583Z] --- SIGNUP START ---
+[2026-06-11T09:07:40.584Z] Files keys: 
+[2026-06-11T09:07:40.584Z] Calling AuthService.signup for bus_test_1781168860580@example.com
+[2026-06-11T09:07:40.584Z] (Service) AuthService.signup for bus_test_1781168860580@example.com as BUS
+[2026-06-11T09:07:41.969Z] --- SIGNUP START ---
+[2026-06-11T09:07:41.969Z] Files keys: 
+[2026-06-11T09:07:41.969Z] Calling AuthService.signup for cab_test_1781168861964@example.com
+[2026-06-11T09:07:41.969Z] (Service) AuthService.signup for cab_test_1781168861964@example.com as CAB
+[2026-06-11T09:08:39.939Z] --- SIGNUP START ---
+[2026-06-11T09:08:39.940Z] Files keys: 
+[2026-06-11T09:08:39.940Z] Calling AuthService.signup for tour_test_1781168919934@example.com
+[2026-06-11T09:08:39.940Z] (Service) AuthService.signup for tour_test_1781168919934@example.com as PACKAGES
+[2026-06-11T09:08:42.781Z] --- SIGNUP START ---
+[2026-06-11T09:08:42.781Z] Files keys: 
+[2026-06-11T09:08:42.781Z] Calling AuthService.signup for bus_test_1781168922779@example.com
+[2026-06-11T09:08:42.781Z] (Service) AuthService.signup for bus_test_1781168922779@example.com as BUS
+[2026-06-11T09:08:44.193Z] --- SIGNUP START ---
+[2026-06-11T09:08:44.193Z] Files keys: 
+[2026-06-11T09:08:44.193Z] Calling AuthService.signup for cab_test_1781168924190@example.com
+[2026-06-11T09:08:44.193Z] (Service) AuthService.signup for cab_test_1781168924190@example.com as CAB

@@ -186,6 +186,8 @@ export declare class AdminController {
         updatedAt: Date;
     }>;
     updateTourPartnerStatus(id: string, status: TourPartnerStatus): Promise<import("../packages/entities/tour-partner.entity").TourPartner>;
+    updateTourPartnerDetails(id: string, data: any): Promise<import("../packages/entities/tour-partner.entity").TourPartner>;
+    updateTourPackage(packageId: string, data: any): Promise<import("../packages/entities/tour-package.entity").TourPackage>;
     addTourPackage(partnerId: string, data: any): Promise<import("../packages/entities/tour-package.entity").TourPackage[]>;
     deleteTourPackage(packageId: string): Promise<import("typeorm").DeleteResult>;
     findAllBusVendors(status?: BusVendorStatus): Promise<import("../buses/entities/bus-vendor.entity").BusVendor[]>;
@@ -229,6 +231,8 @@ export declare class AdminController {
         updatedAt: Date;
     }>;
     updateBusVendorStatus(id: string, status: BusVendorStatus): Promise<import("../buses/entities/bus-vendor.entity").BusVendor>;
+    updateBusVendorDetails(id: string, data: any): Promise<import("../buses/entities/bus-vendor.entity").BusVendor>;
+    updateBusFleet(busId: string, data: any): Promise<import("../buses/entities/bus.entity").Bus>;
     addBusFleet(vendorId: string, data: any): Promise<import("../buses/entities/bus.entity").Bus[]>;
     deleteBusFleet(busId: string): Promise<import("typeorm").DeleteResult>;
     findAllCabVendors(): Promise<import("../cabs/entities/cab-vendor.entity").CabVendor[]>;
@@ -252,6 +256,8 @@ export declare class AdminController {
         updatedAt: Date;
     }>;
     updateCabVendorVerification(id: string, isVerified: boolean): Promise<import("../cabs/entities/cab-vendor.entity").CabVendor>;
+    updateCabVendorDetails(id: string, data: any): Promise<import("../cabs/entities/cab-vendor.entity").CabVendor>;
+    updateCabVehicle(vehicleId: string, data: any): Promise<import("../cabs/entities/vehicle.entity").Vehicle>;
     addCabVehicle(vendorId: string, data: any): Promise<import("../cabs/entities/vehicle.entity").Vehicle[]>;
     deleteCabVehicle(vehicleId: string): Promise<import("typeorm").DeleteResult>;
     findAllBookings(): Promise<({

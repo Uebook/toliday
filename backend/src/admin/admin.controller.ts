@@ -105,6 +105,22 @@ export class AdminController {
     return this.adminService.updateTourPartnerStatus(id, status);
   }
 
+  @Patch('tour-partners/:id')
+  updateTourPartnerDetails(
+    @Param('id') id: string,
+    @Body() data: any,
+  ) {
+    return this.adminService.updateTourPartnerDetails(id, data);
+  }
+
+  @Patch('tour-partners/packages/:packageId')
+  updateTourPackage(
+    @Param('packageId') packageId: string,
+    @Body() data: any,
+  ) {
+    return this.adminService.updateTourPackage(packageId, data);
+  }
+
   @Post('tour-partners/:id/packages')
   addTourPackage(@Param('id') partnerId: string, @Body() data: any) {
     return this.adminService.addTourPackage(partnerId, data);
@@ -134,6 +150,22 @@ export class AdminController {
     return this.adminService.updateBusVendorStatus(id, status);
   }
 
+  @Patch('buses/:id')
+  updateBusVendorDetails(
+    @Param('id') id: string,
+    @Body() data: any,
+  ) {
+    return this.adminService.updateBusVendorDetails(id, data);
+  }
+
+  @Patch('buses/fleet/:busId')
+  updateBusFleet(
+    @Param('busId') busId: string,
+    @Body() data: any,
+  ) {
+    return this.adminService.updateBusFleet(busId, data);
+  }
+
   @Post('buses/:id/fleet')
   addBusFleet(@Param('id') vendorId: string, @Body() data: any) {
     return this.adminService.addBusFleet(vendorId, data);
@@ -161,6 +193,22 @@ export class AdminController {
     @Body('isVerified') isVerified: boolean,
   ) {
     return this.adminService.updateCabVendorVerification(id, isVerified);
+  }
+
+  @Patch('cabs/:id')
+  updateCabVendorDetails(
+    @Param('id') id: string,
+    @Body() data: any,
+  ) {
+    return this.adminService.updateCabVendorDetails(id, data);
+  }
+
+  @Patch('cabs/vehicles/:vehicleId')
+  updateCabVehicle(
+    @Param('vehicleId') vehicleId: string,
+    @Body() data: any,
+  ) {
+    return this.adminService.updateCabVehicle(vehicleId, data);
   }
 
   @Post('cabs/:id/vehicles')

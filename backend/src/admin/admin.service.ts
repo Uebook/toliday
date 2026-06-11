@@ -327,6 +327,20 @@ export class AdminService {
     return this.tourPartnerRepository.save(partner);
   }
 
+  async updateTourPartnerDetails(id: string, data: any) {
+    const partner = await this.tourPartnerRepository.findOne({ where: { id } });
+    if (!partner) throw new NotFoundException('Partner not found');
+    Object.assign(partner, data);
+    return this.tourPartnerRepository.save(partner);
+  }
+
+  async updateTourPackage(packageId: string, data: any) {
+    const pkg = await this.tourPackageRepository.findOne({ where: { id: packageId } });
+    if (!pkg) throw new NotFoundException('Package not found');
+    Object.assign(pkg, data);
+    return this.tourPackageRepository.save(pkg);
+  }
+
   async addTourPackage(partnerId: string, data: any) {
     const pkg = this.tourPackageRepository.create({
       ...data,
@@ -376,6 +390,20 @@ export class AdminService {
     return this.busVendorRepository.save(vendor);
   }
 
+  async updateBusVendorDetails(id: string, data: any) {
+    const vendor = await this.busVendorRepository.findOne({ where: { id } });
+    if (!vendor) throw new NotFoundException('Vendor not found');
+    Object.assign(vendor, data);
+    return this.busVendorRepository.save(vendor);
+  }
+
+  async updateBusFleet(busId: string, data: any) {
+    const bus = await this.busRepository.findOne({ where: { id: busId } });
+    if (!bus) throw new NotFoundException('Bus not found');
+    Object.assign(bus, data);
+    return this.busRepository.save(bus);
+  }
+
   async addBusFleet(vendorId: string, data: any) {
     const bus = this.busRepository.create({ ...data, vendorId });
     return this.busRepository.save(bus);
@@ -414,6 +442,20 @@ export class AdminService {
     if (!vendor) throw new NotFoundException('Vendor not found');
     vendor.isVerified = isVerified;
     return this.cabVendorRepository.save(vendor);
+  }
+
+  async updateCabVendorDetails(id: string, data: any) {
+    const vendor = await this.cabVendorRepository.findOne({ where: { id } });
+    if (!vendor) throw new NotFoundException('Vendor not found');
+    Object.assign(vendor, data);
+    return this.cabVendorRepository.save(vendor);
+  }
+
+  async updateCabVehicle(vehicleId: string, data: any) {
+    const vehicle = await this.vehicleRepository.findOne({ where: { id: vehicleId } });
+    if (!vehicle) throw new NotFoundException('Vehicle not found');
+    Object.assign(vehicle, data);
+    return this.vehicleRepository.save(vehicle);
   }
 
   async addCabVehicle(vendorId: string, data: any) {

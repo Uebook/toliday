@@ -213,6 +213,8 @@ export declare class AdminService {
         updatedAt: Date;
     }>;
     updateTourPartnerStatus(id: string, status: TourPartnerStatus): Promise<TourPartner>;
+    updateTourPartnerDetails(id: string, data: any): Promise<TourPartner>;
+    updateTourPackage(packageId: string, data: any): Promise<TourPackage>;
     addTourPackage(partnerId: string, data: any): Promise<TourPackage[]>;
     deleteTourPackage(id: string): Promise<import("typeorm").DeleteResult>;
     findAllBusVendors(status?: BusVendorStatus): Promise<BusVendor[]>;
@@ -256,6 +258,8 @@ export declare class AdminService {
         updatedAt: Date;
     }>;
     updateBusVendorStatus(id: string, status: BusVendorStatus): Promise<BusVendor>;
+    updateBusVendorDetails(id: string, data: any): Promise<BusVendor>;
+    updateBusFleet(busId: string, data: any): Promise<Bus>;
     addBusFleet(vendorId: string, data: any): Promise<Bus[]>;
     deleteBusFleet(id: string): Promise<import("typeorm").DeleteResult>;
     findAllCabVendors(): Promise<CabVendor[]>;
@@ -279,6 +283,8 @@ export declare class AdminService {
         updatedAt: Date;
     }>;
     updateCabVendorVerification(id: string, isVerified: boolean): Promise<CabVendor>;
+    updateCabVendorDetails(id: string, data: any): Promise<CabVendor>;
+    updateCabVehicle(vehicleId: string, data: any): Promise<Vehicle>;
     addCabVehicle(vendorId: string, data: any): Promise<Vehicle[]>;
     deleteCabVehicle(id: string): Promise<import("typeorm").DeleteResult>;
     findAllBookings(): Promise<({
