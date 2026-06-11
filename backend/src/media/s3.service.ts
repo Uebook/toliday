@@ -23,6 +23,7 @@ export class S3Service {
         accessKeyId,
         secretAccessKey,
         region,
+        signatureVersion: 'v4',
       });
       this.bucketName = bucketName;
       console.log('S3 Service initialized successfully.');

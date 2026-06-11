@@ -15,6 +15,8 @@ export class MediaService {
   async findAll(criteria: {
     hotelId?: string;
     tourPartnerId?: string;
+    busVendorId?: string;
+    cabVendorId?: string;
     packageId?: string;
   }) {
     const mediaList = await this.mediaRepository.find({
@@ -42,6 +44,8 @@ export class MediaService {
   async uploadAndCreate(data: {
     hotelId?: string;
     tourPartnerId?: string;
+    busVendorId?: string;
+    cabVendorId?: string;
     packageId?: string;
     file: Express.Multer.File;
     category?: string;
@@ -51,6 +55,8 @@ export class MediaService {
     const media = this.mediaRepository.create({
       hotelId: data.hotelId,
       tourPartnerId: data.tourPartnerId,
+      busVendorId: data.busVendorId,
+      cabVendorId: data.cabVendorId,
       packageId: data.packageId,
       name: data.file.originalname,
       url,
@@ -71,6 +77,8 @@ export class MediaService {
   async create(data: {
     hotelId?: string;
     tourPartnerId?: string;
+    busVendorId?: string;
+    cabVendorId?: string;
     packageId?: string;
     name: string;
     url: string;

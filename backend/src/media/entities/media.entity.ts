@@ -24,6 +24,12 @@ export class Media {
   tourPartnerId: string;
 
   @Column({ nullable: true })
+  busVendorId: string;
+
+  @Column({ nullable: true })
+  cabVendorId: string;
+
+  @Column({ nullable: true })
   packageId: string;
 
   @Column()

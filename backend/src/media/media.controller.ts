@@ -30,9 +30,15 @@ export class MediaController {
     if (hotelId) criteria.hotelId = hotelId;
     if (packageId) criteria.packageId = packageId;
 
-    // If tour partner, restrict to their media
+    // Restrict to their media based on user's vendor type
     if (req.user.tourPartnerId) {
       criteria.tourPartnerId = req.user.tourPartnerId;
+    } else if (req.user.busVendorId) {
+      criteria.busVendorId = req.user.busVendorId;
+    } else if (req.user.cabVendorId) {
+      criteria.cabVendorId = req.user.cabVendorId;
+    } else if (req.user.hotelId) {
+      criteria.hotelId = req.user.hotelId;
     }
 
     return this.mediaService.findAll(criteria);
@@ -53,9 +59,11 @@ export class MediaController {
 
     return this.mediaService.uploadAndCreate({
       file,
-      hotelId,
+      hotelId: hotelId || req.user.hotelId,
       packageId,
       tourPartnerId: req.user.tourPartnerId,
+      busVendorId: req.user.busVendorId,
+      cabVendorId: req.user.cabVendorId,
       category,
       baseUrl,
     });
