@@ -1,0 +1,8 @@
+{
+  "name": "TolidayTrip - Modern Travel Planning",
+  "description": "A comprehensive travel platform for booking hotels, holiday packages, cabs, and buses with a sleek, modern interface.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
