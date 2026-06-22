@@ -57,6 +57,7 @@ const tour_partner_entity_1 = require("../packages/entities/tour-partner.entity"
 const bus_vendor_entity_1 = require("../buses/entities/bus-vendor.entity");
 const cab_vendor_entity_1 = require("../cabs/entities/cab-vendor.entity");
 const fs = __importStar(require("fs"));
+const whatsapp_service_1 = require("../whatsapp/whatsapp.service");
 let AuthService = class AuthService {
     staffRepository;
     hotelRepository;
@@ -64,13 +65,15 @@ let AuthService = class AuthService {
     busVendorRepository;
     cabVendorRepository;
     jwtService;
-    constructor(staffRepository, hotelRepository, tourPartnerRepository, busVendorRepository, cabVendorRepository, jwtService) {
+    whatsappService;
+    constructor(staffRepository, hotelRepository, tourPartnerRepository, busVendorRepository, cabVendorRepository, jwtService, whatsappService) {
         this.staffRepository = staffRepository;
         this.hotelRepository = hotelRepository;
         this.tourPartnerRepository = tourPartnerRepository;
         this.busVendorRepository = busVendorRepository;
         this.cabVendorRepository = cabVendorRepository;
         this.jwtService = jwtService;
+        this.whatsappService = whatsappService;
     }
     logDebug(message) {
         const logEntry = `[${new Date().toISOString()}] (Service) ${message}\n`;
@@ -176,6 +179,10 @@ let AuthService = class AuthService {
         });
         const savedStaff = await this.staffRepository.save(staff);
         const token = this.generateToken(savedStaff);
+        if (contactNumber) {
+            await this.whatsappService.sendPartnerSignupWelcome(contactNumber, name, businessName || name);
+            await this.whatsappService.sendAccountUnderReview(contactNumber, name, businessName || name);
+        }
         return {
             message: 'Signup successful',
             token,
@@ -272,6 +279,7 @@ exports.AuthService = AuthService = __decorate([
         typeorm_2.Repository,
         typeorm_2.Repository,
         typeorm_2.Repository,
-        jwt_1.JwtService])
+        jwt_1.JwtService,
+        whatsapp_service_1.WhatsappService])
 ], AuthService);
 //# sourceMappingURL=auth.service.js.map

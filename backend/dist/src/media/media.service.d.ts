@@ -8,11 +8,15 @@ export declare class MediaService {
     findAll(criteria: {
         hotelId?: string;
         tourPartnerId?: string;
+        busVendorId?: string;
+        cabVendorId?: string;
         packageId?: string;
     }): Promise<Media[]>;
     uploadAndCreate(data: {
         hotelId?: string;
         tourPartnerId?: string;
+        busVendorId?: string;
+        cabVendorId?: string;
         packageId?: string;
         file: Express.Multer.File;
         category?: string;
@@ -21,6 +25,8 @@ export declare class MediaService {
     create(data: {
         hotelId?: string;
         tourPartnerId?: string;
+        busVendorId?: string;
+        cabVendorId?: string;
         packageId?: string;
         name: string;
         url: string;

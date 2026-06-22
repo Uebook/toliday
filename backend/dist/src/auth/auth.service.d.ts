@@ -7,6 +7,7 @@ import { SignUpDto } from './dto/signup.dto';
 import { LoginDto } from './dto/login.dto';
 import { BusVendor } from '../buses/entities/bus-vendor.entity';
 import { CabVendor } from '../cabs/entities/cab-vendor.entity';
+import { WhatsappService } from '../whatsapp/whatsapp.service';
 export declare class AuthService {
     private staffRepository;
     private hotelRepository;
@@ -14,7 +15,8 @@ export declare class AuthService {
     private busVendorRepository;
     private cabVendorRepository;
     private jwtService;
-    constructor(staffRepository: Repository<Staff>, hotelRepository: Repository<Hotel>, tourPartnerRepository: Repository<TourPartner>, busVendorRepository: Repository<BusVendor>, cabVendorRepository: Repository<CabVendor>, jwtService: JwtService);
+    private whatsappService;
+    constructor(staffRepository: Repository<Staff>, hotelRepository: Repository<Hotel>, tourPartnerRepository: Repository<TourPartner>, busVendorRepository: Repository<BusVendor>, cabVendorRepository: Repository<CabVendor>, jwtService: JwtService, whatsappService: WhatsappService);
     private logDebug;
     signup(signUpDto: SignUpDto): Promise<{
         message: string;

@@ -4,6 +4,8 @@ export declare class Media {
     hotelId: string;
     hotel: Hotel;
     tourPartnerId: string;
+    busVendorId: string;
+    cabVendorId: string;
     packageId: string;
     name: string;
     url: string;

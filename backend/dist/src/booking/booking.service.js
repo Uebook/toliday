@@ -11,23 +11,30 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
+var BookingService_1;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BookingService = void 0;
 const common_1 = require("@nestjs/common");
+const schedule_1 = require("@nestjs/schedule");
 const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_2 = require("typeorm");
 const booking_entity_1 = require("./entities/booking.entity");
 const inventory_service_1 = require("../inventory/inventory.service");
 const ledger_entry_entity_1 = require("../finance/entities/ledger-entry.entity");
 const notification_entity_1 = require("../notifications/entities/notification.entity");
-let BookingService = class BookingService {
+const whatsapp_service_1 = require("../whatsapp/whatsapp.service");
+const hotel_entity_1 = require("../hotel/entities/hotel.entity");
+let BookingService = BookingService_1 = class BookingService {
     bookingRepository;
     inventoryService;
     dataSource;
-    constructor(bookingRepository, inventoryService, dataSource) {
+    whatsappService;
+    logger = new common_1.Logger(BookingService_1.name);
+    constructor(bookingRepository, inventoryService, dataSource, whatsappService) {
         this.bookingRepository = bookingRepository;
         this.inventoryService = inventoryService;
         this.dataSource = dataSource;
+        this.whatsappService = whatsappService;
     }
     async create(hotelId, createDto) {
         const queryRunner = this.dataSource.createQueryRunner();
@@ -90,6 +97,15 @@ let BookingService = class BookingService {
                 message: `You have a new booking (${ref}) from ${createDto.guestName} for ${createDto.startDate} to ${createDto.endDate}.`,
             });
             await queryRunner.manager.save(notification);
+            const hotel = await queryRunner.manager.findOne(hotel_entity_1.Hotel, { where: { id: createDto.hotelId } });
+            if (hotel && hotel.contactNumber) {
+                await this.whatsappService.sendNewBookingAlertPartner(hotel.contactNumber, hotel.ownerFirstName || hotel.name, hotel.name, ref, createDto.startDate, createDto.endDate, createDto.numberOfGuests.toString(), createDto.totalAmount.toString());
+            }
+            if (createDto.guestContact) {
+                const propertyName = hotel ? hotel.name : 'Toliday Property';
+                await this.whatsappService.sendBookingConfirmationGuest(createDto.guestContact, createDto.guestName, ref, propertyName, createDto.startDate, createDto.endDate, createDto.numberOfGuests.toString(), createDto.totalAmount.toString());
+                await this.whatsappService.sendPaymentConfirmationGuest(createDto.guestContact, createDto.guestName, ref, createDto.totalAmount.toString(), 'TXN-' + ref);
+            }
             await queryRunner.commitTransaction();
             return saved;
         }
@@ -174,6 +190,36 @@ let BookingService = class BookingService {
             }
         }
     }
+    async handleCheckInReminders() {
+        this.logger.log('Running Check-in Reminders cron job');
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        const tomorrowStr = tomorrow.toISOString().split('T')[0];
+        const bookings = await this.bookingRepository.find({
+            where: { startDate: tomorrowStr, status: booking_entity_1.BookingStatus.CONFIRMED },
+            relations: ['hotel'],
+        });
+        for (const booking of bookings) {
+            if (booking.guestContact) {
+                const propertyName = booking.hotel ? booking.hotel.name : 'Toliday Property';
+                await this.whatsappService.sendCheckinReminder(booking.guestContact, booking.guestName, propertyName, booking.bookingReference || booking.id, booking.startDate);
+            }
+        }
+    }
+    async handleCheckOutReminders() {
+        this.logger.log('Running Check-out Reminders cron job');
+        const todayStr = new Date().toISOString().split('T')[0];
+        const bookings = await this.bookingRepository.find({
+            where: { endDate: todayStr, status: booking_entity_1.BookingStatus.CHECKED_IN },
+            relations: ['hotel'],
+        });
+        for (const booking of bookings) {
+            if (booking.guestContact) {
+                const propertyName = booking.hotel ? booking.hotel.name : 'Toliday Property';
+                await this.whatsappService.sendCheckoutReminder(booking.guestContact, booking.guestName, propertyName, booking.bookingReference || booking.id);
+            }
+        }
+    }
     async updateStatus(id, hotelId, updateDto) {
         const booking = await this.findOne(id, hotelId);
         if (updateDto.status === booking_entity_1.BookingStatus.CANCELLED &&
@@ -187,6 +233,16 @@ let BookingService = class BookingService {
                 }
                 booking.status = updateDto.status;
                 const savedBooking = await queryRunner.manager.save(booking);
+                if (booking.hotelId) {
+                    const hotel = await queryRunner.manager.findOne(hotel_entity_1.Hotel, { where: { id: booking.hotelId } });
+                    if (hotel && hotel.contactNumber) {
+                        await this.whatsappService.sendBookingCancellationAlertPartner(hotel.contactNumber, hotel.ownerFirstName || hotel.name, hotel.name, booking.bookingReference || booking.id, booking.startDate, booking.endDate);
+                    }
+                    if (booking.guestContact) {
+                        const propertyName = hotel ? hotel.name : 'Toliday Property';
+                        await this.whatsappService.sendBookingCancellationGuest(booking.guestContact, booking.guestName, propertyName, booking.bookingReference || booking.id);
+                    }
+                }
                 await queryRunner.commitTransaction();
                 return savedBooking;
             }
@@ -272,11 +328,24 @@ let BookingService = class BookingService {
     }
 };
 exports.BookingService = BookingService;
-exports.BookingService = BookingService = __decorate([
+__decorate([
+    (0, schedule_1.Cron)(schedule_1.CronExpression.EVERY_DAY_AT_10AM),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], BookingService.prototype, "handleCheckInReminders", null);
+__decorate([
+    (0, schedule_1.Cron)(schedule_1.CronExpression.EVERY_DAY_AT_10AM),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], BookingService.prototype, "handleCheckOutReminders", null);
+exports.BookingService = BookingService = BookingService_1 = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(booking_entity_1.Booking)),
     __metadata("design:paramtypes", [typeorm_2.Repository,
         inventory_service_1.InventoryService,
-        typeorm_2.DataSource])
+        typeorm_2.DataSource,
+        whatsapp_service_1.WhatsappService])
 ], BookingService);
 //# sourceMappingURL=booking.service.js.map

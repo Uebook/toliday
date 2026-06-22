@@ -35,6 +35,7 @@ import {
   LedgerEntryType,
   VerticalType,
 } from '../finance/entities/ledger-entry.entity';
+import { WhatsappService } from '../whatsapp/whatsapp.service';
 
 @Injectable()
 export class AdminService {
@@ -69,6 +70,7 @@ export class AdminService {
     private settingsRepository: Repository<GlobalSetting>,
     @InjectRepository(LedgerEntry)
     private ledgerRepository: Repository<LedgerEntry>,
+    private whatsappService: WhatsappService,
   ) {}
 
   // Settlement Logic
@@ -272,7 +274,16 @@ export class AdminService {
     const hotel = await this.hotelRepository.findOne({ where: { id } });
     if (!hotel) throw new NotFoundException('Hotel not found');
     hotel.status = status;
-    if (status === HotelStatus.APPROVED) hotel.isVerified = true;
+    if (status === HotelStatus.APPROVED) {
+      hotel.isVerified = true;
+      if (hotel.contactNumber) {
+        await this.whatsappService.sendAccountApproved(hotel.contactNumber, hotel.ownerFirstName || hotel.name, hotel.businessName || hotel.name);
+      }
+    } else if (status === HotelStatus.REJECTED) {
+      if (hotel.contactNumber) {
+        await this.whatsappService.sendAccountRejected(hotel.contactNumber, hotel.ownerFirstName || hotel.name, hotel.businessName || hotel.name, 'Did not meet requirements');
+      }
+    }
     return this.hotelRepository.save(hotel);
   }
 
@@ -323,7 +334,16 @@ export class AdminService {
     const partner = await this.tourPartnerRepository.findOne({ where: { id } });
     if (!partner) throw new NotFoundException('Partner not found');
     partner.status = status;
-    if (status === TourPartnerStatus.APPROVED) partner.isVerified = true;
+    if (status === TourPartnerStatus.APPROVED) {
+      partner.isVerified = true;
+      if (partner.contactNumber) {
+        await this.whatsappService.sendAccountApproved(partner.contactNumber, partner.name, partner.businessName || partner.name);
+      }
+    } else if (status === TourPartnerStatus.REJECTED) {
+      if (partner.contactNumber) {
+        await this.whatsappService.sendAccountRejected(partner.contactNumber, partner.name, partner.businessName || partner.name, 'Did not meet requirements');
+      }
+    }
     return this.tourPartnerRepository.save(partner);
   }
 
@@ -386,7 +406,16 @@ export class AdminService {
     const vendor = await this.busVendorRepository.findOne({ where: { id } });
     if (!vendor) throw new NotFoundException('Vendor not found');
     vendor.status = status;
-    if (status === BusVendorStatus.APPROVED) vendor.isVerified = true;
+    if (status === BusVendorStatus.APPROVED) {
+      vendor.isVerified = true;
+      if (vendor.contactNumber) {
+        await this.whatsappService.sendAccountApproved(vendor.contactNumber, vendor.name, vendor.name);
+      }
+    } else if (status === BusVendorStatus.REJECTED) {
+      if (vendor.contactNumber) {
+        await this.whatsappService.sendAccountRejected(vendor.contactNumber, vendor.name, vendor.name, 'Did not meet requirements');
+      }
+    }
     return this.busVendorRepository.save(vendor);
   }
 
@@ -441,6 +470,11 @@ export class AdminService {
     const vendor = await this.cabVendorRepository.findOne({ where: { id } });
     if (!vendor) throw new NotFoundException('Vendor not found');
     vendor.isVerified = isVerified;
+    if (isVerified && vendor.phone) {
+      await this.whatsappService.sendAccountApproved(vendor.phone, vendor.name, vendor.name);
+    } else if (!isVerified && vendor.phone) {
+      await this.whatsappService.sendAccountRejected(vendor.phone, vendor.name, vendor.name, 'Verification failed');
+    }
     return this.cabVendorRepository.save(vendor);
   }
 

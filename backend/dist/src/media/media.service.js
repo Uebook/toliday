@@ -48,6 +48,8 @@ let MediaService = class MediaService {
         const media = this.mediaRepository.create({
             hotelId: data.hotelId,
             tourPartnerId: data.tourPartnerId,
+            busVendorId: data.busVendorId,
+            cabVendorId: data.cabVendorId,
             packageId: data.packageId,
             name: data.file.originalname,
             url,

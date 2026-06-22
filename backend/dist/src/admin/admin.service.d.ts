@@ -14,6 +14,7 @@ import { Bus } from '../buses/entities/bus.entity';
 import { Vehicle } from '../cabs/entities/vehicle.entity';
 import { GlobalSetting } from '../settings/entities/global-setting.entity';
 import { LedgerEntry } from '../finance/entities/ledger-entry.entity';
+import { WhatsappService } from '../whatsapp/whatsapp.service';
 export declare class AdminService {
     private hotelRepository;
     private tourPartnerRepository;
@@ -30,7 +31,8 @@ export declare class AdminService {
     private vehicleRepository;
     private settingsRepository;
     private ledgerRepository;
-    constructor(hotelRepository: Repository<Hotel>, tourPartnerRepository: Repository<TourPartner>, busVendorRepository: Repository<BusVendor>, cabVendorRepository: Repository<CabVendor>, bookingRepository: Repository<Booking>, busBookingRepository: Repository<BusBooking>, cabBookingRepository: Repository<CabBooking>, staffRepository: Repository<Staff>, promotionRepository: Repository<Promotion>, roomTypeRepository: Repository<RoomType>, tourPackageRepository: Repository<TourPackage>, busRepository: Repository<Bus>, vehicleRepository: Repository<Vehicle>, settingsRepository: Repository<GlobalSetting>, ledgerRepository: Repository<LedgerEntry>);
+    private whatsappService;
+    constructor(hotelRepository: Repository<Hotel>, tourPartnerRepository: Repository<TourPartner>, busVendorRepository: Repository<BusVendor>, cabVendorRepository: Repository<CabVendor>, bookingRepository: Repository<Booking>, busBookingRepository: Repository<BusBooking>, cabBookingRepository: Repository<CabBooking>, staffRepository: Repository<Staff>, promotionRepository: Repository<Promotion>, roomTypeRepository: Repository<RoomType>, tourPackageRepository: Repository<TourPackage>, busRepository: Repository<Bus>, vehicleRepository: Repository<Vehicle>, settingsRepository: Repository<GlobalSetting>, ledgerRepository: Repository<LedgerEntry>, whatsappService: WhatsappService);
     processSettlements(): Promise<{
         processedCount: number;
         totalVolume: number;

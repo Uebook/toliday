@@ -18,6 +18,7 @@ import { LoginDto } from './dto/login.dto';
 import { BusVendor } from '../buses/entities/bus-vendor.entity';
 import { CabVendor } from '../cabs/entities/cab-vendor.entity';
 import * as fs from 'fs';
+import { WhatsappService } from '../whatsapp/whatsapp.service';
 
 @Injectable()
 export class AuthService {
@@ -33,6 +34,7 @@ export class AuthService {
     @InjectRepository(CabVendor)
     private cabVendorRepository: Repository<CabVendor>,
     private jwtService: JwtService,
+    private whatsappService: WhatsappService,
   ) {}
 
   private logDebug(message: string) {
@@ -176,6 +178,11 @@ export class AuthService {
 
     // Generate token
     const token = this.generateToken(savedStaff);
+
+    if (contactNumber) {
+      await this.whatsappService.sendPartnerSignupWelcome(contactNumber, name, businessName || name);
+      await this.whatsappService.sendAccountUnderReview(contactNumber, name, businessName || name);
+    }
 
     return {
       message: 'Signup successful',

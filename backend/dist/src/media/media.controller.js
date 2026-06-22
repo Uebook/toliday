@@ -31,6 +31,15 @@ let MediaController = class MediaController {
         if (req.user.tourPartnerId) {
             criteria.tourPartnerId = req.user.tourPartnerId;
         }
+        else if (req.user.busVendorId) {
+            criteria.busVendorId = req.user.busVendorId;
+        }
+        else if (req.user.cabVendorId) {
+            criteria.cabVendorId = req.user.cabVendorId;
+        }
+        else if (req.user.hotelId) {
+            criteria.hotelId = req.user.hotelId;
+        }
         return this.mediaService.findAll(criteria);
     }
     create(req, file, hotelId, packageId, category) {
@@ -39,9 +48,11 @@ let MediaController = class MediaController {
         const baseUrl = `${protocol}://${host}`;
         return this.mediaService.uploadAndCreate({
             file,
-            hotelId,
+            hotelId: hotelId || req.user.hotelId,
             packageId,
             tourPartnerId: req.user.tourPartnerId,
+            busVendorId: req.user.busVendorId,
+            cabVendorId: req.user.cabVendorId,
             category,
             baseUrl,
         });

@@ -31,6 +31,7 @@ const bus_entity_1 = require("../buses/entities/bus.entity");
 const vehicle_entity_1 = require("../cabs/entities/vehicle.entity");
 const global_setting_entity_1 = require("../settings/entities/global-setting.entity");
 const ledger_entry_entity_1 = require("../finance/entities/ledger-entry.entity");
+const whatsapp_service_1 = require("../whatsapp/whatsapp.service");
 let AdminService = class AdminService {
     hotelRepository;
     tourPartnerRepository;
@@ -47,7 +48,8 @@ let AdminService = class AdminService {
     vehicleRepository;
     settingsRepository;
     ledgerRepository;
-    constructor(hotelRepository, tourPartnerRepository, busVendorRepository, cabVendorRepository, bookingRepository, busBookingRepository, cabBookingRepository, staffRepository, promotionRepository, roomTypeRepository, tourPackageRepository, busRepository, vehicleRepository, settingsRepository, ledgerRepository) {
+    whatsappService;
+    constructor(hotelRepository, tourPartnerRepository, busVendorRepository, cabVendorRepository, bookingRepository, busBookingRepository, cabBookingRepository, staffRepository, promotionRepository, roomTypeRepository, tourPackageRepository, busRepository, vehicleRepository, settingsRepository, ledgerRepository, whatsappService) {
         this.hotelRepository = hotelRepository;
         this.tourPartnerRepository = tourPartnerRepository;
         this.busVendorRepository = busVendorRepository;
@@ -63,6 +65,7 @@ let AdminService = class AdminService {
         this.vehicleRepository = vehicleRepository;
         this.settingsRepository = settingsRepository;
         this.ledgerRepository = ledgerRepository;
+        this.whatsappService = whatsappService;
     }
     async processSettlements() {
         const settings = await this.settingsRepository.find();
@@ -214,8 +217,17 @@ let AdminService = class AdminService {
         if (!hotel)
             throw new common_1.NotFoundException('Hotel not found');
         hotel.status = status;
-        if (status === hotel_entity_1.HotelStatus.APPROVED)
+        if (status === hotel_entity_1.HotelStatus.APPROVED) {
             hotel.isVerified = true;
+            if (hotel.contactNumber) {
+                await this.whatsappService.sendAccountApproved(hotel.contactNumber, hotel.ownerFirstName || hotel.name, hotel.businessName || hotel.name);
+            }
+        }
+        else if (status === hotel_entity_1.HotelStatus.REJECTED) {
+            if (hotel.contactNumber) {
+                await this.whatsappService.sendAccountRejected(hotel.contactNumber, hotel.ownerFirstName || hotel.name, hotel.businessName || hotel.name, 'Did not meet requirements');
+            }
+        }
         return this.hotelRepository.save(hotel);
     }
     async updateHotelDetails(id, data) {
@@ -263,8 +275,17 @@ let AdminService = class AdminService {
         if (!partner)
             throw new common_1.NotFoundException('Partner not found');
         partner.status = status;
-        if (status === tour_partner_entity_1.PartnerStatus.APPROVED)
+        if (status === tour_partner_entity_1.PartnerStatus.APPROVED) {
             partner.isVerified = true;
+            if (partner.contactNumber) {
+                await this.whatsappService.sendAccountApproved(partner.contactNumber, partner.name, partner.businessName || partner.name);
+            }
+        }
+        else if (status === tour_partner_entity_1.PartnerStatus.REJECTED) {
+            if (partner.contactNumber) {
+                await this.whatsappService.sendAccountRejected(partner.contactNumber, partner.name, partner.businessName || partner.name, 'Did not meet requirements');
+            }
+        }
         return this.tourPartnerRepository.save(partner);
     }
     async updateTourPartnerDetails(id, data) {
@@ -324,8 +345,17 @@ let AdminService = class AdminService {
         if (!vendor)
             throw new common_1.NotFoundException('Vendor not found');
         vendor.status = status;
-        if (status === bus_vendor_entity_1.BusVendorStatus.APPROVED)
+        if (status === bus_vendor_entity_1.BusVendorStatus.APPROVED) {
             vendor.isVerified = true;
+            if (vendor.contactNumber) {
+                await this.whatsappService.sendAccountApproved(vendor.contactNumber, vendor.name, vendor.name);
+            }
+        }
+        else if (status === bus_vendor_entity_1.BusVendorStatus.REJECTED) {
+            if (vendor.contactNumber) {
+                await this.whatsappService.sendAccountRejected(vendor.contactNumber, vendor.name, vendor.name, 'Did not meet requirements');
+            }
+        }
         return this.busVendorRepository.save(vendor);
     }
     async updateBusVendorDetails(id, data) {
@@ -377,6 +407,12 @@ let AdminService = class AdminService {
         if (!vendor)
             throw new common_1.NotFoundException('Vendor not found');
         vendor.isVerified = isVerified;
+        if (isVerified && vendor.phone) {
+            await this.whatsappService.sendAccountApproved(vendor.phone, vendor.name, vendor.name);
+        }
+        else if (!isVerified && vendor.phone) {
+            await this.whatsappService.sendAccountRejected(vendor.phone, vendor.name, vendor.name, 'Verification failed');
+        }
         return this.cabVendorRepository.save(vendor);
     }
     async updateCabVendorDetails(id, data) {
@@ -482,6 +518,7 @@ exports.AdminService = AdminService = __decorate([
         typeorm_2.Repository,
         typeorm_2.Repository,
         typeorm_2.Repository,
-        typeorm_2.Repository])
+        typeorm_2.Repository,
+        whatsapp_service_1.WhatsappService])
 ], AdminService);
 //# sourceMappingURL=admin.service.js.map

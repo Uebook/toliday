@@ -15,6 +15,7 @@ const booking_entity_1 = require("./entities/booking.entity");
 const inventory_module_1 = require("../inventory/inventory.module");
 const finance_module_1 = require("../finance/finance.module");
 const notifications_module_1 = require("../notifications/notifications.module");
+const whatsapp_module_1 = require("../whatsapp/whatsapp.module");
 let BookingModule = class BookingModule {
 };
 exports.BookingModule = BookingModule;
@@ -25,6 +26,7 @@ exports.BookingModule = BookingModule = __decorate([
             inventory_module_1.InventoryModule,
             finance_module_1.FinanceModule,
             notifications_module_1.NotificationsModule,
+            whatsapp_module_1.WhatsappModule,
         ],
         controllers: [booking_controller_1.BookingController, booking_controller_1.PublicBookingController],
         providers: [booking_service_1.BookingService],

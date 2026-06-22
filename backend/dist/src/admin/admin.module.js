@@ -15,6 +15,7 @@ const hotel_entity_1 = require("../hotel/entities/hotel.entity");
 const booking_entity_1 = require("../booking/entities/booking.entity");
 const staff_entity_1 = require("../staff/entities/staff.entity");
 const support_module_1 = require("../support/support.module");
+const whatsapp_module_1 = require("../whatsapp/whatsapp.module");
 const tour_partner_entity_1 = require("../packages/entities/tour-partner.entity");
 const bus_vendor_entity_1 = require("../buses/entities/bus-vendor.entity");
 const cab_vendor_entity_1 = require("../cabs/entities/cab-vendor.entity");
@@ -51,6 +52,7 @@ exports.AdminModule = AdminModule = __decorate([
                 ledger_entry_entity_1.LedgerEntry,
             ]),
             support_module_1.SupportModule,
+            whatsapp_module_1.WhatsappModule,
         ],
         controllers: [admin_controller_1.AdminController],
         providers: [admin_service_1.AdminService],

@@ -3,7 +3,9 @@ import {
   NotFoundException,
   BadRequestException,
   OnModuleInit,
+  Logger,
 } from '@nestjs/common';
+import { Cron, CronExpression } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource } from 'typeorm';
 import { Booking, BookingStatus } from './entities/booking.entity';
@@ -12,14 +14,19 @@ import { UpdateBookingStatusDto } from './dto/update-booking-status.dto';
 import { InventoryService } from '../inventory/inventory.service';
 import { LedgerEntry, LedgerEntryType, VerticalType } from '../finance/entities/ledger-entry.entity';
 import { Notification, NotificationType } from '../notifications/entities/notification.entity';
+import { WhatsappService } from '../whatsapp/whatsapp.service';
+import { Hotel } from '../hotel/entities/hotel.entity';
 
 @Injectable()
 export class BookingService implements OnModuleInit {
+  private readonly logger = new Logger(BookingService.name);
+
   constructor(
     @InjectRepository(Booking)
     private bookingRepository: Repository<Booking>,
     private inventoryService: InventoryService,
     private dataSource: DataSource,
+    private whatsappService: WhatsappService,
   ) {}
 
   async create(hotelId: string, createDto: CreateBookingDto): Promise<Booking> {
@@ -108,6 +115,17 @@ export class BookingService implements OnModuleInit {
         message: `You have a new booking (${ref}) from ${createDto.guestName} for ${createDto.startDate} to ${createDto.endDate}.`,
       });
       await queryRunner.manager.save(notification);
+
+      // 5. Send WhatsApp notifications
+      const hotel = await queryRunner.manager.findOne(Hotel, { where: { id: createDto.hotelId } });
+      if (hotel && hotel.contactNumber) {
+        await this.whatsappService.sendNewBookingAlertPartner(hotel.contactNumber, hotel.ownerFirstName || hotel.name, hotel.name, ref, createDto.startDate, createDto.endDate, createDto.numberOfGuests.toString(), createDto.totalAmount.toString());
+      }
+      if (createDto.guestContact) {
+        const propertyName = hotel ? hotel.name : 'Toliday Property';
+        await this.whatsappService.sendBookingConfirmationGuest(createDto.guestContact, createDto.guestName, ref, propertyName, createDto.startDate, createDto.endDate, createDto.numberOfGuests.toString(), createDto.totalAmount.toString());
+        await this.whatsappService.sendPaymentConfirmationGuest(createDto.guestContact, createDto.guestName, ref, createDto.totalAmount.toString(), 'TXN-'+ref);
+      }
 
       await queryRunner.commitTransaction();
       return saved;
@@ -212,6 +230,44 @@ export class BookingService implements OnModuleInit {
     }
   }
 
+  @Cron(CronExpression.EVERY_DAY_AT_10AM)
+  async handleCheckInReminders() {
+    this.logger.log('Running Check-in Reminders cron job');
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const tomorrowStr = tomorrow.toISOString().split('T')[0];
+
+    const bookings = await this.bookingRepository.find({
+      where: { startDate: tomorrowStr, status: BookingStatus.CONFIRMED },
+      relations: ['hotel'],
+    });
+
+    for (const booking of bookings) {
+      if (booking.guestContact) {
+        const propertyName = booking.hotel ? booking.hotel.name : 'Toliday Property';
+        await this.whatsappService.sendCheckinReminder(booking.guestContact, booking.guestName, propertyName, booking.bookingReference || booking.id, booking.startDate);
+      }
+    }
+  }
+
+  @Cron(CronExpression.EVERY_DAY_AT_10AM)
+  async handleCheckOutReminders() {
+    this.logger.log('Running Check-out Reminders cron job');
+    const todayStr = new Date().toISOString().split('T')[0];
+
+    const bookings = await this.bookingRepository.find({
+      where: { endDate: todayStr, status: BookingStatus.CHECKED_IN },
+      relations: ['hotel'],
+    });
+
+    for (const booking of bookings) {
+      if (booking.guestContact) {
+        const propertyName = booking.hotel ? booking.hotel.name : 'Toliday Property';
+        await this.whatsappService.sendCheckoutReminder(booking.guestContact, booking.guestName, propertyName, booking.bookingReference || booking.id);
+      }
+    }
+  }
+
   async updateStatus(
     id: string,
     hotelId: string | undefined,
@@ -239,6 +295,19 @@ export class BookingService implements OnModuleInit {
         }
         booking.status = updateDto.status;
         const savedBooking = await queryRunner.manager.save(booking);
+        
+        // Send WhatsApp Cancellation Notifications
+        if (booking.hotelId) {
+          const hotel = await queryRunner.manager.findOne(Hotel, { where: { id: booking.hotelId } });
+          if (hotel && hotel.contactNumber) {
+            await this.whatsappService.sendBookingCancellationAlertPartner(hotel.contactNumber, hotel.ownerFirstName || hotel.name, hotel.name, booking.bookingReference || booking.id, booking.startDate, booking.endDate);
+          }
+          if (booking.guestContact) {
+            const propertyName = hotel ? hotel.name : 'Toliday Property';
+            await this.whatsappService.sendBookingCancellationGuest(booking.guestContact, booking.guestName, propertyName, booking.bookingReference || booking.id);
+          }
+        }
+
         await queryRunner.commitTransaction();
         return savedBooking;
       } catch (err) {

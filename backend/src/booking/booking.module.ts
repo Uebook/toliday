@@ -6,6 +6,7 @@ import { Booking } from './entities/booking.entity';
 import { InventoryModule } from '../inventory/inventory.module'; // To adjust inventory
 import { FinanceModule } from '../finance/finance.module';
 import { NotificationsModule } from '../notifications/notifications.module';
+import { WhatsappModule } from '../whatsapp/whatsapp.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { NotificationsModule } from '../notifications/notifications.module';
     InventoryModule,
     FinanceModule,
     NotificationsModule,
+    WhatsappModule,
   ],
   controllers: [BookingController, PublicBookingController],
   providers: [BookingService],

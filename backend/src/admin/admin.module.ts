@@ -6,6 +6,7 @@ import { Hotel } from '../hotel/entities/hotel.entity';
 import { Booking } from '../booking/entities/booking.entity';
 import { Staff } from '../staff/entities/staff.entity';
 import { SupportModule } from '../support/support.module';
+import { WhatsappModule } from '../whatsapp/whatsapp.module';
 
 import { TourPartner } from '../packages/entities/tour-partner.entity';
 import { BusVendor } from '../buses/entities/bus-vendor.entity';
@@ -40,6 +41,7 @@ import { LedgerEntry } from '../finance/entities/ledger-entry.entity';
       LedgerEntry,
     ]),
     SupportModule,
+    WhatsappModule,
   ],
   controllers: [AdminController],
   providers: [AdminService],

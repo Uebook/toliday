@@ -21,6 +21,7 @@ const tour_partner_entity_1 = require("../packages/entities/tour-partner.entity"
 const bus_vendor_entity_1 = require("../buses/entities/bus-vendor.entity");
 const cab_vendor_entity_1 = require("../cabs/entities/cab-vendor.entity");
 const media_module_1 = require("../media/media.module");
+const whatsapp_module_1 = require("../whatsapp/whatsapp.module");
 let AuthModule = class AuthModule {
 };
 exports.AuthModule = AuthModule;
@@ -30,6 +31,7 @@ exports.AuthModule = AuthModule = __decorate([
             typeorm_1.TypeOrmModule.forFeature([staff_entity_1.Staff, hotel_entity_1.Hotel, tour_partner_entity_1.TourPartner, bus_vendor_entity_1.BusVendor, cab_vendor_entity_1.CabVendor]),
             passport_1.PassportModule,
             media_module_1.MediaModule,
+            whatsapp_module_1.WhatsappModule,
             jwt_1.JwtModule.registerAsync({
                 imports: [config_1.ConfigModule],
                 inject: [config_1.ConfigService],

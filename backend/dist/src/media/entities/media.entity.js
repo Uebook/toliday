@@ -17,6 +17,8 @@ let Media = class Media {
     hotelId;
     hotel;
     tourPartnerId;
+    busVendorId;
+    cabVendorId;
     packageId;
     name;
     url;
@@ -42,6 +44,14 @@ __decorate([
     (0, typeorm_1.Column)({ nullable: true }),
     __metadata("design:type", String)
 ], Media.prototype, "tourPartnerId", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ nullable: true }),
+    __metadata("design:type", String)
+], Media.prototype, "busVendorId", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ nullable: true }),
+    __metadata("design:type", String)
+], Media.prototype, "cabVendorId", void 0);
 __decorate([
     (0, typeorm_1.Column)({ nullable: true }),
     __metadata("design:type", String)

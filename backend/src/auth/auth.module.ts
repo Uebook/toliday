@@ -12,12 +12,14 @@ import { TourPartner } from '../packages/entities/tour-partner.entity';
 import { BusVendor } from '../buses/entities/bus-vendor.entity';
 import { CabVendor } from '../cabs/entities/cab-vendor.entity';
 import { MediaModule } from '../media/media.module';
+import { WhatsappModule } from '../whatsapp/whatsapp.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Staff, Hotel, TourPartner, BusVendor, CabVendor]),
     PassportModule,
     MediaModule,
+    WhatsappModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
