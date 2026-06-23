@@ -19,6 +19,16 @@ module.exports = {
         NODE_ENV: "production",
         PORT: 3000
       }
+    },
+    {
+      name: "toliday-website",
+      cwd: "./website",
+      script: "npm",
+      args: "run preview -- --port 3002 --host 0.0.0.0",
+      env: {
+        NODE_ENV: "production",
+        PORT: 3002
+      }
     }
   ]
 };
