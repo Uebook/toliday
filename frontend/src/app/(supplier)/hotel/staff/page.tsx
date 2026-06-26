@@ -117,11 +117,18 @@ export default function StaffPage() {
                             </div>
                         ))}
                     </div>
-                    <Link href="/hotel/staff/new">
-                        <button className="btn-primary flex items-center gap-2 px-4 py-2.5 text-sm">
-                            <Plus size={16} /> Add Staff Member
-                        </button>
-                    </Link>
+                    <div className="flex gap-3">
+                        <Link href="/hotel/staff/attendance">
+                            <button className="flex items-center gap-2 px-4 py-2.5 text-sm font-medium border border-[var(--glass-border-light)] hover:bg-[var(--table-header)] transition-colors rounded-lg">
+                                View Attendance
+                            </button>
+                        </Link>
+                        <Link href="/hotel/staff/new">
+                            <button className="btn-primary flex items-center gap-2 px-4 py-2.5 text-sm">
+                                <Plus size={16} /> Add Staff Member
+                            </button>
+                        </Link>
+                    </div>
                 </div>
 
                 <div className="flex gap-5">

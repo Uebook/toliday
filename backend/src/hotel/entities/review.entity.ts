@@ -36,6 +36,9 @@ export class Review {
   @JoinColumn({ name: 'hotelId' })
   hotel: Hotel;
 
+  @Column({ default: false })
+  isReported: boolean;
+
   @Column({ default: true })
   isVisible: boolean;
 

@@ -32,6 +32,14 @@ export class CreateBookingDto {
   totalAmount: number;
 
   @IsString()
+  @IsOptional()
+  gstCompany?: string;
+
+  @IsString()
+  @IsOptional()
+  gstNumber?: string;
+
+  @IsString()
   @IsNotEmpty()
   roomTypeId: string;
 }

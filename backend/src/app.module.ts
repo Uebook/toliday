@@ -28,6 +28,7 @@ import { PaymentModule } from './payment/payment.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { ReviewsModule } from './reviews/reviews.module';
 import { GlobalInventoryModule } from './global-inventory/global-inventory.module';
+import { HousekeepingModule } from './housekeeping/housekeeping.module';
 
 @Module({
   imports: [
@@ -58,22 +59,14 @@ import { GlobalInventoryModule } from './global-inventory/global-inventory.modul
 
         return {
           type: 'postgres',
-          host: configService.get<string>('DB_HOST'),
-          port: configService.get<number>('DB_PORT'),
-          username: configService.get<string>('DB_USER'),
-          password: configService.get<string>('DB_PASSWORD'),
-          database: configService.get<string>('DB_NAME'),
-          ssl: ca
-            ? {
-                rejectUnauthorized: true,
-                ca,
-              }
-            : {
-                rejectUnauthorized: false,
-              },
-          autoLoadEntities: true,
-          synchronize: true, // Be careful with this in production
-          connectTimeoutMS: 5000, // Shorten timeout for faster failure
+          host: configService.get<string>('DB_HOST', 'localhost'),
+          port: configService.get<number>('DB_PORT', 5432),
+          username: configService.get<string>('DB_USERNAME', 'postgres'),
+          password: configService.get<string>('DB_PASSWORD', 'postgres'),
+          database: configService.get<string>('DB_NAME', 'toliday'),
+          ssl: ca ? { ca } : false,
+          entities: [__dirname + '/**/*.entity{.ts,.js}'],
+          synchronize: true,
         };
       },
     }),
@@ -100,6 +93,7 @@ import { GlobalInventoryModule } from './global-inventory/global-inventory.modul
     PaymentModule,
     ReviewsModule,
     GlobalInventoryModule,
+    HousekeepingModule,
   ],
   controllers: [AppController],
   providers: [AppService],

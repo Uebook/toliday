@@ -11,10 +11,10 @@ type ServiceType = 'hotels' | 'flights' | 'holidays' | 'bus' | 'cabs' | 'activit
 const services = [
   { id: 'hotels', name: 'Hotels', icon: Hotel },
   // { id: 'flights', name: 'Flights', icon: Plane }, // Hidden for now
-  { id: 'holidays', name: 'Holidays', icon: Landmark },
-  { id: 'bus', name: 'Bus', icon: Bus },
-  { id: 'cabs', name: 'Cabs', icon: Car },
-  { id: 'activities', name: 'Activities', icon: Ticket },
+  { id: 'holidays', name: 'Holidays', icon: Landmark, comingSoon: true },
+  { id: 'bus', name: 'Bus', icon: Bus, comingSoon: true },
+  { id: 'cabs', name: 'Cabs', icon: Car, comingSoon: true },
+  { id: 'activities', name: 'Activities', icon: Ticket, comingSoon: true },
 ];
 
 const formatDateDisplay = (dateStr: string) => {
@@ -121,6 +121,7 @@ export default function Hero({ onSearch, defaultService, isDedicated }: HeroProp
   const [showLoungeModal, setShowLoungeModal] = useState(false);
   const [showConciergeModal, setShowConciergeModal] = useState(false);
   const [showDutyFreeModal, setShowDutyFreeModal] = useState(false);
+  const [comingSoonFeature, setComingSoonFeature] = useState<string | null>(null);
 
   // --- Offer Carousel ---
   const [carouselIndex, setCarouselIndex] = useState(0);
@@ -499,6 +500,10 @@ export default function Hero({ onSearch, defaultService, isDedicated }: HeroProp
                     <button
                       key={service.id}
                       onClick={() => {
+                        if (service.comingSoon) {
+                          setComingSoonFeature(service.name);
+                          return;
+                        }
                         setActiveService(service.id as ServiceType);
                         setIsGuestPickerOpen(false);
                       }}
@@ -510,6 +515,9 @@ export default function Hero({ onSearch, defaultService, isDedicated }: HeroProp
                     >
                       <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-white' : 'text-zinc-400'}`} />
                       <span>{service.name}</span>
+                      {service.comingSoon && (
+                        <span className="text-[7px] opacity-60 font-medium px-1 bg-zinc-200 text-zinc-600 rounded">Soon</span>
+                      )}
                     </button>
                   );
                 })}
@@ -1287,6 +1295,15 @@ export default function Hero({ onSearch, defaultService, isDedicated }: HeroProp
         </motion.div>
 
       </div>
+
+      <AnimatePresence>
+        {comingSoonFeature && (
+          <ComingSoonModal
+            feature={comingSoonFeature}
+            onClose={() => setComingSoonFeature(null)}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }
@@ -1802,6 +1819,64 @@ function DutyFreeContent() {
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+function ComingSoonModal({ feature, onClose }: { feature: string; onClose: () => void }) {
+  return (
+    <div
+      className="fixed inset-0 z-[100] flex items-center justify-center p-6"
+      onClick={onClose}
+    >
+      {/* Backdrop */}
+      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
+
+      {/* Modal Card */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.85, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.85, y: 20 }}
+        transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+        className="relative bg-white rounded-[2rem] p-10 shadow-2xl border border-zinc-100 max-w-sm w-full text-center overflow-hidden"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Decorative blobs */}
+        <div className="absolute -top-10 -right-10 w-40 h-40 bg-brand-orange/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-orange-100/60 rounded-full blur-3xl pointer-events-none" />
+
+        {/* Icon */}
+        <div className="relative z-10 w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-brand-orange/20 to-orange-100 flex items-center justify-center border border-brand-orange/20 shadow-lg shadow-brand-orange/10">
+          <Sparkles className="w-9 h-9 text-brand-orange" />
+        </div>
+
+        {/* Badge */}
+        <div className="relative z-10 inline-flex items-center gap-1.5 bg-brand-orange/10 text-brand-orange text-[10px] font-extrabold uppercase tracking-widest px-3 py-1.5 rounded-full mb-4 border border-brand-orange/20">
+          <Clock className="w-3 h-3" />
+          Coming Soon
+        </div>
+
+        <h2 className="relative z-10 text-2xl font-display font-extrabold text-zinc-900 mb-3">{feature}</h2>
+        <p className="relative z-10 text-zinc-500 text-sm leading-relaxed mb-8">
+          We're working hard to bring you <span className="font-bold text-zinc-700">{feature}</span>. This feature will be available soon. Stay tuned!
+        </p>
+
+        {/* Actions */}
+        <div className="relative z-10 flex flex-col gap-3">
+          <button
+            onClick={onClose}
+            className="w-full bg-brand-orange text-white py-3.5 rounded-2xl font-bold hover:bg-orange-600 transition-all active:scale-95 shadow-lg shadow-brand-orange/30"
+          >
+            Got it!
+          </button>
+          <button
+            onClick={onClose}
+            className="w-full text-zinc-400 text-xs font-bold hover:text-zinc-600 transition-colors py-1"
+          >
+            Dismiss
+          </button>
+        </div>
+      </motion.div>
     </div>
   );
 }

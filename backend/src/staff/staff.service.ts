@@ -9,6 +9,7 @@ import { Staff, StaffRole } from './entities/staff.entity';
 import { Hotel } from '../hotel/entities/hotel.entity';
 import { MailService } from '../mail/mail.service';
 import * as bcrypt from 'bcrypt';
+import { Attendance } from './entities/attendance.entity';
 
 @Injectable()
 export class StaffService {
@@ -17,8 +18,46 @@ export class StaffService {
     private staffRepository: Repository<Staff>,
     @InjectRepository(Hotel)
     private hotelRepository: Repository<Hotel>,
+    @InjectRepository(Attendance)
+    private attendanceRepository: Repository<Attendance>,
     private mailService: MailService,
   ) {}
+
+  async getAttendance(hotelId: string): Promise<Attendance[]> {
+    return this.attendanceRepository.find({
+      where: { hotelId },
+      relations: ['staff'],
+      order: { clockIn: 'DESC' },
+    });
+  }
+
+  async clockInOut(hotelId: string, staffId: string, action: 'IN' | 'OUT'): Promise<Attendance> {
+    if (action === 'IN') {
+      const active = await this.attendanceRepository.findOne({
+        where: { hotelId, staffId, clockOut: null as any },
+      });
+      if (active) {
+        throw new BadRequestException('Staff member is already clocked in.');
+      }
+      const record = this.attendanceRepository.create({
+        hotelId,
+        staffId,
+        clockIn: new Date(),
+        status: 'PRESENT',
+      });
+      return this.attendanceRepository.save(record);
+    } else {
+      const active = await this.attendanceRepository.findOne({
+        where: { hotelId, staffId, clockOut: null as any },
+        order: { clockIn: 'DESC' },
+      });
+      if (!active) {
+        throw new BadRequestException('No active clock-in session found for this staff member.');
+      }
+      active.clockOut = new Date();
+      return this.attendanceRepository.save(active);
+    }
+  }
 
   async findAll(
     hotelId?: string,

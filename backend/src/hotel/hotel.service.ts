@@ -25,6 +25,10 @@ export class HotelService {
   async findAllPublic(): Promise<Hotel[]> {
     return this.hotelRepository.find({
       where: { status: HotelStatus.APPROVED },
+      order: {
+        sortOrder: 'DESC',
+        createdAt: 'DESC',
+      },
     });
   }
 
@@ -86,6 +90,15 @@ export class HotelService {
     await this.reviewRepository.update(id, {
       vendorReply,
       vendorReplyAt: new Date(),
+    });
+    const review = await this.reviewRepository.findOne({ where: { id } });
+    if (!review) throw new NotFoundException('Review not found');
+    return review;
+  }
+
+  async reportReview(id: string): Promise<Review> {
+    await this.reviewRepository.update(id, {
+      isReported: true,
     });
     const review = await this.reviewRepository.findOne({ where: { id } });
     if (!review) throw new NotFoundException('Review not found');

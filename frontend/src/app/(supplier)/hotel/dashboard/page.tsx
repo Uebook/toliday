@@ -122,6 +122,24 @@ export default function DashboardPage() {
             color: 'hsl(var(--muted-foreground))',
             bg: 'var(--glass-border-light)',
         },
+        {
+            label: 'ADR',
+            value: `₹${summary?.adr?.toLocaleString() || 0}`,
+            change: 'Avg Daily Rate',
+            up: true,
+            icon: DollarSign,
+            color: 'hsl(262 83% 58%)',
+            bg: 'hsl(262 83% 58% / 0.1)',
+        },
+        {
+            label: 'RevPAR',
+            value: `₹${summary?.revpar?.toLocaleString() || 0}`,
+            change: 'Per Available Room',
+            up: true,
+            icon: TrendingUp,
+            color: 'hsl(343 81% 55%)',
+            bg: 'hsl(343 81% 55% / 0.1)',
+        },
     ];
 
     const revenueChartData = summary?.revenueTrend || [];
@@ -133,7 +151,7 @@ export default function DashboardPage() {
             <div className="p-8 space-y-8 animate-fadeIn max-w-[1600px] mx-auto">
 
                 {/* Stats Grid */}
-                <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-6">
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-8 gap-6">
                     {stats.map((stat) => (
                         <div key={stat.label} className="stat-card p-4">
                             <div className="flex items-start justify-between mb-3">

@@ -32,6 +32,20 @@ export class StaffController {
     return this.staffService.findAll(hotelId || req.user.hotelId);
   }
 
+  @Get('attendance/all')
+  getAttendance(@Request() req) {
+    return this.staffService.getAttendance(req.user.hotelId);
+  }
+
+  @Post('attendance/clock')
+  clockInOut(
+    @Request() req,
+    @Body('staffId') staffId: string,
+    @Body('action') action: 'IN' | 'OUT',
+  ) {
+    return this.staffService.clockInOut(req.user.hotelId, staffId, action);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.staffService.findOne(id);

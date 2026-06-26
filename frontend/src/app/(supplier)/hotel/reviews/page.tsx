@@ -31,6 +31,19 @@ export default function ReputationManagementPage() {
         }
     });
 
+    const reportMutation = useMutation({
+        mutationFn: async (id: string) => {
+            return api.patch(`/hotel/reviews/${id}/report-abuse`);
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['hotel-reviews'] });
+            alert('Review reported for abuse successfully!');
+        },
+        onError: (err: any) => {
+            alert(err.response?.data?.message || 'Failed to report review');
+        }
+    });
+
     if (isLoading) {
         return (
             <div className="flex items-center justify-center min-h-screen">
@@ -145,9 +158,30 @@ export default function ReputationManagementPage() {
                                     </div>
                                 </div>
 
-                                <p className="text-sm leading-relaxed text-[hsl(var(--foreground))] opacity-90 mb-4">
-                                    "{review.comment}"
-                                </p>
+                                <div className="flex items-start justify-between gap-4 mb-4 border-b border-[var(--glass-border-light)] pb-3">
+                                    <p className="text-sm leading-relaxed text-[hsl(var(--foreground))] opacity-90">
+                                        "{review.comment}"
+                                    </p>
+                                    <div className="shrink-0">
+                                        {review.isReported ? (
+                                            <span className="text-xs font-bold text-red-500 flex items-center gap-1">
+                                                ⚠️ Reported
+                                            </span>
+                                        ) : (
+                                            <button 
+                                                onClick={() => {
+                                                    if (confirm('Report this review as abusive?')) {
+                                                        reportMutation.mutate(review.id);
+                                                    }
+                                                }}
+                                                disabled={reportMutation.isPending}
+                                                className="text-xs font-medium text-[hsl(var(--muted-foreground))] hover:text-red-500 hover:underline transition-colors"
+                                            >
+                                                Report Abuse
+                                            </button>
+                                        )}
+                                    </div>
+                                </div>
 
                                 {/* Vendor Reply Section */}
                                 {review.vendorReply ? (

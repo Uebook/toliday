@@ -200,11 +200,16 @@ export default function AdminHotelsPage() {
                                             const formData = new FormData(e.currentTarget);
                                             updateHotelMutation.mutate({
                                                 name: formData.get('name'),
+                                                sortOrder: Number(formData.get('sortOrder')),
                                             });
                                         }}>
                                             <div className="space-y-2">
                                                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Hotel Name</label>
                                                 <input name="name" defaultValue={selectedHotel.name} required className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all" />
+                                            </div>
+                                            <div className="space-y-2">
+                                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Sort Order (Higher = Top Show)</label>
+                                                <input name="sortOrder" type="number" defaultValue={selectedHotel.sortOrder || 0} required className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all" />
                                             </div>
                                             <button type="submit" disabled={updateHotelMutation.isPending} className="w-full py-5 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl font-black text-xs uppercase tracking-[0.2em] shadow-xl shadow-blue-600/20 transition-all flex items-center justify-center gap-2">
                                                 {updateHotelMutation.isPending ? 'Saving...' : 'Save Details'}

@@ -95,6 +95,12 @@ export class Booking {
   netAmount: number;
 
   @Column({ nullable: true })
+  gstCompany: string;
+
+  @Column({ nullable: true })
+  gstNumber: string;
+
+  @Column({ nullable: true })
   assignedRoomId: string;
 
   @ManyToOne(() => Room, (room) => room.bookings, {

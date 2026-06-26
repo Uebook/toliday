@@ -1,7 +1,7 @@
 'use client';
 
 import Topbar from '@/components/layout/Topbar';
-import { ArrowLeft, User, Phone, Mail, Calendar, BedDouble, CreditCard, Clock, FileText, CheckCircle2, MessageSquare, Printer, Loader2 } from 'lucide-react';
+import { ArrowLeft, User, Phone, Mail, Calendar, BedDouble, CreditCard, Clock, FileText, CheckCircle2, MessageSquare, Printer, Loader2, Edit } from 'lucide-react';
 import Link from 'next/link';
 import { use, useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -13,6 +13,52 @@ export default function BookingDetailsPage({ params }: { params: Promise<{ id: s
     const [isAssignModalOpen, setIsAssignModalOpen] = useState(false);
     const [selectedRoomId, setSelectedRoomId] = useState('');
     const [newRoomNumber, setNewRoomNumber] = useState('');
+
+    const [isModifyModalOpen, setIsModifyModalOpen] = useState(false);
+    const [modifyForm, setModifyForm] = useState({
+        guestName: '',
+        guestEmail: '',
+        guestContact: '',
+        numberOfGuests: 2,
+        startDate: '',
+        endDate: '',
+        roomTypeId: ''
+    });
+
+    const { data: roomTypes = [] } = useQuery({
+        queryKey: ['room-types'],
+        queryFn: async () => {
+            const res = await api.get('/room-types');
+            return res.data;
+        }
+    });
+
+    const modifyMutation = useMutation({
+        mutationFn: async (payload: any) => {
+            return api.patch(`/bookings/${id}`, payload);
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['booking', id] });
+            setIsModifyModalOpen(false);
+            alert('Booking modified successfully!');
+        },
+        onError: (err: any) => {
+            alert(err.response?.data?.message || 'Failed to modify booking');
+        }
+    });
+
+    const openModifyModal = (booking: any) => {
+        setModifyForm({
+            guestName: booking.guestName,
+            guestEmail: booking.guestEmail,
+            guestContact: booking.guestContact || '',
+            numberOfGuests: booking.numberOfGuests || 2,
+            startDate: booking.startDate,
+            endDate: booking.endDate,
+            roomTypeId: booking.roomTypeId
+        });
+        setIsModifyModalOpen(true);
+    };
 
     const { data: booking, isLoading } = useQuery({
         queryKey: ['booking', id],
@@ -107,6 +153,9 @@ export default function BookingDetailsPage({ params }: { params: Promise<{ id: s
                     </Link>
 
                     <div className="flex items-center gap-3">
+                        <button onClick={() => openModifyModal(booking)} className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium border border-indigo-500/20 bg-indigo-500/10 text-indigo-400 hover:bg-indigo-500/15 transition-colors">
+                            <Edit size={16} /> Modify Booking
+                        </button>
                         <button onClick={() => window.print()} className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium border border-[var(--glass-border-light)] hover:bg-[var(--table-header)] transition-colors">
                             <Printer size={16} /> Print Voucher
                         </button>
@@ -344,6 +393,111 @@ export default function BookingDetailsPage({ params }: { params: Promise<{ id: s
                                 className="btn-primary px-6 py-2 text-sm disabled:opacity-50"
                             >
                                 Assign
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {isModifyModalOpen && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+                    <div className="glass-card w-[500px] max-w-full p-6 animate-scaleIn space-y-6">
+                        <div className="flex items-center justify-between pb-4 border-b border-[var(--glass-border-light)]">
+                            <h3 className="text-lg font-bold text-[hsl(var(--foreground))]">Modify Booking Details</h3>
+                            <button onClick={() => setIsModifyModalOpen(false)} className="text-[hsl(var(--muted-foreground))] hover:text-[hsl(var(--foreground))]">✕</button>
+                        </div>
+
+                        <div className="space-y-4">
+                            <div>
+                                <label className="block text-xs font-medium text-[hsl(var(--muted-foreground))] mb-1.5">Guest Name</label>
+                                <input 
+                                    type="text" 
+                                    value={modifyForm.guestName}
+                                    onChange={(e) => setModifyForm({ ...modifyForm, guestName: e.target.value })}
+                                    className="form-input w-full"
+                                />
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-xs font-medium text-[hsl(var(--muted-foreground))] mb-1.5">Email Address</label>
+                                    <input 
+                                        type="email" 
+                                        value={modifyForm.guestEmail}
+                                        onChange={(e) => setModifyForm({ ...modifyForm, guestEmail: e.target.value })}
+                                        className="form-input w-full"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-medium text-[hsl(var(--muted-foreground))] mb-1.5">Contact Number</label>
+                                    <input 
+                                        type="text" 
+                                        value={modifyForm.guestContact}
+                                        onChange={(e) => setModifyForm({ ...modifyForm, guestContact: e.target.value })}
+                                        className="form-input w-full"
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-xs font-medium text-[hsl(var(--muted-foreground))] mb-1.5">Check-in Date</label>
+                                    <input 
+                                        type="date" 
+                                        value={modifyForm.startDate}
+                                        onChange={(e) => setModifyForm({ ...modifyForm, startDate: e.target.value })}
+                                        className="form-input w-full"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-medium text-[hsl(var(--muted-foreground))] mb-1.5">Check-out Date</label>
+                                    <input 
+                                        type="date" 
+                                        value={modifyForm.endDate}
+                                        onChange={(e) => setModifyForm({ ...modifyForm, endDate: e.target.value })}
+                                        className="form-input w-full"
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-xs font-medium text-[hsl(var(--muted-foreground))] mb-1.5">Guests Count</label>
+                                    <input 
+                                        type="number" 
+                                        value={modifyForm.numberOfGuests}
+                                        onChange={(e) => setModifyForm({ ...modifyForm, numberOfGuests: Number(e.target.value) })}
+                                        className="form-input w-full"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-medium text-[hsl(var(--muted-foreground))] mb-1.5">Room Category</label>
+                                    <select 
+                                        value={modifyForm.roomTypeId}
+                                        onChange={(e) => setModifyForm({ ...modifyForm, roomTypeId: e.target.value })}
+                                        className="form-input w-full bg-[var(--table-header)]"
+                                    >
+                                        {roomTypes.map((rt: any) => (
+                                            <option key={rt.id} value={rt.id}>{rt.name}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="flex justify-end gap-3 pt-4 border-t border-[var(--glass-border-light)]">
+                            <button 
+                                onClick={() => setIsModifyModalOpen(false)}
+                                className="px-4 py-2 text-sm font-medium text-[hsl(var(--muted-foreground))] hover:text-[hsl(var(--foreground))]"
+                            >
+                                Cancel
+                            </button>
+                            <button 
+                                onClick={() => modifyMutation.mutate(modifyForm)}
+                                disabled={modifyMutation.isPending}
+                                className="btn-primary px-6 py-2 text-sm disabled:opacity-50"
+                            >
+                                Save Changes
                             </button>
                         </div>
                     </div>

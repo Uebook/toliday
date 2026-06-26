@@ -40,6 +40,9 @@ export default function CheckoutFlow({ hotel, room, entity, searchParams, onBack
     phone: '',
     requests: ''
   });
+  const [gstEnabled, setGstEnabled] = useState(false);
+  const [gstCompany, setGstCompany] = useState('');
+  const [gstNumber, setGstNumber] = useState('');
   const [coupon, setCoupon] = useState('');
   const [discount, setDiscount] = useState(0);
   const [isCouponApplied, setIsCouponApplied] = useState(false);
@@ -266,6 +269,52 @@ export default function CheckoutFlow({ hotel, room, entity, searchParams, onBack
                   />
                 </div>
               </div>
+
+              {/* Optional GST Details */}
+              {!entity?.type && (
+                <div className="space-y-4 mt-6 border-t border-zinc-100 pt-6">
+                  <label className="flex items-center gap-3 cursor-pointer select-none">
+                    <input 
+                      type="checkbox" 
+                      checked={gstEnabled}
+                      onChange={(e) => setGstEnabled(e.target.checked)}
+                      className="w-5 h-5 rounded border-zinc-300 text-indigo-600 focus:ring-indigo-500/20"
+                    />
+                    <span className="text-sm font-semibold text-zinc-700">Add GST Details (Optional)</span>
+                  </label>
+
+                  {gstEnabled && (
+                    <motion.div 
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2"
+                    >
+                      <div className="space-y-2">
+                        <label className="text-xs font-bold text-zinc-400 uppercase tracking-widest pl-1">Company Name</label>
+                        <input 
+                          type="text" 
+                          value={gstCompany}
+                          onChange={(e) => setGstCompany(e.target.value)}
+                          className="w-full px-6 py-4 bg-zinc-50 border border-zinc-100 rounded-2xl outline-none focus:ring-2 focus:ring-indigo-500/10 transition-all text-sm font-semibold" 
+                          placeholder="e.g. Toliday Pvt Ltd" 
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-xs font-bold text-zinc-400 uppercase tracking-widest pl-1">GSTIN Number</label>
+                        <input 
+                          type="text" 
+                          value={gstNumber}
+                          onChange={(e) => setGstNumber(e.target.value)}
+                          className="w-full px-6 py-4 bg-zinc-50 border border-zinc-100 rounded-2xl outline-none focus:ring-2 focus:ring-indigo-500/10 transition-all text-sm font-semibold" 
+                          placeholder="e.g. 07AAAAA1111A1Z1" 
+                        />
+                      </div>
+                    </motion.div>
+                  )}
+                </div>
+              )}
+            </div>
 
               {/* Dynamic Passengers Form fields for Flight bookings */}
               {entity?.type === 'flight' && (
@@ -933,6 +982,22 @@ export default function CheckoutFlow({ hotel, room, entity, searchParams, onBack
                            </div>
                          </div>
                        )}
+
+                       {/* Guest & GST Details Display */}
+                       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                         <div className="px-6 py-4 bg-white rounded-3xl border border-indigo-100">
+                           <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-1">Primary Guest</p>
+                           <p className="text-sm font-bold text-zinc-800">{formData.firstName} {formData.lastName}</p>
+                           <p className="text-xs text-zinc-500">{formData.email} | {formData.phone}</p>
+                         </div>
+                         {gstEnabled && (
+                           <div className="px-6 py-4 bg-white rounded-3xl border border-indigo-100">
+                             <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-1">GST Details</p>
+                             <p className="text-sm font-bold text-zinc-800">{gstCompany}</p>
+                             <p className="text-xs text-zinc-500">GSTIN: {gstNumber}</p>
+                           </div>
+                         )}
+                       </div>
                     </div>
                   </div>
                 </div>
@@ -1030,6 +1095,8 @@ export default function CheckoutFlow({ hotel, room, entity, searchParams, onBack
                         totalAmount: total,
                         roomTypeId: room?.id || hotel?.roomTypeId || '',
                         hotelId: hotel?.id || hotel?.hotelId || '',
+                        gstCompany: gstEnabled ? gstCompany : undefined,
+                        gstNumber: gstEnabled ? gstNumber : undefined,
                       });
                       
                       if (window.location.hostname === 'localhost') {

@@ -64,6 +64,11 @@ export class HotelController {
     return this.hotelService.replyToReview(id, reply);
   }
 
+  @Patch('reviews/:id/report-abuse')
+  reportReview(@Param('id') id: string) {
+    return this.hotelService.reportReview(id);
+  }
+
   // Promotions
   @Get('my-hotel/promotions')
   findMyPromotions(@Request() req) {

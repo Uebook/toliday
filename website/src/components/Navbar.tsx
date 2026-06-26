@@ -100,9 +100,9 @@ export default function Navbar({ forceSolid = false, user, onNavigate, currentVi
     { label: 'Home', action: () => onNavigate('home'), active: isHomeActive },
     { label: 'Hotels', action: () => onNavigate('hotels'), active: isHotelsActive },
     // { label: 'Flights', action: () => onNavigate('flights'), active: isFlightsActive }, // Hidden for now
-    { label: 'Bus', action: () => onNavigate('bus'), active: isBusesActive },
-    { label: 'Cab', action: () => onNavigate('cab'), active: isCabsActive },
-    { label: 'Holiday', action: () => onNavigate('holidays'), active: isHolidaysActive },
+    { label: 'Bus', action: () => setComingSoonFeature('Bus Booking'), active: false, comingSoon: true },
+    { label: 'Cab', action: () => setComingSoonFeature('Cab Booking'), active: false, comingSoon: true },
+    { label: 'Holiday', action: () => setComingSoonFeature('Holiday Packages'), active: false, comingSoon: true },
     { label: 'Web Check-In', action: () => setComingSoonFeature('Web Check-In'), active: false, comingSoon: true },
     { label: 'Visa', action: () => setComingSoonFeature('Visa Services'), active: false, comingSoon: true },
   ];
@@ -246,9 +246,9 @@ export default function Navbar({ forceSolid = false, user, onNavigate, currentVi
                 { label: 'Home', icon: <Home className="w-5 h-5" />, action: () => { onNavigate('home'); setIsMobileMenuOpen(false); }, active: isHomeActive },
                 { label: 'Hotels', icon: <Hotel className="w-5 h-5" />, action: () => { onNavigate('hotels'); setIsMobileMenuOpen(false); }, active: isHotelsActive },
                 // { label: 'Flights', icon: <span className="text-lg">✈️</span>, action: () => { onNavigate('flights'); setIsMobileMenuOpen(false); }, active: isFlightsActive }, // Hidden for now
-                { label: 'Bus', icon: <Bus className="w-5 h-5" />, action: () => { onNavigate('bus'); setIsMobileMenuOpen(false); }, active: isBusesActive },
-                { label: 'Cab', icon: <Car className="w-5 h-5" />, action: () => { onNavigate('cab'); setIsMobileMenuOpen(false); }, active: isCabsActive },
-                { label: 'Holiday', icon: <span className="text-lg">🌴</span>, action: () => { onNavigate('holidays'); setIsMobileMenuOpen(false); }, active: isHolidaysActive },
+                { label: 'Bus', icon: <Bus className="w-5 h-5" />, action: () => { setComingSoonFeature('Bus Booking'); setIsMobileMenuOpen(false); }, active: false },
+                { label: 'Cab', icon: <Car className="w-5 h-5" />, action: () => { setComingSoonFeature('Cab Booking'); setIsMobileMenuOpen(false); }, active: false },
+                { label: 'Holiday', icon: <span className="text-lg">🌴</span>, action: () => { setComingSoonFeature('Holiday Packages'); setIsMobileMenuOpen(false); }, active: false },
                 { label: 'Web Check-In', icon: <span className="text-lg">✈️</span>, action: () => { setComingSoonFeature('Web Check-In'); setIsMobileMenuOpen(false); }, active: false },
                 { label: 'Visa', icon: <span className="text-lg">🪪</span>, action: () => { setComingSoonFeature('Visa Services'); setIsMobileMenuOpen(false); }, active: false },
               ].map((item) => (

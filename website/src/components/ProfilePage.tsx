@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { User, Settings, Bell, Shield, Heart, ShoppingBag, LogOut, ChevronRight, MapPin, Calendar, Star, ExternalLink, CreditCard, Clock, Loader2 } from 'lucide-react';
-import { fetchBookingsByEmail } from '../lib/api';
+import { fetchBookingsByEmail, fetchHotels } from '../lib/api';
 
 interface ProfilePageProps {
   user: any;
   onLogout: () => void;
   onBack: () => void;
+  onSelectHotel: (hotel: any) => void;
 }
 
 const mockBookings = [
@@ -34,10 +35,20 @@ const mockBookings = [
   }
 ];
 
-export default function ProfilePage({ user, onLogout, onBack }: ProfilePageProps) {
-  const [activeTab, setActiveTab] = useState<'profile' | 'history' | 'settings'>('profile');
+export default function ProfilePage({ user, onLogout, onBack, onSelectHotel }: ProfilePageProps) {
+  const [activeTab, setActiveTab] = useState<'profile' | 'history' | 'wishlist' | 'settings'>('profile');
   const [bookings, setBookings] = useState<any[]>([]);
   const [isLoadingBookings, setIsLoadingBookings] = useState(false);
+  const [wishlistedHotels, setWishlistedHotels] = useState<any[]>([]);
+  const [isLoadingWishlist, setIsLoadingWishlist] = useState(false);
+  const [wishlistIds, setWishlistIds] = useState<string[]>(() => {
+    try {
+      const saved = localStorage.getItem('toliday_wishlist');
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
 
   useEffect(() => {
     if (activeTab === 'history' && user?.email) {
@@ -49,9 +60,31 @@ export default function ProfilePage({ user, onLogout, onBack }: ProfilePageProps
     }
   }, [activeTab, user?.email]);
 
+  useEffect(() => {
+    if (activeTab === 'wishlist') {
+      setIsLoadingWishlist(true);
+      fetchHotels()
+        .then(allHotels => {
+          const filtered = allHotels.filter((h: any) => wishlistIds.includes(h.id));
+          setWishlistedHotels(filtered);
+        })
+        .catch(console.error)
+        .finally(() => setIsLoadingWishlist(false));
+    }
+  }, [activeTab, wishlistIds]);
+
+  const handleRemoveWishlist = (hotelId: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    const updated = wishlistIds.filter(id => id !== hotelId);
+    setWishlistIds(updated);
+    localStorage.setItem('toliday_wishlist', JSON.stringify(updated));
+    setWishlistedHotels(prev => prev.filter(h => h.id !== hotelId));
+  };
+
   const tabs = [
     { id: 'profile', label: 'My Profile', icon: User },
     { id: 'history', label: 'Booking History', icon: ShoppingBag },
+    { id: 'wishlist', label: 'My Wishlist', icon: Heart },
     { id: 'settings', label: 'Account Settings', icon: Settings },
   ];
 
@@ -319,6 +352,82 @@ export default function ProfilePage({ user, onLogout, onBack }: ProfilePageProps
                         <p className="text-[10px] font-bold uppercase tracking-widest opacity-70">OFF Next Stay</p>
                       </div>
                     </div>
+                  </div>
+                </motion.div>
+              )}
+
+              {activeTab === 'wishlist' && (
+                <motion.div
+                  key="wishlist"
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  className="space-y-8"
+                >
+                  <div className="flex items-center justify-between mb-8">
+                    <h3 className="text-2xl font-display font-bold text-zinc-900">My Wishlist</h3>
+                  </div>
+
+                  <div className="space-y-6">
+                    {isLoadingWishlist ? (
+                      <div className="flex flex-col items-center justify-center py-20 text-zinc-400">
+                        <Loader2 className="w-8 h-8 animate-spin mb-4 text-indigo-600" />
+                        <p>Loading wishlist...</p>
+                      </div>
+                    ) : wishlistedHotels.length === 0 ? (
+                      <div className="text-center py-20 text-zinc-500 bg-white rounded-[2.5rem] border border-zinc-100 shadow-sm">
+                        <Heart className="w-12 h-12 mx-auto mb-4 text-zinc-300 fill-zinc-100" />
+                        <p className="font-bold text-lg mb-2">Your wishlist is empty</p>
+                        <p className="text-sm">Save your favorite hotels to find them easily next time.</p>
+                      </div>
+                    ) : (
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {wishlistedHotels.map((hotel) => (
+                          <div 
+                            key={hotel.id} 
+                            onClick={() => onSelectHotel(hotel)}
+                            className="bg-white rounded-[2.5rem] overflow-hidden shadow-sm border border-zinc-100 hover:shadow-xl hover:shadow-indigo-500/5 transition-all group cursor-pointer flex flex-col h-full"
+                          >
+                            <div className="relative h-48 w-full bg-zinc-100 overflow-hidden">
+                              <img 
+                                src={hotel.images?.[0] || 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&q=80&w=400'} 
+                                className="w-full h-full object-cover transition-transform group-hover:scale-110 duration-700" 
+                                alt={hotel.name} 
+                              />
+                              <button 
+                                onClick={(e) => handleRemoveWishlist(hotel.id, e)}
+                                className="absolute top-4 right-4 w-10 h-10 bg-white/80 backdrop-blur-md rounded-full flex items-center justify-center text-rose-500 hover:bg-rose-50 transition-all shadow-sm z-10"
+                              >
+                                <Heart className="w-5 h-5 fill-rose-500 text-rose-500" />
+                              </button>
+                            </div>
+                            <div className="p-6 flex-1 flex flex-col justify-between">
+                              <div>
+                                <div className="flex items-start justify-between mb-2">
+                                  <h4 className="text-lg font-display font-bold text-zinc-900 group-hover:text-indigo-600 transition-colors line-clamp-1">{hotel.name}</h4>
+                                  <div className="flex items-center gap-1 bg-emerald-50 text-emerald-700 px-2.5 py-0.5 rounded-full text-xs font-bold shrink-0">
+                                    {hotel.rating} <Star className="w-3 h-3 fill-emerald-700" />
+                                  </div>
+                                </div>
+                                <p className="text-zinc-500 text-xs flex items-center gap-1 mb-4">
+                                  <MapPin className="w-3.5 h-3.5" />
+                                  {hotel.location}
+                                </p>
+                              </div>
+                              <div className="pt-4 border-t border-zinc-50 flex items-center justify-between">
+                                <div>
+                                  <span className="text-[10px] text-zinc-400 font-bold uppercase tracking-widest block leading-none">Starting from</span>
+                                  <span className="text-lg font-display font-black text-indigo-600">₹{hotel.price || hotel.roomTypes?.[0]?.price || 'N/A'}</span>
+                                </div>
+                                <span className="text-xs font-bold text-zinc-900 flex items-center gap-1 group-hover:text-indigo-600 transition-colors">
+                                  View Details <ChevronRight className="w-4 h-4" />
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </motion.div>
               )}

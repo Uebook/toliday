@@ -22,6 +22,8 @@ export const createBooking = async (payload: {
   totalAmount: number;
   roomTypeId: string;
   hotelId: string;
+  gstCompany?: string;
+  gstNumber?: string;
 }) => {
   const response = await fetch(`${API_BASE_URL}/public/bookings`, {
     method: 'POST',

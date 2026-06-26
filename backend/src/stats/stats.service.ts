@@ -4,11 +4,15 @@ import { Repository } from 'typeorm';
 import { Booking, BookingStatus } from '../booking/entities/booking.entity';
 import { format, startOfWeek, addDays, subDays, parseISO } from 'date-fns';
 
+import { RoomType } from '../room-type/entities/room-type.entity';
+
 @Injectable()
 export class StatsService {
   constructor(
     @InjectRepository(Booking)
     private bookingRepository: Repository<Booking>,
+    @InjectRepository(RoomType)
+    private roomTypeRepository: Repository<RoomType>,
   ) {}
 
   async getSummary(hotelId: string) {
@@ -87,6 +91,28 @@ export class StatsService {
         amount: `₹${Number(b.totalAmount).toLocaleString()}`,
       }));
 
+    // Occupied rooms today (confirmed or checked in bookings today)
+    const occupiedRoomsToday = allBookings.filter(
+      (b) =>
+        b.startDate <= todayStr &&
+        b.endDate >= todayStr &&
+        [BookingStatus.CONFIRMED, BookingStatus.CHECKED_IN].includes(b.status),
+    ).length;
+
+    // Room types to get total capacity
+    const roomTypes = await this.roomTypeRepository.find({ where: { hotelId } });
+    const totalCapacity = roomTypes.reduce((sum, rt) => sum + (Number(rt.totalRooms) || 0), 0);
+
+    const activeOrCompletedBookings = allBookings.filter((b) =>
+      [BookingStatus.CONFIRMED, BookingStatus.CHECKED_IN, BookingStatus.CHECKED_OUT].includes(b.status)
+    );
+    const adr = activeOrCompletedBookings.length > 0 
+      ? Math.round(totalRevenue / activeOrCompletedBookings.length) 
+      : 0;
+
+    const occupancyRate = totalCapacity > 0 ? (occupiedRoomsToday / totalCapacity) : 0;
+    const revpar = Math.round(adr * occupancyRate);
+
     return {
       revenue: totalRevenue,
       checkInsToday,
@@ -97,6 +123,8 @@ export class StatsService {
       totalBookings: allBookings.length,
       revenueTrend,
       recentBookings,
+      adr,
+      revpar,
     };
   }
 

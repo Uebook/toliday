@@ -170,12 +170,14 @@ const getNavGroups = (vertical: string): NavGroup[] => {
             ] : [
                 { href: '/property', icon: Building2, label: 'Property Details', permission: 'property_view' },
                 { href: '/rooms', icon: BedDouble, label: 'Room Categories', permission: 'property_view' },
+                { href: '/housekeeping', icon: Shield, label: 'Housekeeping', permission: 'property_view' },
                 { href: '/media', icon: Image, label: 'Media Gallery', permission: 'media_upload' },
             ],
         },
         {
             label: 'Operations',
             items: [
+                ...((isTourOperator) ? [] : [{ href: '/calendar', icon: CalendarDays, label: 'Reservation Calendar', permission: 'bookings_view' }]),
                 ...((isTourOperator) ? [] : [{ href: '/inventory-console', icon: CalendarDays, label: 'Inventory Console', permission: 'inventory_edit' }]),
                 ...((isTourOperator) ? [] : [{ href: '/rate-plans', icon: DollarSign, label: 'Rate Plans', permission: 'rates_edit' }]),
                 ...((!isTourOperator) ? [] : [{ href: '/pricing-and-departures', icon: DollarSign, label: 'Pricing & Departures', permission: 'rates_edit' }]),

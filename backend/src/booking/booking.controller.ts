@@ -93,6 +93,18 @@ export class BookingController {
     return this.bookingService.assignRoom(id, req.user.hotelId, roomId);
   }
 
+  @Patch(':id')
+  update(
+    @Request() req,
+    @Param('id') id: string,
+    @Body() body: any,
+  ) {
+    if (req.user.tourPartnerId) {
+      throw new ForbiddenException('Not supported for tour partners');
+    }
+    return this.bookingService.update(id, req.user.hotelId, body);
+  }
+
   @Get('admin/consumers')
   getAdminConsumers(@Request() req) {
     if (req.user.role !== 'ADMIN' && req.user.role !== 'OWNER') {

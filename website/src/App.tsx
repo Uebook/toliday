@@ -372,6 +372,10 @@ export default function App() {
                   setView('home');
                 }}
                 onBack={() => setView('home')}
+                onSelectHotel={(hotel) => {
+                  setSelectedHotel(hotel);
+                  setView('hotel-details');
+                }}
               />
             </motion.div>
           ) : view === 'bus-list' ? (

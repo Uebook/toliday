@@ -70,6 +70,25 @@ export default function HotelList({ onBack, onSelectHotel, searchParams }: Hotel
   const [showMap, setShowMap] = useState(false);
   const [hotelsData, setHotelsData] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [wishlist, setWishlist] = useState<string[]>(() => {
+    try {
+      const saved = localStorage.getItem('toliday_wishlist');
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  const toggleWishlist = (hotelId: string) => {
+    let updated: string[];
+    if (wishlist.includes(hotelId)) {
+      updated = wishlist.filter(id => id !== hotelId);
+    } else {
+      updated = [...wishlist, hotelId];
+    }
+    setWishlist(updated);
+    localStorage.setItem('toliday_wishlist', JSON.stringify(updated));
+  };
 
   // Sorting state
   const [sortBy, setSortBy] = useState('Recommended');
@@ -639,11 +658,11 @@ export default function HotelList({ onBack, onSelectHotel, searchParams }: Hotel
                       <button 
                         onClick={(e) => {
                           e.stopPropagation();
-                          // Handle favorite
+                          toggleWishlist(hotel.id);
                         }}
                         className="absolute top-4 right-4 w-10 h-10 bg-white/80 backdrop-blur-md rounded-full flex items-center justify-center text-zinc-900 hover:text-rose-500 transition-colors z-10"
                       >
-                        <Heart className="w-5 h-5" />
+                        <Heart className={`w-5 h-5 ${wishlist.includes(hotel.id) ? 'fill-rose-500 text-rose-500' : 'text-zinc-900'}`} />
                       </button>
                       {hotel.tag && (
                         <div className="absolute bottom-4 left-4 bg-indigo-600 text-white px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest z-10">

@@ -130,6 +130,9 @@ export class Hotel {
   @Column({ default: false })
   isVerified: boolean;
 
+  @Column({ type: 'int', default: 0, nullable: true })
+  sortOrder: number;
+
   @Column({
     type: 'enum',
     enum: HotelStatus,

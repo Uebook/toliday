@@ -5,9 +5,10 @@ import { StaffService } from './staff.service';
 import { Staff } from './entities/staff.entity';
 import { Hotel } from '../hotel/entities/hotel.entity';
 import { TourPartner } from '../packages/entities/tour-partner.entity';
+import { Attendance } from './entities/attendance.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Staff, Hotel, TourPartner])],
+  imports: [TypeOrmModule.forFeature([Staff, Hotel, TourPartner, Attendance])],
   controllers: [StaffController],
   providers: [StaffService],
   exports: [StaffService],
