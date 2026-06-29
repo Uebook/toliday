@@ -12,6 +12,7 @@ export declare class HotelController {
     deleteRatePlan(id: string): Promise<void>;
     findMyReviews(req: any): Promise<import("./entities/review.entity").Review[]>;
     replyToReview(id: string, reply: string): Promise<import("./entities/review.entity").Review>;
+    reportReview(id: string): Promise<import("./entities/review.entity").Review>;
     findMyPromotions(req: any): Promise<import("../promotions/entities/promotion.entity").Promotion[]>;
     createPromotion(req: any, body: any): Promise<import("../promotions/entities/promotion.entity").Promotion>;
 }

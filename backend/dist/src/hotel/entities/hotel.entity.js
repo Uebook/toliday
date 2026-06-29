@@ -59,6 +59,7 @@ let Hotel = class Hotel {
     bankAccount;
     bankIfsc;
     isVerified;
+    sortOrder;
     status;
     staffs;
     roomTypes;
@@ -212,6 +213,10 @@ __decorate([
     (0, typeorm_1.Column)({ default: false }),
     __metadata("design:type", Boolean)
 ], Hotel.prototype, "isVerified", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ type: 'int', default: 0, nullable: true }),
+    __metadata("design:type", Number)
+], Hotel.prototype, "sortOrder", void 0);
 __decorate([
     (0, typeorm_1.Column)({
         type: 'enum',

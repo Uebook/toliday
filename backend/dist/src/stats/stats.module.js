@@ -13,12 +13,13 @@ const stats_controller_1 = require("./stats.controller");
 const stats_service_1 = require("./stats.service");
 const booking_entity_1 = require("../booking/entities/booking.entity");
 const inventory_entity_1 = require("../inventory/entities/inventory.entity");
+const room_type_entity_1 = require("../room-type/entities/room-type.entity");
 let StatsModule = class StatsModule {
 };
 exports.StatsModule = StatsModule;
 exports.StatsModule = StatsModule = __decorate([
     (0, common_1.Module)({
-        imports: [typeorm_1.TypeOrmModule.forFeature([booking_entity_1.Booking, inventory_entity_1.Inventory])],
+        imports: [typeorm_1.TypeOrmModule.forFeature([booking_entity_1.Booking, inventory_entity_1.Inventory, room_type_entity_1.RoomType])],
         controllers: [stats_controller_1.StatsController],
         providers: [stats_service_1.StatsService],
     })

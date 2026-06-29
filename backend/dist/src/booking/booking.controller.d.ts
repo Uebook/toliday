@@ -18,6 +18,7 @@ export declare class BookingController {
     findOne(req: any, id: string): Promise<import("./entities/booking.entity").Booking>;
     updateStatus(req: any, id: string, updateDto: UpdateBookingStatusDto): Promise<import("./entities/booking.entity").Booking>;
     assignRoom(req: any, id: string, roomId: string): Promise<import("./entities/booking.entity").Booking>;
+    update(req: any, id: string, body: any): Promise<import("./entities/booking.entity").Booking>;
     getAdminConsumers(req: any): Promise<{
         id: any;
         name: any;

@@ -19,6 +19,8 @@ class CreateBookingDto {
     endDate;
     numberOfGuests;
     totalAmount;
+    gstCompany;
+    gstNumber;
     roomTypeId;
 }
 exports.CreateBookingDto = CreateBookingDto;
@@ -52,6 +54,16 @@ __decorate([
     (0, class_validator_1.IsNumber)(),
     __metadata("design:type", Number)
 ], CreateBookingDto.prototype, "totalAmount", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], CreateBookingDto.prototype, "gstCompany", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], CreateBookingDto.prototype, "gstNumber", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.IsNotEmpty)(),

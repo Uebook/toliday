@@ -6,5 +6,7 @@ export declare class CreateBookingDto {
     endDate: string;
     numberOfGuests: number;
     totalAmount: number;
+    gstCompany?: string;
+    gstNumber?: string;
     roomTypeId: string;
 }

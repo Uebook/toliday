@@ -377,7 +377,7 @@ export default function CheckoutFlow({ hotel, room, entity, searchParams, onBack
                   </div>
                 </div>
               )}
-            </div>
+          </motion.div>
             <button 
               onClick={() => setStep('review')}
               disabled={

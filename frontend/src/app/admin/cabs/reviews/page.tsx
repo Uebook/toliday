@@ -24,7 +24,7 @@ export default function CabsReviewsPage() {
                      const res = await api.get('/reviews/admin/all?vertical=CAB');
                      return res.data.map((r: any) => ({
                             id: r.id,
-                            cabName: r.vendorName,
+                            partnerName: r.vendorName,
                             guestName: r.guestName,
                             rating: r.rating,
                             comment: r.comment,

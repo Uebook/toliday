@@ -44,6 +44,8 @@ let Booking = class Booking {
     isSettled;
     commissionAmount;
     netAmount;
+    gstCompany;
+    gstNumber;
     assignedRoomId;
     assignedRoom;
     createdAt;
@@ -142,6 +144,14 @@ __decorate([
     (0, typeorm_1.Column)('decimal', { precision: 10, scale: 2, default: 0 }),
     __metadata("design:type", Number)
 ], Booking.prototype, "netAmount", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ nullable: true }),
+    __metadata("design:type", String)
+], Booking.prototype, "gstCompany", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ nullable: true }),
+    __metadata("design:type", String)
+], Booking.prototype, "gstNumber", void 0);
 __decorate([
     (0, typeorm_1.Column)({ nullable: true }),
     __metadata("design:type", String)

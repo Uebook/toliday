@@ -24,7 +24,7 @@ export default function BusesReviewsPage() {
                      const res = await api.get('/reviews/admin/all?vertical=BUS');
                      return res.data.map((r: any) => ({
                             id: r.id,
-                            busName: r.vendorName,
+                            partnerName: r.vendorName,
                             guestName: r.guestName,
                             rating: r.rating,
                             comment: r.comment,

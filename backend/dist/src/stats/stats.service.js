@@ -18,10 +18,13 @@ const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_2 = require("typeorm");
 const booking_entity_1 = require("../booking/entities/booking.entity");
 const date_fns_1 = require("date-fns");
+const room_type_entity_1 = require("../room-type/entities/room-type.entity");
 let StatsService = class StatsService {
     bookingRepository;
-    constructor(bookingRepository) {
+    roomTypeRepository;
+    constructor(bookingRepository, roomTypeRepository) {
         this.bookingRepository = bookingRepository;
+        this.roomTypeRepository = roomTypeRepository;
     }
     async getSummary(hotelId) {
         const allBookings = await this.bookingRepository.find({
@@ -71,6 +74,17 @@ let StatsService = class StatsService {
             status: b.status,
             amount: `₹${Number(b.totalAmount).toLocaleString()}`,
         }));
+        const occupiedRoomsToday = allBookings.filter((b) => b.startDate <= todayStr &&
+            b.endDate >= todayStr &&
+            [booking_entity_1.BookingStatus.CONFIRMED, booking_entity_1.BookingStatus.CHECKED_IN].includes(b.status)).length;
+        const roomTypes = await this.roomTypeRepository.find({ where: { hotelId } });
+        const totalCapacity = roomTypes.reduce((sum, rt) => sum + (Number(rt.totalRooms) || 0), 0);
+        const activeOrCompletedBookings = allBookings.filter((b) => [booking_entity_1.BookingStatus.CONFIRMED, booking_entity_1.BookingStatus.CHECKED_IN, booking_entity_1.BookingStatus.CHECKED_OUT].includes(b.status));
+        const adr = activeOrCompletedBookings.length > 0
+            ? Math.round(totalRevenue / activeOrCompletedBookings.length)
+            : 0;
+        const occupancyRate = totalCapacity > 0 ? (occupiedRoomsToday / totalCapacity) : 0;
+        const revpar = Math.round(adr * occupancyRate);
         return {
             revenue: totalRevenue,
             checkInsToday,
@@ -81,6 +95,8 @@ let StatsService = class StatsService {
             totalBookings: allBookings.length,
             revenueTrend,
             recentBookings,
+            adr,
+            revpar,
         };
     }
     async getReports(hotelId, period = '7d') {
@@ -141,6 +157,8 @@ exports.StatsService = StatsService;
 exports.StatsService = StatsService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(booking_entity_1.Booking)),
-    __metadata("design:paramtypes", [typeorm_2.Repository])
+    __param(1, (0, typeorm_1.InjectRepository)(room_type_entity_1.RoomType)),
+    __metadata("design:paramtypes", [typeorm_2.Repository,
+        typeorm_2.Repository])
 ], StatsService);
 //# sourceMappingURL=stats.service.js.map

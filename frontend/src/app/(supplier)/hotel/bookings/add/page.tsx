@@ -105,7 +105,7 @@ export default function AddBookingPage() {
                                                                       value={formData.guestEmail}
                                                                       onChange={handleInputChange}
                                                                       placeholder="rahul@example.com"
-                                                                      className="form-input pl-10"
+                                                                      className="form-input !pl-10"
                                                                />
                                                         </div>
                                                  </div>
@@ -118,7 +118,7 @@ export default function AddBookingPage() {
                                                                       value={formData.guestContact}
                                                                       onChange={handleInputChange}
                                                                       placeholder="+91 9876543210"
-                                                                      className="form-input pl-10"
+                                                                      className="form-input !pl-10"
                                                                       required
                                                                />
                                                         </div>
@@ -143,7 +143,7 @@ export default function AddBookingPage() {
                                                                       type="date"
                                                                       value={formData.startDate}
                                                                       onChange={handleInputChange}
-                                                                      className="form-input pl-10"
+                                                                      className="form-input !pl-10"
                                                                       required
                                                                />
                                                         </div>
@@ -157,7 +157,7 @@ export default function AddBookingPage() {
                                                                       type="date"
                                                                       value={formData.endDate}
                                                                       onChange={handleInputChange}
-                                                                      className="form-input pl-10"
+                                                                      className="form-input !pl-10"
                                                                       required
                                                                />
                                                         </div>

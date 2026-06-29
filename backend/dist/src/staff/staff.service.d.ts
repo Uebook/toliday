@@ -2,11 +2,15 @@ import { Repository } from 'typeorm';
 import { Staff, StaffRole } from './entities/staff.entity';
 import { Hotel } from '../hotel/entities/hotel.entity';
 import { MailService } from '../mail/mail.service';
+import { Attendance } from './entities/attendance.entity';
 export declare class StaffService {
     private staffRepository;
     private hotelRepository;
+    private attendanceRepository;
     private mailService;
-    constructor(staffRepository: Repository<Staff>, hotelRepository: Repository<Hotel>, mailService: MailService);
+    constructor(staffRepository: Repository<Staff>, hotelRepository: Repository<Hotel>, attendanceRepository: Repository<Attendance>, mailService: MailService);
+    getAttendance(hotelId: string): Promise<Attendance[]>;
+    clockInOut(hotelId: string, staffId: string, action: 'IN' | 'OUT'): Promise<Attendance>;
     findAll(hotelId?: string, tourPartnerId?: string, busVendorId?: string, cabVendorId?: string): Promise<{
         id: string;
         name: string;

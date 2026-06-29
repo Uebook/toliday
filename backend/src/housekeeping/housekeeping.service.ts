@@ -41,7 +41,7 @@ export class HousekeepingService {
 
     if (updateDto.status) record.status = updateDto.status;
     if (updateDto.assignedStaffId !== undefined) {
-      record.assignedStaffId = updateDto.assignedStaffId === '' ? null : updateDto.assignedStaffId;
+      record.assignedStaffId = (updateDto.assignedStaffId === '' ? null : updateDto.assignedStaffId) as any;
     }
     if (updateDto.roomNumber) record.roomNumber = updateDto.roomNumber;
     if (updateDto.roomTypeId) record.roomTypeId = updateDto.roomTypeId;

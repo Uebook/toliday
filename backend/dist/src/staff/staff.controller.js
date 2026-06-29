@@ -33,6 +33,12 @@ let StaffController = class StaffController {
         }
         return this.staffService.findAll(hotelId || req.user.hotelId);
     }
+    getAttendance(req) {
+        return this.staffService.getAttendance(req.user.hotelId);
+    }
+    clockInOut(req, staffId, action) {
+        return this.staffService.clockInOut(req.user.hotelId, staffId, action);
+    }
     findOne(id) {
         return this.staffService.findOne(id);
     }
@@ -72,6 +78,22 @@ __decorate([
     __metadata("design:paramtypes", [Object, String]),
     __metadata("design:returntype", void 0)
 ], StaffController.prototype, "findAll", null);
+__decorate([
+    (0, common_1.Get)('attendance/all'),
+    __param(0, (0, common_1.Request)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], StaffController.prototype, "getAttendance", null);
+__decorate([
+    (0, common_1.Post)('attendance/clock'),
+    __param(0, (0, common_1.Request)()),
+    __param(1, (0, common_1.Body)('staffId')),
+    __param(2, (0, common_1.Body)('action')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String, String]),
+    __metadata("design:returntype", void 0)
+], StaffController.prototype, "clockInOut", null);
 __decorate([
     (0, common_1.Get)(':id'),
     __param(0, (0, common_1.Param)('id')),

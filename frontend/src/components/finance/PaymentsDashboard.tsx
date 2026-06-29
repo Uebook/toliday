@@ -45,6 +45,18 @@ export default function PaymentsDashboard() {
         },
     });
 
+    const { data: myHotel } = useQuery({
+        queryKey: ['my-hotel-profile'],
+        queryFn: async () => {
+            try {
+                const res = await api.get('/hotel/my-hotel');
+                return res.data;
+            } catch (e) {
+                return null;
+            }
+        },
+    });
+
     // Mutations
     const requestPayoutMutation = useMutation({
         mutationFn: async () => {
@@ -63,6 +75,52 @@ export default function PaymentsDashboard() {
             alert(err.response?.data?.message || 'Failed to request payout');
         }
     });
+
+    // Calculate running balance and parse descriptions
+    const sortedEntriesDesc = [...ledger].sort(
+        (a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    );
+    let tempBal = balances.availableBalance || 0;
+    const computedDesc = sortedEntriesDesc.map((entry: any) => {
+        const runningBalance = tempBal;
+        if (entry.type === 'CREDIT') {
+            tempBal -= Number(entry.amount);
+        } else {
+            tempBal += Number(entry.amount);
+        }
+        return {
+            ...entry,
+            runningBalance,
+        };
+    });
+    const openingBalance = tempBal;
+    const entriesWithBalanceAsc = [...computedDesc].reverse();
+
+    const parseLedgerEntry = (entry: any) => {
+        let refNumber = entry.referenceId ? entry.referenceId.substring(0, 10).toUpperCase() : '-';
+        let line1 = entry.description;
+        let line2 = '';
+        let line3 = '';
+
+        // If it's a booking: Booking Revenue (IE/2627/35379) - Rakesh Upadhyay
+        const bookingMatch = entry.description.match(/Booking Revenue \(([^)]+)\) - (.*)/);
+        if (bookingMatch) {
+            refNumber = bookingMatch[1];
+            line1 = `Booking Created : ${bookingMatch[2]} X 1`;
+            line2 = `BOOKING REF: ${bookingMatch[1]}`;
+            line3 = `TRANSACTION STATUS: COMPLETED`;
+        } else {
+            // If it's a withdrawal request: Withdrawal Request #abcdefgh
+            const withdrawalMatch = entry.description.match(/Withdrawal Request #([0-9a-fA-F]+)/);
+            if (withdrawalMatch) {
+                refNumber = `WD/${withdrawalMatch[1].toUpperCase()}`;
+                line1 = `Withdrawal Settled to Bank A/c`;
+                line2 = `REQUEST ID: ${entry.referenceId ? entry.referenceId.substring(0, 8).toUpperCase() : 'N/A'}`;
+                line3 = `TRANSACTION STATUS: COMPLETED`;
+            }
+        }
+        return { refNumber, line1, line2, line3 };
+    };
 
     return (
         <div>
@@ -139,39 +197,92 @@ export default function PaymentsDashboard() {
                     <div className="p-0">
                         {/* LEDGER TAB */}
                         {activeTab === 'LEDGER' && (
-                            <table className="w-full text-left text-sm">
-                                <thead className="bg-[var(--table-header)] border-b border-[var(--glass-border)] text-[hsl(var(--muted-foreground))] text-xs uppercase">
-                                    <tr>
-                                        <th className="px-6 py-4 font-bold">Date</th>
-                                        <th className="px-6 py-4 font-bold">Ref ID</th>
-                                        <th className="px-6 py-4 font-bold">Description</th>
-                                        <th className="px-6 py-4 font-bold text-right">Amount</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {ledgerLoading ? (
-                                        <tr><td colSpan={4} className="text-center py-10">Loading ledger...</td></tr>
-                                    ) : ledger.length === 0 ? (
-                                        <tr><td colSpan={4} className="text-center py-10 text-[hsl(var(--muted-foreground))]">No transactions found.</td></tr>
-                                    ) : (
-                                        ledger.map((entry: any) => (
-                                            <tr key={entry.id} className="border-b border-[var(--glass-border)] hover:bg-white/5 transition-colors">
-                                                <td className="px-6 py-4 font-medium">{new Date(entry.createdAt).toLocaleString()}</td>
-                                                <td className="px-6 py-4 text-[hsl(var(--muted-foreground))] text-xs font-mono">{entry.referenceId || '-'}</td>
-                                                <td className="px-6 py-4">
-                                                    <div className="flex items-center gap-2">
-                                                        {entry.type === 'CREDIT' ? <ArrowDownRight size={16} className="text-green-500" /> : <ArrowUpRight size={16} className="text-red-500" />}
-                                                        {entry.description}
-                                                    </div>
-                                                </td>
-                                                <td className={`px-6 py-4 text-right font-bold ${entry.type === 'CREDIT' ? 'text-green-500' : 'text-red-500'}`}>
-                                                    {entry.type === 'CREDIT' ? '+' : '-'} ₹{Number(entry.amount).toLocaleString()}
-                                                </td>
+                            <div className="space-y-6">
+                                {/* Address and Account Summary Header (Screenshot matching) */}
+                                <div className="p-6 md:p-8 flex flex-col md:flex-row justify-between items-start gap-6 border-b border-[var(--glass-border)] bg-black/5 rounded-t-2xl">
+                                    <div>
+                                        <h3 className="text-lg font-black tracking-tight text-[hsl(var(--foreground))]">{myHotel?.name || 'Grand Noida Resort & Spa'}</h3>
+                                        <p className="text-xs text-[hsl(var(--muted-foreground))] mt-2 leading-relaxed font-semibold">
+                                            {myHotel?.address || 'Plot No. 10, Road B, Sector 62'}<br />
+                                            {myHotel?.city || 'Noida'}, Gautam Buddha Nagar, Uttar Pradesh {myHotel?.pinCode || '201301'}<br />
+                                            Phone: {myHotel?.contactNumber || '7220014014'} | Email: {myHotel?.email || 'manager@noidahotel.com'}
+                                        </p>
+                                    </div>
+                                    <div className="text-right md:items-end flex flex-col gap-1 w-full md:w-auto">
+                                        <span className="text-[10px] font-black uppercase tracking-widest text-[hsl(var(--muted-foreground))]">Trip Statement Account</span>
+                                        <div className="text-sm font-bold text-[hsl(var(--foreground))] mt-1 font-black">
+                                            Toliday Trip Private Limited
+                                        </div>
+                                        <div className="text-xs font-semibold text-[hsl(var(--muted-foreground))] mt-1 flex flex-col gap-1 md:items-end">
+                                            <span>Credit Limit: ₹0.00</span>
+                                            <span>Cash A/c Balance: ₹{balances.availableBalance?.toLocaleString()}</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="overflow-x-auto">
+                                    <table className="w-full text-left text-sm">
+                                        <thead className="bg-[var(--table-header)] border-b border-[var(--glass-border)] text-[hsl(var(--muted-foreground))] text-xs uppercase">
+                                            <tr>
+                                                <th className="px-6 py-4 font-bold">Date</th>
+                                                <th className="px-6 py-4 font-bold">Ref. Number</th>
+                                                <th className="px-6 py-4 font-bold">Particulars</th>
+                                                <th className="px-6 py-4 font-bold text-right">Debit</th>
+                                                <th className="px-6 py-4 font-bold text-right">Credit</th>
+                                                <th className="px-6 py-4 font-bold text-right">Running Balance</th>
                                             </tr>
-                                        ))
-                                    )}
-                                </tbody>
-                            </table>
+                                        </thead>
+                                        <tbody>
+                                            {ledgerLoading ? (
+                                                <tr><td colSpan={6} className="text-center py-10">Loading ledger...</td></tr>
+                                            ) : ledger.length === 0 ? (
+                                                <tr><td colSpan={6} className="text-center py-10 text-[hsl(var(--muted-foreground))]">No transactions found.</td></tr>
+                                            ) : (
+                                                <>
+                                                    {/* Opening Balance Row */}
+                                                    <tr className="border-b border-[var(--glass-border)] bg-[hsl(var(--accent)/0.02)] font-semibold">
+                                                        <td className="px-6 py-4 text-[hsl(var(--muted-foreground))] text-xs font-bold">-</td>
+                                                        <td className="px-6 py-4 text-[hsl(var(--muted-foreground))] text-xs font-bold">-</td>
+                                                        <td className="px-6 py-4 font-black text-slate-800 dark:text-slate-200">Opening Balance</td>
+                                                        <td className="px-6 py-4 text-right text-[hsl(var(--muted-foreground))]">-</td>
+                                                        <td className="px-6 py-4 text-right text-green-500 font-bold">₹{openingBalance.toLocaleString()}</td>
+                                                        <td className="px-6 py-4 text-right font-black text-slate-900 dark:text-slate-100">₹{openingBalance.toLocaleString()}</td>
+                                                    </tr>
+
+                                                    {/* Transaction Rows */}
+                                                    {entriesWithBalanceAsc.map((entry: any) => {
+                                                        const { refNumber, line1, line2, line3 } = parseLedgerEntry(entry);
+                                                        return (
+                                                            <tr key={entry.id} className="border-b border-[var(--glass-border)] hover:bg-white/5 transition-colors">
+                                                                <td className="px-6 py-4 font-semibold text-slate-800 dark:text-slate-200 whitespace-nowrap">
+                                                                    {new Date(entry.createdAt).toLocaleDateString('en-GB')}
+                                                                </td>
+                                                                <td className="px-6 py-4 font-bold text-[hsl(var(--accent))] font-mono text-xs">
+                                                                    {refNumber}
+                                                                </td>
+                                                                <td className="px-6 py-4 max-w-md">
+                                                                    <div className="font-bold text-slate-900 dark:text-slate-100 text-sm">{line1}</div>
+                                                                    {line2 && <div className="text-[10px] text-slate-400 dark:text-slate-500 font-mono mt-1 uppercase tracking-wider">{line2}</div>}
+                                                                    {line3 && <div className="text-[10px] text-indigo-500 font-black mt-1 uppercase tracking-widest">{line3}</div>}
+                                                                </td>
+                                                                <td className="px-6 py-4 text-right text-red-500 font-bold">
+                                                                    {entry.type === 'DEBIT' ? `₹${Number(entry.amount).toLocaleString()}` : '-'}
+                                                                </td>
+                                                                <td className="px-6 py-4 text-right text-green-500 font-bold">
+                                                                    {entry.type === 'CREDIT' ? `₹${Number(entry.amount).toLocaleString()}` : '-'}
+                                                                </td>
+                                                                <td className="px-6 py-4 text-right font-black text-slate-900 dark:text-slate-100">
+                                                                    ₹{entry.runningBalance.toLocaleString()}
+                                                                </td>
+                                                            </tr>
+                                                        );
+                                                    })}
+                                                </>
+                                            )}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                         )}
 
                         {/* PAYOUTS TAB */}

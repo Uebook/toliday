@@ -53,14 +53,52 @@ const staff_entity_1 = require("./entities/staff.entity");
 const hotel_entity_1 = require("../hotel/entities/hotel.entity");
 const mail_service_1 = require("../mail/mail.service");
 const bcrypt = __importStar(require("bcrypt"));
+const attendance_entity_1 = require("./entities/attendance.entity");
 let StaffService = class StaffService {
     staffRepository;
     hotelRepository;
+    attendanceRepository;
     mailService;
-    constructor(staffRepository, hotelRepository, mailService) {
+    constructor(staffRepository, hotelRepository, attendanceRepository, mailService) {
         this.staffRepository = staffRepository;
         this.hotelRepository = hotelRepository;
+        this.attendanceRepository = attendanceRepository;
         this.mailService = mailService;
+    }
+    async getAttendance(hotelId) {
+        return this.attendanceRepository.find({
+            where: { hotelId },
+            relations: ['staff'],
+            order: { clockIn: 'DESC' },
+        });
+    }
+    async clockInOut(hotelId, staffId, action) {
+        if (action === 'IN') {
+            const active = await this.attendanceRepository.findOne({
+                where: { hotelId, staffId, clockOut: null },
+            });
+            if (active) {
+                throw new common_1.BadRequestException('Staff member is already clocked in.');
+            }
+            const record = this.attendanceRepository.create({
+                hotelId,
+                staffId,
+                clockIn: new Date(),
+                status: 'PRESENT',
+            });
+            return this.attendanceRepository.save(record);
+        }
+        else {
+            const active = await this.attendanceRepository.findOne({
+                where: { hotelId, staffId, clockOut: null },
+                order: { clockIn: 'DESC' },
+            });
+            if (!active) {
+                throw new common_1.BadRequestException('No active clock-in session found for this staff member.');
+            }
+            active.clockOut = new Date();
+            return this.attendanceRepository.save(active);
+        }
     }
     async findAll(hotelId, tourPartnerId, busVendorId, cabVendorId) {
         const where = {};
@@ -192,7 +230,9 @@ exports.StaffService = StaffService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(staff_entity_1.Staff)),
     __param(1, (0, typeorm_1.InjectRepository)(hotel_entity_1.Hotel)),
+    __param(2, (0, typeorm_1.InjectRepository)(attendance_entity_1.Attendance)),
     __metadata("design:paramtypes", [typeorm_2.Repository,
+        typeorm_2.Repository,
         typeorm_2.Repository,
         mail_service_1.MailService])
 ], StaffService);

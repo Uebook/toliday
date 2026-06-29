@@ -5,6 +5,7 @@ import api from '@/lib/api';
 import Topbar from '@/components/layout/Topbar';
 import { Sparkles, Trash2, Plus, Edit, ShieldAlert, CheckCircle2, User, Loader2 } from 'lucide-react';
 import { useState } from 'react';
+import CustomSelect from '@/components/ui/CustomSelect';
 
 const statusConfig: Record<string, { label: string; cls: string }> = {
     CLEAN: { label: 'Clean', cls: 'badge-success' },
@@ -229,90 +230,84 @@ export default function HousekeepingPage() {
                     )}
                 </div>
 
-                {/* Add/Edit Modal */}
-                {isModalOpen && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-                        <div className="glass-card w-[450px] max-w-full p-6 animate-scaleIn space-y-5">
-                            <div className="flex items-center justify-between pb-3 border-b border-[var(--glass-border-light)]">
-                                <h3 className="text-lg font-bold text-[hsl(var(--foreground))]">{editingRoom ? 'Edit Room Housekeeping' : 'Add Room Housekeeping'}</h3>
-                                <button onClick={() => setIsModalOpen(false)} className="text-[hsl(var(--muted-foreground))] hover:text-[hsl(var(--foreground))]">✕</button>
+            </div>
+
+            {/* Add/Edit Modal */}
+            {isModalOpen && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+                    <div className="glass-card w-[450px] max-w-full p-6 animate-scaleIn space-y-5">
+                        <div className="flex items-center justify-between pb-3 border-b border-[var(--glass-border-light)]">
+                            <h3 className="text-lg font-bold text-[hsl(var(--foreground))]">{editingRoom ? 'Edit Room Housekeeping' : 'Add Room Housekeeping'}</h3>
+                            <button onClick={() => setIsModalOpen(false)} className="text-[hsl(var(--muted-foreground))] hover:text-[hsl(var(--foreground))]">✕</button>
+                        </div>
+
+                        <div className="space-y-4">
+                            <div>
+                                <label className="block text-xs font-medium text-[hsl(var(--muted-foreground))] mb-1.5">Room Number</label>
+                                <input 
+                                    type="text" 
+                                    placeholder="e.g. 101"
+                                    value={formData.roomNumber}
+                                    onChange={(e) => setFormData({ ...formData, roomNumber: e.target.value })}
+                                    className="form-input w-full"
+                                />
                             </div>
 
-                            <div className="space-y-4">
+                            <div>
+                                <label className="block text-xs font-medium text-[hsl(var(--muted-foreground))] mb-1.5">Room Category</label>
+                                <CustomSelect
+                                    value={formData.roomTypeId}
+                                    onChange={(val) => setFormData({ ...formData, roomTypeId: val })}
+                                    options={roomTypes.map((rt: any) => ({ value: rt.id, label: rt.name }))}
+                                    placeholder="Select Category"
+                                />
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-xs font-medium text-[hsl(var(--muted-foreground))] mb-1.5">Room Number</label>
-                                    <input 
-                                        type="text" 
-                                        placeholder="e.g. 101"
-                                        value={formData.roomNumber}
-                                        onChange={(e) => setFormData({ ...formData, roomNumber: e.target.value })}
-                                        className="form-input w-full"
+                                    <label className="block text-xs font-medium text-[hsl(var(--muted-foreground))] mb-1.5">Status</label>
+                                    <CustomSelect
+                                        value={formData.status}
+                                        onChange={(val) => setFormData({ ...formData, status: val })}
+                                        options={[
+                                            { value: 'CLEAN', label: 'Clean' },
+                                            { value: 'DIRTY', label: 'Dirty' },
+                                            { value: 'MAINTENANCE', label: 'Maintenance' },
+                                            { value: 'OUT_OF_ORDER', label: 'Out of Order' },
+                                        ]}
+                                        placeholder="Select Status"
                                     />
                                 </div>
 
                                 <div>
-                                    <label className="block text-xs font-medium text-[hsl(var(--muted-foreground))] mb-1.5">Room Category</label>
-                                    <select 
-                                        value={formData.roomTypeId}
-                                        onChange={(e) => setFormData({ ...formData, roomTypeId: e.target.value })}
-                                        className="form-input w-full bg-[var(--table-header)]"
-                                    >
-                                        <option value="">Select Category</option>
-                                        {roomTypes.map((rt: any) => (
-                                            <option key={rt.id} value={rt.id}>{rt.name}</option>
-                                        ))}
-                                    </select>
+                                    <label className="block text-xs font-medium text-[hsl(var(--muted-foreground))] mb-1.5">Assign Staff</label>
+                                    <CustomSelect
+                                        value={formData.assignedStaffId}
+                                        onChange={(val) => setFormData({ ...formData, assignedStaffId: val })}
+                                        options={staffList.map((st: any) => ({ value: st.id, label: st.name }))}
+                                        placeholder="Unassigned"
+                                    />
                                 </div>
-
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div>
-                                        <label className="block text-xs font-medium text-[hsl(var(--muted-foreground))] mb-1.5">Status</label>
-                                        <select 
-                                            value={formData.status}
-                                            onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-                                            className="form-input w-full bg-[var(--table-header)]"
-                                        >
-                                            <option value="CLEAN">Clean</option>
-                                            <option value="DIRTY">Dirty</option>
-                                            <option value="MAINTENANCE">Maintenance</option>
-                                            <option value="OUT_OF_ORDER">Out of Order</option>
-                                        </select>
-                                    </div>
-
-                                    <div>
-                                        <label className="block text-xs font-medium text-[hsl(var(--muted-foreground))] mb-1.5">Assign Staff</label>
-                                        <select 
-                                            value={formData.assignedStaffId}
-                                            onChange={(e) => setFormData({ ...formData, assignedStaffId: e.target.value })}
-                                            className="form-input w-full bg-[var(--table-header)]"
-                                        >
-                                            <option value="">Unassigned</option>
-                                            {staffList.map((st: any) => (
-                                                <option key={st.id} value={st.id}>{st.name}</option>
-                                            ))}
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="flex justify-end gap-3 pt-4 border-t border-[var(--glass-border-light)]">
-                                <button 
-                                    onClick={() => setIsModalOpen(false)}
-                                    className="px-4 py-2 text-sm font-medium text-[hsl(var(--muted-foreground))] hover:text-[hsl(var(--foreground))]"
-                                >
-                                    Cancel
-                                </button>
-                                <button 
-                                    onClick={handleSave}
-                                    className="btn-primary px-6 py-2 text-sm"
-                                >
-                                    Save
-                                </button>
                             </div>
                         </div>
+
+                        <div className="flex justify-end gap-3 pt-4 border-t border-[var(--glass-border-light)]">
+                            <button 
+                                onClick={() => setIsModalOpen(false)}
+                                className="px-4 py-2 text-sm font-medium text-[hsl(var(--muted-foreground))] hover:text-[hsl(var(--foreground))]"
+                            >
+                                Cancel
+                            </button>
+                            <button 
+                                onClick={handleSave}
+                                className="btn-primary px-6 py-2 text-sm"
+                            >
+                                Save
+                            </button>
+                        </div>
                     </div>
-                )}
-            </div>
+                </div>
+            )}
         </div>
     );
 }

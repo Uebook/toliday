@@ -41,9 +41,12 @@ async function bootstrap() {
     const app = await core_1.NestFactory.createApplicationContext(app_module_1.AppModule);
     const hotelRepo = app.get('HotelRepository');
     const staffRepo = app.get('StaffRepository');
-    const hotel = await hotelRepo.findOne({ where: { city: 'Noida (NCR)' } });
+    let hotel = await hotelRepo.findOne({ where: { city: 'Noida (NCR)' } });
     if (!hotel) {
-        console.log('No hotel found in Noida (NCR)');
+        hotel = await hotelRepo.findOne({ where: { city: 'Noida' } });
+    }
+    if (!hotel) {
+        console.log('No hotel found in Noida (NCR) or Noida');
         await app.close();
         return;
     }
@@ -70,6 +73,7 @@ async function bootstrap() {
         console.log('Password:', password);
     }
     await app.close();
+    process.exit(0);
 }
 bootstrap();
 //# sourceMappingURL=create-hotel-login.js.map

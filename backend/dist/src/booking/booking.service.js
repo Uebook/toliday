@@ -78,6 +78,8 @@ let BookingService = BookingService_1 = class BookingService {
                 hotelId: createDto.hotelId,
                 status: booking_entity_1.BookingStatus.PENDING,
                 bookingReference: ref,
+                gstCompany: createDto.gstCompany,
+                gstNumber: createDto.gstNumber,
             });
             const saved = await queryRunner.manager.save(booking);
             const ledgerEntry = queryRunner.manager.create(ledger_entry_entity_1.LedgerEntry, {
@@ -255,6 +257,43 @@ let BookingService = BookingService_1 = class BookingService {
             }
         }
         booking.status = updateDto.status;
+        return this.bookingRepository.save(booking);
+    }
+    async update(id, hotelId, updateDto) {
+        const booking = await this.findOne(id, hotelId);
+        if (!booking)
+            throw new common_1.NotFoundException('Booking not found');
+        if (updateDto.guestName)
+            booking.guestName = updateDto.guestName;
+        if (updateDto.guestEmail)
+            booking.guestEmail = updateDto.guestEmail;
+        if (updateDto.guestContact)
+            booking.guestContact = updateDto.guestContact;
+        if (updateDto.numberOfGuests !== undefined)
+            booking.numberOfGuests = Number(updateDto.numberOfGuests);
+        if (updateDto.startDate || updateDto.endDate || updateDto.roomTypeId) {
+            const newStart = updateDto.startDate || booking.startDate;
+            const newEnd = updateDto.endDate || booking.endDate;
+            const newRoomTypeId = updateDto.roomTypeId || booking.roomTypeId;
+            const queryRunner = this.dataSource.createQueryRunner();
+            await queryRunner.connect();
+            await queryRunner.startTransaction();
+            try {
+                await this.inventoryService.increaseInventory(booking.roomTypeId, booking.startDate, booking.endDate, 1, queryRunner.manager);
+                await this.inventoryService.reduceInventory(newRoomTypeId, newStart, newEnd, 1, queryRunner.manager);
+                booking.startDate = newStart;
+                booking.endDate = newEnd;
+                booking.roomTypeId = newRoomTypeId;
+                await queryRunner.commitTransaction();
+            }
+            catch (err) {
+                await queryRunner.rollbackTransaction();
+                throw err;
+            }
+            finally {
+                await queryRunner.release();
+            }
+        }
         return this.bookingRepository.save(booking);
     }
     async findAllForTourPartner(tourPartnerId) {

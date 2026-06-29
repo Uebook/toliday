@@ -25,6 +25,7 @@ export declare class BookingService implements OnModuleInit {
     handleCheckInReminders(): Promise<void>;
     handleCheckOutReminders(): Promise<void>;
     updateStatus(id: string, hotelId: string | undefined, updateDto: UpdateBookingStatusDto): Promise<Booking>;
+    update(id: string, hotelId: string, updateDto: any): Promise<Booking>;
     findAllForTourPartner(tourPartnerId: string): Promise<Booking[]>;
     findOneForTourPartner(id: string, tourPartnerId: string): Promise<Booking>;
     updateStatusForTourPartner(id: string, tourPartnerId: string, status: BookingStatus): Promise<Booking>;

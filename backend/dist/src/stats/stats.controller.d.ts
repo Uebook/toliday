@@ -22,6 +22,8 @@ export declare class StatsController {
             status: import("../booking/entities/booking.entity").BookingStatus;
             amount: string;
         }[];
+        adr: number;
+        revpar: number;
     }>;
     getReports(req: any, period?: '7d' | '30d' | '90d'): Promise<{
         dailyData: {

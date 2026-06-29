@@ -25,6 +25,8 @@ export declare class StaffController {
         createdAt: Date;
         updatedAt: Date;
     }[]>;
+    getAttendance(req: any): Promise<import("./entities/attendance.entity").Attendance[]>;
+    clockInOut(req: any, staffId: string, action: 'IN' | 'OUT'): Promise<import("./entities/attendance.entity").Attendance>;
     findOne(id: string): Promise<{
         id: string;
         name: string;

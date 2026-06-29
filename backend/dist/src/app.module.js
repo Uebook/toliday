@@ -70,6 +70,7 @@ const payment_module_1 = require("./payment/payment.module");
 const schedule_1 = require("@nestjs/schedule");
 const reviews_module_1 = require("./reviews/reviews.module");
 const global_inventory_module_1 = require("./global-inventory/global-inventory.module");
+const housekeeping_module_1 = require("./housekeeping/housekeeping.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -101,22 +102,14 @@ exports.AppModule = AppModule = __decorate([
                     }
                     return {
                         type: 'postgres',
-                        host: configService.get('DB_HOST'),
-                        port: configService.get('DB_PORT'),
-                        username: configService.get('DB_USER'),
-                        password: configService.get('DB_PASSWORD'),
-                        database: configService.get('DB_NAME'),
-                        ssl: ca
-                            ? {
-                                rejectUnauthorized: true,
-                                ca,
-                            }
-                            : {
-                                rejectUnauthorized: false,
-                            },
-                        autoLoadEntities: true,
+                        host: configService.get('DB_HOST', 'localhost'),
+                        port: configService.get('DB_PORT', 5432),
+                        username: configService.get('DB_USERNAME', 'postgres'),
+                        password: configService.get('DB_PASSWORD', 'postgres'),
+                        database: configService.get('DB_NAME', 'toliday'),
+                        ssl: ca ? { ca, rejectUnauthorized: false } : { rejectUnauthorized: false },
+                        entities: [__dirname + '/**/*.entity{.ts,.js}'],
                         synchronize: true,
-                        connectTimeoutMS: 5000,
                     };
                 },
             }),
@@ -143,6 +136,7 @@ exports.AppModule = AppModule = __decorate([
             payment_module_1.PaymentModule,
             reviews_module_1.ReviewsModule,
             global_inventory_module_1.GlobalInventoryModule,
+            housekeeping_module_1.HousekeepingModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],

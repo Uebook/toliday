@@ -37,6 +37,10 @@ let HotelService = class HotelService {
     async findAllPublic() {
         return this.hotelRepository.find({
             where: { status: hotel_entity_1.HotelStatus.APPROVED },
+            order: {
+                sortOrder: 'DESC',
+                createdAt: 'DESC',
+            },
         });
     }
     async findByIdPublic(id) {
@@ -88,6 +92,15 @@ let HotelService = class HotelService {
         await this.reviewRepository.update(id, {
             vendorReply,
             vendorReplyAt: new Date(),
+        });
+        const review = await this.reviewRepository.findOne({ where: { id } });
+        if (!review)
+            throw new common_1.NotFoundException('Review not found');
+        return review;
+    }
+    async reportReview(id) {
+        await this.reviewRepository.update(id, {
+            isReported: true,
         });
         const review = await this.reviewRepository.findOne({ where: { id } });
         if (!review)

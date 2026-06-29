@@ -1,8 +1,10 @@
 import { Repository } from 'typeorm';
 import { Booking, BookingStatus } from '../booking/entities/booking.entity';
+import { RoomType } from '../room-type/entities/room-type.entity';
 export declare class StatsService {
     private bookingRepository;
-    constructor(bookingRepository: Repository<Booking>);
+    private roomTypeRepository;
+    constructor(bookingRepository: Repository<Booking>, roomTypeRepository: Repository<RoomType>);
     getSummary(hotelId: string): Promise<{
         revenue: number;
         checkInsToday: number;
@@ -23,6 +25,8 @@ export declare class StatsService {
             status: BookingStatus;
             amount: string;
         }[];
+        adr: number;
+        revpar: number;
     }>;
     getReports(hotelId: string, period?: '7d' | '30d' | '90d'): Promise<{
         dailyData: {

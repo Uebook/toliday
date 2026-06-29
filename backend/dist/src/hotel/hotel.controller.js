@@ -49,6 +49,9 @@ let HotelController = class HotelController {
     replyToReview(id, reply) {
         return this.hotelService.replyToReview(id, reply);
     }
+    reportReview(id) {
+        return this.hotelService.reportReview(id);
+    }
     findMyPromotions(req) {
         return this.promotionsService.findAllByVendor(req.user.hotelId, vertical_enum_1.VerticalType.HOTEL);
     }
@@ -116,6 +119,13 @@ __decorate([
     __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", void 0)
 ], HotelController.prototype, "replyToReview", null);
+__decorate([
+    (0, common_1.Patch)('reviews/:id/report-abuse'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], HotelController.prototype, "reportReview", null);
 __decorate([
     (0, common_1.Get)('my-hotel/promotions'),
     __param(0, (0, common_1.Request)()),

@@ -21,6 +21,7 @@ let Review = class Review {
     vendorReplyAt;
     hotelId;
     hotel;
+    isReported;
     isVisible;
     createdAt;
     updatedAt;
@@ -59,6 +60,10 @@ __decorate([
     (0, typeorm_1.JoinColumn)({ name: 'hotelId' }),
     __metadata("design:type", hotel_entity_1.Hotel)
 ], Review.prototype, "hotel", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ default: false }),
+    __metadata("design:type", Boolean)
+], Review.prototype, "isReported", void 0);
 __decorate([
     (0, typeorm_1.Column)({ default: true }),
     __metadata("design:type", Boolean)

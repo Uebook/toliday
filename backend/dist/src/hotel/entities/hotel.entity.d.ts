@@ -45,6 +45,7 @@ export declare class Hotel {
     bankAccount: string;
     bankIfsc: string;
     isVerified: boolean;
+    sortOrder: number;
     status: HotelStatus;
     staffs: Staff[];
     roomTypes: RoomType[];

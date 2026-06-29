@@ -19,4 +19,5 @@ export declare class HotelService {
     createReview(dto: any): Promise<Review>;
     findReviewsByHotel(hotelId: string): Promise<Review[]>;
     replyToReview(id: string, vendorReply: string): Promise<Review>;
+    reportReview(id: string): Promise<Review>;
 }

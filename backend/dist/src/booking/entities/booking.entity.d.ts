@@ -30,6 +30,8 @@ export declare class Booking {
     isSettled: boolean;
     commissionAmount: number;
     netAmount: number;
+    gstCompany: string;
+    gstNumber: string;
     assignedRoomId: string;
     assignedRoom: Room;
     createdAt: Date;

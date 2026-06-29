@@ -76,6 +76,8 @@ export declare class AdminService {
             isSettled: boolean;
             commissionAmount: number;
             netAmount: number;
+            gstCompany: string;
+            gstNumber: string;
             assignedRoomId: string;
             assignedRoom: import("../room/entities/room.entity").Room;
             createdAt: Date;
@@ -167,6 +169,7 @@ export declare class AdminService {
         bankAccount: string;
         bankIfsc: string;
         isVerified: boolean;
+        sortOrder: number;
         status: HotelStatus;
         staffs: Staff[];
         roomTypes: RoomType[];
@@ -312,6 +315,8 @@ export declare class AdminService {
         isSettled: boolean;
         commissionAmount: number;
         netAmount: number;
+        gstCompany: string;
+        gstNumber: string;
         assignedRoomId: string;
         assignedRoom: import("../room/entities/room.entity").Room;
         createdAt: Date;

@@ -8,6 +8,7 @@ export declare class Review {
     vendorReplyAt: Date;
     hotelId: string;
     hotel: Hotel;
+    isReported: boolean;
     isVisible: boolean;
     createdAt: Date;
     updatedAt: Date;

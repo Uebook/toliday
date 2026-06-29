@@ -42,6 +42,8 @@ export declare class AdminController {
             isSettled: boolean;
             commissionAmount: number;
             netAmount: number;
+            gstCompany: string;
+            gstNumber: string;
             assignedRoomId: string;
             assignedRoom: import("../room/entities/room.entity").Room;
             createdAt: Date;
@@ -138,6 +140,7 @@ export declare class AdminController {
         bankAccount: string;
         bankIfsc: string;
         isVerified: boolean;
+        sortOrder: number;
         status: HotelStatus;
         staffs: import("../staff/entities/staff.entity").Staff[];
         roomTypes: import("../room-type/entities/room-type.entity").RoomType[];
@@ -283,6 +286,8 @@ export declare class AdminController {
         isSettled: boolean;
         commissionAmount: number;
         netAmount: number;
+        gstCompany: string;
+        gstNumber: string;
         assignedRoomId: string;
         assignedRoom: import("../room/entities/room.entity").Room;
         createdAt: Date;

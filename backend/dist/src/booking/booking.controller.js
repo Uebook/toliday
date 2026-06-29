@@ -85,6 +85,12 @@ let BookingController = class BookingController {
     assignRoom(req, id, roomId) {
         return this.bookingService.assignRoom(id, req.user.hotelId, roomId);
     }
+    update(req, id, body) {
+        if (req.user.tourPartnerId) {
+            throw new common_1.ForbiddenException('Not supported for tour partners');
+        }
+        return this.bookingService.update(id, req.user.hotelId, body);
+    }
     getAdminConsumers(req) {
         if (req.user.role !== 'ADMIN' && req.user.role !== 'OWNER') {
             throw new common_1.ForbiddenException('Unauthorized');
@@ -141,6 +147,15 @@ __decorate([
     __metadata("design:paramtypes", [Object, String, String]),
     __metadata("design:returntype", void 0)
 ], BookingController.prototype, "assignRoom", null);
+__decorate([
+    (0, common_1.Patch)(':id'),
+    __param(0, (0, common_1.Request)()),
+    __param(1, (0, common_1.Param)('id')),
+    __param(2, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String, Object]),
+    __metadata("design:returntype", void 0)
+], BookingController.prototype, "update", null);
 __decorate([
     (0, common_1.Get)('admin/consumers'),
     __param(0, (0, common_1.Request)()),

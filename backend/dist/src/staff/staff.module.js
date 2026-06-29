@@ -14,12 +14,13 @@ const staff_service_1 = require("./staff.service");
 const staff_entity_1 = require("./entities/staff.entity");
 const hotel_entity_1 = require("../hotel/entities/hotel.entity");
 const tour_partner_entity_1 = require("../packages/entities/tour-partner.entity");
+const attendance_entity_1 = require("./entities/attendance.entity");
 let StaffModule = class StaffModule {
 };
 exports.StaffModule = StaffModule;
 exports.StaffModule = StaffModule = __decorate([
     (0, common_1.Module)({
-        imports: [typeorm_1.TypeOrmModule.forFeature([staff_entity_1.Staff, hotel_entity_1.Hotel, tour_partner_entity_1.TourPartner])],
+        imports: [typeorm_1.TypeOrmModule.forFeature([staff_entity_1.Staff, hotel_entity_1.Hotel, tour_partner_entity_1.TourPartner, attendance_entity_1.Attendance])],
         controllers: [staff_controller_1.StaffController],
         providers: [staff_service_1.StaffService],
         exports: [staff_service_1.StaffService],

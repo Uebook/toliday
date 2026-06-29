@@ -24,7 +24,7 @@ export default function PackagesReviewsPage() {
                      const res = await api.get('/reviews/admin/all?vertical=PACKAGE');
                      return res.data.map((r: any) => ({
                             id: r.id,
-                            packageName: r.vendorName,
+                            partnerName: r.vendorName,
                             guestName: r.guestName,
                             rating: r.rating,
                             comment: r.comment,
