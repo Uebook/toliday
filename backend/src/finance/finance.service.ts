@@ -125,6 +125,12 @@ export class FinanceService {
     });
   }
 
+  async getInvoiceById(id: string) {
+    return this.invoiceRepo.findOne({
+      where: { id },
+    });
+  }
+
   // Admin Methods
   async findAllPayouts() {
     return this.payoutRepo.find({

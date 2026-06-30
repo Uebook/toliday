@@ -96,4 +96,9 @@ export class FinanceController {
     const { vendorId, vertical } = this.extractVendorContext(req);
     return this.financeService.getInvoices(vendorId, vertical);
   }
+
+  @Get('invoices/:id')
+  getInvoice(@Param('id') id: string) {
+    return this.financeService.getInvoiceById(id);
+  }
 }
