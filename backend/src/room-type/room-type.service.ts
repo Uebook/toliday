@@ -23,12 +23,16 @@ export class RoomTypeService {
   }
 
   async findAllByHotel(hotelId: string): Promise<RoomType[]> {
-    return this.roomTypeRepository.find({ where: { hotelId } });
+    return this.roomTypeRepository.find({ 
+      where: { hotelId },
+      relations: ['ratePlans']
+    });
   }
 
   async findOne(id: string, hotelId: string): Promise<RoomType> {
     const roomType = await this.roomTypeRepository.findOne({
       where: { id, hotelId },
+      relations: ['ratePlans']
     });
     if (!roomType) {
       throw new NotFoundException(`RoomType with ID ${id} not found.`);

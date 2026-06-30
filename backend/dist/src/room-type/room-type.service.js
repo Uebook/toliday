@@ -30,11 +30,15 @@ let RoomTypeService = class RoomTypeService {
         return this.roomTypeRepository.save(roomType);
     }
     async findAllByHotel(hotelId) {
-        return this.roomTypeRepository.find({ where: { hotelId } });
+        return this.roomTypeRepository.find({
+            where: { hotelId },
+            relations: ['ratePlans']
+        });
     }
     async findOne(id, hotelId) {
         const roomType = await this.roomTypeRepository.findOne({
             where: { id, hotelId },
+            relations: ['ratePlans']
         });
         if (!roomType) {
             throw new common_1.NotFoundException(`RoomType with ID ${id} not found.`);
