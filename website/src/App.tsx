@@ -313,6 +313,7 @@ export default function App() {
                 room={selectedRoom}
                 searchParams={searchParams}
                 entity={selectedEntity}
+                user={user}
                 onBack={() => {
                   if (selectedEntity?.type === 'flight') {
                     setView('flight-addons');

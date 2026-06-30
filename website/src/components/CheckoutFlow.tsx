@@ -27,17 +27,18 @@ interface CheckoutFlowProps {
   };
   onBack: () => void;
   onComplete: () => void;
+  user?: any;
 }
 
 type CheckoutStep = 'customer' | 'review' | 'payment' | 'success';
 
-export default function CheckoutFlow({ hotel, room, entity, searchParams, onBack, onComplete }: CheckoutFlowProps) {
+export default function CheckoutFlow({ hotel, room, entity, searchParams, onBack, onComplete, user }: CheckoutFlowProps) {
   const [step, setStep] = useState<CheckoutStep>('customer');
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    phone: '',
+    firstName: user?.name ? user.name.split(' ')[0] : '',
+    lastName: user?.name ? user.name.split(' ').slice(1).join(' ') : '',
+    email: user?.email || '',
+    phone: user?.phone || '',
     requests: ''
   });
   const [gstEnabled, setGstEnabled] = useState(false);
