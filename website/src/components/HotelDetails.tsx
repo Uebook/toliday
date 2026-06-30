@@ -102,6 +102,22 @@ export default function HotelDetails({ hotel, onBack, onProceedToCheckout, searc
       }))
     : fallbackReviews;
 
+  // Dynamic Pricing Calculations
+  const selectedRoomObj = selectedRoom && fullDetails?.roomTypes
+    ? fullDetails.roomTypes.find((r: any) => r.id === selectedRoom)
+    : null;
+  
+  const currentPricePerNight = selectedRoomObj 
+    ? (Number(selectedRoomObj.price) || Number(selectedRoomObj.ratePlans?.[0]?.price) || 5000)
+    : Number(hotel.discountPrice || 4000);
+
+  const originalPricePerNight = selectedRoomObj
+    ? Math.round(currentPricePerNight / 0.6)
+    : Number(hotel.price || 5000);
+
+  const finalTotalPrice = currentPricePerNight * nights;
+  const originalTotalPrice = originalPricePerNight * nights;
+
   return (
     <div className="bg-zinc-50 min-h-screen pt-28 pb-20">
       <div className="max-w-7xl mx-auto px-6">
@@ -446,8 +462,8 @@ export default function HotelDetails({ hotel, onBack, onProceedToCheckout, searc
                 <div className="flex items-center justify-between mb-8 pb-6 border-b border-zinc-100">
                   <span className="font-bold text-zinc-900">Your Summary</span>
                   <div className="text-right">
-                    <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Starts from</p>
-                    <p className="text-2xl font-display font-bold text-indigo-600">₹{hotel.discountPrice.toLocaleString('en-IN')}</p>
+                    <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">{selectedRoom ? 'Selected Room Rate' : 'Starts from'}</p>
+                    <p className="text-2xl font-display font-bold text-indigo-600">₹{currentPricePerNight.toLocaleString('en-IN')}</p>
                   </div>
                 </div>
 
@@ -475,10 +491,10 @@ export default function HotelDetails({ hotel, onBack, onProceedToCheckout, searc
                 <div className="bg-indigo-50 p-6 rounded-[2rem] border border-indigo-100 mb-8">
                   <div className="flex justify-between items-center mb-2">
                     <span className="text-sm font-bold text-indigo-600">Total Price</span>
-                    <span className="text-sm text-zinc-400 line-through">₹{(hotel.price * nights).toLocaleString('en-IN')}</span>
+                    <span className="text-sm text-zinc-400 line-through">₹{originalTotalPrice.toLocaleString('en-IN')}</span>
                   </div>
                   <div className="text-3xl font-display font-bold text-indigo-900">
-                    ₹{(selectedRoom && fullDetails?.roomTypes ? (fullDetails.roomTypes.find((r: any) => r.id === selectedRoom)?.ratePlans?.[0]?.price || 5000) * nights : hotel.discountPrice * nights).toLocaleString('en-IN')}
+                    ₹{finalTotalPrice.toLocaleString('en-IN')}
                     <span className="text-xs font-bold bg-white text-indigo-600 px-2 py-0.5 rounded-full ml-3 uppercase">40% OFF</span>
                   </div>
                   <p className="text-[10px] text-indigo-400 font-bold mt-2 uppercase tracking-tight">Inclusive of all taxes & fees</p>
@@ -490,7 +506,7 @@ export default function HotelDetails({ hotel, onBack, onProceedToCheckout, searc
                     if (fullDetails?.roomTypes && selectedRoom) {
                       const roomType = fullDetails.roomTypes.find((r: any) => r.id === selectedRoom);
                       if (roomType) {
-                        const price = roomType.ratePlans?.[0]?.price || 5000;
+                        const price = roomType.price || roomType.ratePlans?.[0]?.price || 5000;
                         const mappedRoom = {
                           id: roomType.id,
                           type: roomType.name || 'Standard Room',
