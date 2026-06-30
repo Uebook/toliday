@@ -170,7 +170,7 @@ export class BookingService implements OnModuleInit {
     
     const booking = await this.bookingRepository.findOne({
       where: whereClause,
-      relations: ['roomType', 'assignedRoom'],
+      relations: ['roomType', 'assignedRoom', 'hotel'],
     });
     if (!booking) {
       throw new NotFoundException(`Booking with ID ${id} not found.`);
