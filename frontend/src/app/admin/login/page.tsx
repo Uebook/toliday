@@ -4,13 +4,22 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Shield, Lock, Mail, ArrowRight, Eye, EyeOff, CheckCircle2, AlertCircle, Zap } from 'lucide-react';
+import { jwtDecode } from 'jwt-decode';
 import api from '@/lib/api';
 
 export default function AdminLoginPage() {
     const router = useRouter();
     const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState('');
+    const [error, setError] = useState(() => {
+        if (typeof window !== 'undefined') {
+            const err = new URLSearchParams(window.location.search).get('error');
+            if (err === 'unauthorized') {
+                return 'Access Denied: Administrator role required.';
+            }
+        }
+        return '';
+    });
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
@@ -21,10 +30,14 @@ export default function AdminLoginPage() {
 
         try {
             const res = await api.post('/auth/login', { email, password });
+            const decoded: any = jwtDecode(res.data.token);
+            if (decoded.role !== 'ADMIN' && decoded.role !== 'superadmin') {
+                throw new Error('Access Denied: Administrator role required.');
+            }
             localStorage.setItem('token', res.data.token);
             router.push('/admin/dashboard');
         } catch (err: any) {
-            setError(err.response?.data?.message || 'Authentication failed. Please check your credentials.');
+            setError(err.message || err.response?.data?.message || 'Authentication failed. Please check your credentials.');
         } finally {
             setIsLoading(false);
         }

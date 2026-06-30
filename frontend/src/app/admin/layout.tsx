@@ -19,7 +19,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                      if (!user) {
                             router.push('/admin/login');
                      } else if (user.role !== 'ADMIN' && user.role !== 'superadmin') {
-                            router.push('/hotel/login');
+                            localStorage.removeItem('token');
+                            router.push('/admin/login?error=unauthorized');
                      } else {
                             setIsAuthorized(true);
                      }
