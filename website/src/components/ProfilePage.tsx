@@ -60,6 +60,152 @@ export default function ProfilePage({ user, onLogout, onBack, onSelectHotel }: P
     }
   }, [activeTab, user?.email, user?.id]);
 
+  const openPrintableInvoice = (booking: any) => {
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) return;
+
+    const invoiceDate = new Date(booking.createdAt || Date.now()).toLocaleDateString('en-US', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric'
+    });
+    const checkIn = new Date(booking.startDate).toLocaleDateString('en-US', { day: '2-digit', month: 'short', year: 'numeric' });
+    const checkOut = new Date(booking.endDate).toLocaleDateString('en-US', { day: '2-digit', month: 'short', year: 'numeric' });
+    
+    const grossVal = parseFloat(booking.totalAmount);
+    const taxAmt = Math.round(grossVal * 0.18 / 1.18); // 18% inclusive GST
+    const baseAmt = grossVal - taxAmt;
+
+    const htmlContent = `
+      <html>
+        <head>
+          <title>Invoice - ${booking.bookingReference || booking.id}</title>
+          <style>
+            body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: #333; margin: 0; padding: 40px; }
+            .invoice-card { max-w: 800px; margin: 0 auto; background: white; padding: 20px; }
+            .header { display: flex; justify-content: space-between; border-bottom: 2px solid #6366f1; padding-bottom: 20px; margin-bottom: 30px; }
+            .header h1 { color: #4338ca; font-size: 28px; margin: 0; text-transform: uppercase; font-weight: 900; }
+            .grid { display: grid; grid-cols-2: repeat(2, minmax(0, 1fr)); display: flex; justify-content: space-between; gap: 40px; margin-bottom: 30px; font-size: 13px; }
+            .col { flex: 1; }
+            .col h3 { color: #1e1b4b; font-size: 12px; text-transform: uppercase; margin-bottom: 10px; letter-spacing: 1px; }
+            .dates-bar { background: #f8fafc; border-radius: 12px; padding: 15px; display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 30px; border: 1px solid #e2e8f0; }
+            .dates-bar div { text-align: center; flex: 1; }
+            .dates-bar span { display: block; font-weight: bold; color: #1e293b; margin-top: 4px; }
+            .dates-bar label { color: #94a3b8; text-transform: uppercase; font-size: 10px; font-weight: bold; }
+            table { w-full; width: 100%; border-collapse: collapse; margin-bottom: 30px; font-size: 13px; }
+            th { background: #f1f5f9; text-align: left; padding: 12px; font-weight: bold; text-transform: uppercase; font-size: 10px; color: #475569; border-bottom: 2px solid #e2e8f0; }
+            td { padding: 12px; border-bottom: 1px solid #e2e8f0; }
+            .total-section { display: flex; justify-content: flex-end; margin-top: 20px; }
+            .total-box { width: 300px; font-size: 13px; }
+            .total-row { display: flex; justify-content: space-between; padding: 6px 0; }
+            .grand-total { border-t: 2px solid #4338ca; font-size: 16px; font-weight: bold; color: #1e1b4b; padding-top: 10px; margin-top: 6px; }
+            .badge { display: inline-block; padding: 4px 12px; border-radius: 50px; font-size: 11px; font-weight: bold; text-transform: uppercase; }
+            .badge-paid { background: #dcfce7; color: #15803d; }
+            .badge-pending { background: #fef9c3; color: #a16207; }
+            .footer { border-t: 1px solid #e2e8f0; padding-top: 20px; margin-top: 50px; font-size: 10px; color: #94a3b8; text-align: center; }
+            @media print {
+              body { padding: 0; }
+              .no-print { display: none; }
+            }
+          </style>
+        </head>
+        <body>
+          <div class="invoice-card">
+            <div class="header">
+              <div>
+                <h1>Booking Invoice</h1>
+                <p style="color: #64748b; font-size: 12px; margin: 4px 0 0 0;">Reference ID: <strong>${booking.bookingReference || booking.id}</strong></p>
+              </div>
+              <div style="text-align: right;">
+                <span class="badge ${booking.status === 'CONFIRMED' ? 'badge-paid' : 'badge-pending'}">${booking.status}</span>
+              </div>
+            </div>
+
+            <div class="grid">
+              <div class="col">
+                <h3>Issued By</h3>
+                <strong>Toliday Trip Private Limited</strong><br/>
+                Sector P3, Greater Noida<br/>
+                Uttar Pradesh, 201308, IN<br/>
+                Email: bookings@toliday.in | Phone: 8447804043
+              </div>
+              <div class="col" style="text-align: right;">
+                <h3>Customer Details</h3>
+                <strong>${booking.guestName}</strong><br/>
+                Email: ${booking.guestEmail}<br/>
+                ${booking.guestContact ? `Phone: ${booking.guestContact}` : ''}
+              </div>
+            </div>
+
+            <div class="dates-bar">
+              <div>
+                <label>Check-In Date</label>
+                <span>${checkIn}</span>
+              </div>
+              <div style="border-left: 1px solid #e2e8f0; border-right: 1px solid #e2e8f0;">
+                <label>Hotel details</label>
+                <span>${booking.hotel?.name || 'Hotel Stay'}</span>
+              </div>
+              <div>
+                <label>Check-Out Date</label>
+                <span>${checkOut}</span>
+              </div>
+            </div>
+
+            <table>
+              <thead>
+                <tr>
+                  <th>Description</th>
+                  <th style="text-align: right;">Room type</th>
+                  <th style="text-align: right;">Total Guests</th>
+                  <th style="text-align: right;">Amount (INR)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Accommodation Charges (Inclusive of all local taxes)</td>
+                  <td style="text-align: right;">${booking.roomType?.name || 'Standard Room'}</td>
+                  <td style="text-align: right;">${booking.numberOfGuests || 2} Guests</td>
+                  <td style="text-align: right; font-weight: bold;">₹${grossVal.toLocaleString('en-IN')}</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div class="total-section">
+              <div class="total-box">
+                <div class="total-row">
+                  <span style="color: #64748b;">Room Rent (Base price):</span>
+                  <span>₹${baseAmt.toLocaleString('en-IN')}</span>
+                </div>
+                <div class="total-row">
+                  <span style="color: #64748b;">GST (18% inclusive):</span>
+                  <span>₹${taxAmt.toLocaleString('en-IN')}</span>
+                </div>
+                <div class="total-row grand-total">
+                  <span>Grand Total Paid:</span>
+                  <span>₹${grossVal.toLocaleString('en-IN')}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="footer">
+              <p>This is a computer generated invoice and does not require physical signature.</p>
+              <p>&copy; 2026 Toliday Trip. All Rights Reserved.</p>
+            </div>
+          </div>
+          <script>
+            window.onload = function() {
+              window.print();
+            }
+          </script>
+        </body>
+      </html>
+    `;
+
+    printWindow.document.write(htmlContent);
+    printWindow.document.close();
+  };
+
   useEffect(() => {
     if (activeTab === 'wishlist') {
       setIsLoadingWishlist(true);
@@ -322,7 +468,10 @@ export default function ProfilePage({ user, onLogout, onBack, onSelectHotel }: P
                               <button className="flex-1 bg-zinc-900 text-white py-3.5 rounded-2xl text-xs font-bold hover:bg-black transition-all">
                                 {isUpcoming ? 'Modify Booking' : 'Book Again'}
                               </button>
-                              <button className="flex-1 bg-white border border-zinc-100 text-zinc-900 py-3.5 rounded-2xl text-xs font-bold hover:bg-zinc-50 transition-all">
+                              <button 
+                                onClick={() => openPrintableInvoice(booking)}
+                                className="flex-1 bg-white border border-zinc-100 text-zinc-900 py-3.5 rounded-2xl text-xs font-bold hover:bg-zinc-50 transition-all"
+                              >
                                 View Invoice
                               </button>
                             </div>
