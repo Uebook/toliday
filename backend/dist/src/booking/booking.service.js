@@ -146,7 +146,7 @@ let BookingService = BookingService_1 = class BookingService {
         }
         const booking = await this.bookingRepository.findOne({
             where: whereClause,
-            relations: ['roomType', 'assignedRoom'],
+            relations: ['roomType', 'assignedRoom', 'hotel'],
         });
         if (!booking) {
             throw new common_1.NotFoundException(`Booking with ID ${id} not found.`);

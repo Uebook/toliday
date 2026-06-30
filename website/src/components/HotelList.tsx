@@ -269,11 +269,19 @@ export default function HotelList({ onBack, onSelectHotel, searchParams }: Hotel
 
         if (searchParams?.destination) {
           const dest = searchParams.destination.toLowerCase();
-          formatted = formatted.filter((h: any) => 
-            h.location.toLowerCase().includes(dest) || 
-            (h.city && h.city.toLowerCase().includes(dest)) || 
-            h.name.toLowerCase().includes(dest)
-          );
+          const searchTerms = dest.split(/[\s,()]+/).filter(Boolean);
+          
+          formatted = formatted.filter((h: any) => {
+            const cleanLoc = (h.location || '').toLowerCase();
+            const cleanCity = (h.city || '').toLowerCase();
+            const cleanName = (h.name || '').toLowerCase();
+            
+            return searchTerms.some(term => 
+              cleanLoc.includes(term) || 
+              cleanCity.includes(term) || 
+              cleanName.includes(term)
+            );
+          });
         }
 
         setHotelsData(formatted);

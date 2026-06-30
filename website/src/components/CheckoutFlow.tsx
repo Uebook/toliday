@@ -377,7 +377,6 @@ export default function CheckoutFlow({ hotel, room, entity, searchParams, onBack
                   </div>
                 </div>
               )}
-          </motion.div>
             <button 
               onClick={() => setStep('review')}
               disabled={
@@ -937,7 +936,15 @@ export default function CheckoutFlow({ hotel, room, entity, searchParams, onBack
                           </div>
                           <div>
                             <p className="text-[10px] font-bold text-zinc-400 uppercase leading-none mb-1">Date</p>
-                            <p className="text-xs font-bold text-zinc-900">May 24, 2026</p>
+                            <p className="text-xs font-bold text-zinc-900">
+                              {hotel && room ? (
+                                `${new Date(arrivalStr).toLocaleDateString('en-US', { day: '2-digit', month: 'short' })} - ${new Date(departureStr).toLocaleDateString('en-US', { day: '2-digit', month: 'short', year: 'numeric' })}`
+                              ) : searchParams?.date ? (
+                                new Date(searchParams.date).toLocaleDateString('en-US', { day: '2-digit', month: 'short', year: 'numeric' })
+                              ) : searchParams?.departure ? (
+                                new Date(searchParams.departure).toLocaleDateString('en-US', { day: '2-digit', month: 'short', year: 'numeric' })
+                              ) : 'Selected Dates'}
+                            </p>
                           </div>
                         </div>
   
@@ -1182,11 +1189,27 @@ export default function CheckoutFlow({ hotel, room, entity, searchParams, onBack
               <div className="grid grid-cols-2 gap-6">
                 <div>
                   <p className="text-[10px] font-bold text-zinc-400 uppercase mb-1">{entity?.type === 'flight' ? 'Departure Date' : entity?.type === 'activity' ? 'Activity Date' : 'Check In'}</p>
-                  <p className="text-sm font-bold text-zinc-900">{entity?.type === 'flight' ? searchParams?.departure : entity?.type === 'activity' ? 'May 30, 2026' : 'May 24, 2026'}</p>
+                  <p className="text-sm font-bold text-zinc-900">
+                    {entity?.type === 'flight' ? (
+                      searchParams?.departure ? new Date(searchParams.departure).toLocaleDateString('en-US', { day: '2-digit', month: 'short', year: 'numeric' }) : 'N/A'
+                    ) : entity?.type === 'activity' ? (
+                      searchParams?.date ? new Date(searchParams.date).toLocaleDateString('en-US', { day: '2-digit', month: 'short', year: 'numeric' }) : 'N/A'
+                    ) : (
+                      arrivalStr ? new Date(arrivalStr).toLocaleDateString('en-US', { day: '2-digit', month: 'short', year: 'numeric' }) : 'N/A'
+                    )}
+                  </p>
                 </div>
                 <div>
                   <p className="text-[10px] font-bold text-zinc-400 uppercase mb-1">{entity?.type === 'flight' ? 'Return Date' : entity?.type === 'activity' ? 'Time Slot' : 'Check Out'}</p>
-                  <p className="text-sm font-bold text-zinc-900">{entity?.type === 'flight' ? (searchParams?.return || 'One Way') : entity?.type === 'activity' ? entity.timeSlot : 'May 26, 2026'}</p>
+                  <p className="text-sm font-bold text-zinc-900">
+                    {entity?.type === 'flight' ? (
+                      searchParams?.return ? new Date(searchParams.return).toLocaleDateString('en-US', { day: '2-digit', month: 'short', year: 'numeric' }) : 'One Way'
+                    ) : entity?.type === 'activity' ? (
+                      entity.timeSlot || 'Anytime'
+                    ) : (
+                      departureStr ? new Date(departureStr).toLocaleDateString('en-US', { day: '2-digit', month: 'short', year: 'numeric' }) : 'N/A'
+                    )}
+                  </p>
                 </div>
               </div>
               
@@ -1478,9 +1501,23 @@ export default function CheckoutFlow({ hotel, room, entity, searchParams, onBack
                       <div>
                         <h4 className="text-sm font-bold text-zinc-900 line-clamp-1">{priceData.name}</h4>
                         <p className="text-[10px] font-bold text-indigo-600 uppercase tracking-tight">{priceData.type}</p>
-                        <div className="flex items-center gap-1 mt-1">
-                          <MapPin className="w-2.5 h-2.5 text-zinc-400" />
-                          <span className="text-[10px] text-zinc-400 truncate max-w-[120px]">Confirmed Destination</span>
+                        <div className="flex flex-col gap-0.5 mt-1">
+                          <div className="flex items-center gap-1">
+                            <MapPin className="w-2.5 h-2.5 text-zinc-400" />
+                            <span className="text-[10px] text-zinc-400 truncate max-w-[120px] font-medium">Confirmed Booking</span>
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <Calendar className="w-2.5 h-2.5 text-indigo-500" />
+                            <span className="text-[10px] text-zinc-700 font-bold">
+                              {hotel && room ? (
+                                `${new Date(arrivalStr).toLocaleDateString('en-US', { day: '2-digit', month: 'short' })} - ${new Date(departureStr).toLocaleDateString('en-US', { day: '2-digit', month: 'short', year: 'numeric' })}`
+                              ) : searchParams?.date ? (
+                                new Date(searchParams.date).toLocaleDateString('en-US', { day: '2-digit', month: 'short', year: 'numeric' })
+                              ) : searchParams?.departure ? (
+                                new Date(searchParams.departure).toLocaleDateString('en-US', { day: '2-digit', month: 'short', year: 'numeric' })
+                              ) : 'Selected Dates'}
+                            </span>
+                          </div>
                         </div>
                       </div>
                     </div>
