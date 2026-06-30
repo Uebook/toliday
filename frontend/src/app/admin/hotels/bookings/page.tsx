@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '@/lib/api';
 import DataTable from '@/components/admin/DataTable';
+import Topbar from '@/components/layout/Topbar';
 import {
        Calendar, CheckCircle, XCircle, Clock,
        Building2, Download
@@ -13,13 +14,21 @@ import { toast } from 'react-hot-toast';
 export default function HotelsBookingsPage() {
        const queryClient = useQueryClient();
        const [search, setSearch] = useState('');
+       const [verticalFilter, setVerticalFilter] = useState('HOTEL');
+       const [statusFilter, setStatusFilter] = useState('ALL');
 
        const { data: bookings = [], isLoading } = useQuery({
               queryKey: ['hotels-bookings'],
               queryFn: async () => {
-                     const res = await api.get('/bookings/admin/all');
-                     // Note: In real app, endpoint should be filtered by vertical
-                     return res.data.filter((b: any) => b.hotelId);
+                     try {
+                         const res = await api.get('/bookings/admin/all');
+                         const data = Array.isArray(res.data) ? res.data : (res.data?.data || []);
+                         // Sort so latest booking is at the top
+                         return data.sort((a: any, b: any) => new Date(b.createdAt || b.startDate).getTime() - new Date(a.createdAt || a.startDate).getTime());
+                     } catch (err) {
+                         console.error("Error fetching bookings:", err);
+                         return [];
+                     }
               }
        });
 
@@ -33,10 +42,21 @@ export default function HotelsBookingsPage() {
               }
        });
 
-       const filteredBookings = bookings.filter((b: any) =>
-              (b.guestName || '').toLowerCase().includes(search.toLowerCase()) ||
-              (b.bookingReference || '').toLowerCase().includes(search.toLowerCase())
-       );
+       const filteredBookings = bookings.filter((b: any) => {
+              const matchesSearch = (b.guestName || '').toLowerCase().includes(search.toLowerCase()) ||
+                                  (b.bookingReference || '').toLowerCase().includes(search.toLowerCase());
+              
+              const matchesStatus = statusFilter === 'ALL' || b.status === statusFilter;
+              
+              let matchesVertical = false;
+              if (verticalFilter === 'HOTEL') matchesVertical = !!b.hotelId;
+              if (verticalFilter === 'CAB') matchesVertical = !!b.cabVendorId;
+              if (verticalFilter === 'BUS') matchesVertical = !!b.busVendorId;
+              if (verticalFilter === 'TOUR') matchesVertical = !!b.tourPartnerId;
+              if (verticalFilter === 'FLIGHT') matchesVertical = !!b.flightDetails;
+
+              return matchesSearch && matchesStatus && matchesVertical;
+       });
 
        const columns = [
               {
@@ -44,7 +64,7 @@ export default function HotelsBookingsPage() {
                      accessor: 'guestName',
                      render: (booking: any) => (
                             <div>
-                                   <div className="font-black text-slate-900 text-sm">{booking.guestName}</div>
+                                   <div className="font-black text-foreground text-sm">{booking.guestName}</div>
                                    <div className="text-xs text-slate-500 font-bold mt-1">{booking.guestEmail}</div>
                                    <div className="text-[10px] text-indigo-500 font-black uppercase tracking-widest mt-1">Ref: {booking.bookingReference}</div>
                             </div>
@@ -59,8 +79,12 @@ export default function HotelsBookingsPage() {
                                           <Building2 size={16} />
                                    </div>
                                    <div>
-                                          <div className="text-[10px] font-black uppercase tracking-widest text-slate-400">HOTEL</div>
-                                          <div className="text-xs font-bold text-slate-700 truncate max-w-[150px]">{booking.hotel?.name || 'Unknown Property'}</div>
+                                          <div className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                                              {booking.hotelId ? 'HOTEL' : booking.cabVendorId ? 'CAB' : booking.busVendorId ? 'BUS' : booking.tourPartnerId ? 'TOUR' : 'SERVICE'}
+                                          </div>
+                                          <div className="text-xs font-bold text-slate-700 truncate max-w-[150px]">
+                                              {booking.hotel?.name || booking.cabVendor?.name || booking.busVendor?.name || booking.tourPartner?.name || 'Unknown Property'}
+                                          </div>
                                    </div>
                             </div>
                      )
@@ -79,7 +103,7 @@ export default function HotelsBookingsPage() {
                      header: 'Booking Value',
                      accessor: 'totalAmount',
                      render: (booking: any) => (
-                            <div className="text-sm font-black text-slate-900">${booking.totalAmount}</div>
+                            <div className="text-sm font-black text-foreground">₹{Number(booking.totalAmount).toLocaleString()}</div>
                      )
               },
               {
@@ -114,36 +138,52 @@ export default function HotelsBookingsPage() {
        };
 
        const headerAction = (
-              <button className="px-6 py-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest flex items-center gap-2 transition-all shadow-xl shadow-indigo-600/20 active:scale-95 group">
-                     <Download size={14} className="group-hover:translate-y-0.5 transition-transform" /> Export Report
-              </button>
+           <div className="flex items-center gap-3 w-full md:w-auto">
+               <select
+                   value={verticalFilter}
+                   onChange={(e) => setVerticalFilter(e.target.value)}
+                   className="bg-black/[0.02] dark:bg-white/[0.03] border border-border/10 rounded-2xl py-3 px-4 text-xs font-black uppercase tracking-widest focus:outline-none focus:ring-2 focus:ring-indigo-500/20 text-foreground"
+               >
+                   <option value="HOTEL">Hotels Only</option>
+                   <option value="CAB">Cabs Only</option>
+                   <option value="BUS">Bus Only</option>
+                   <option value="TOUR">Tours Only</option>
+                   <option value="FLIGHT">Flights Only</option>
+               </select>
+
+               <select
+                   value={statusFilter}
+                   onChange={(e) => setStatusFilter(e.target.value)}
+                   className="bg-black/[0.02] dark:bg-white/[0.03] border border-border/10 rounded-2xl py-3 px-4 text-xs font-black uppercase tracking-widest focus:outline-none focus:ring-2 focus:ring-indigo-500/20 text-foreground"
+               >
+                   <option value="ALL">All Status</option>
+                   <option value="CONFIRMED">Confirmed</option>
+                   <option value="PENDING">Pending</option>
+                   <option value="CANCELLED">Cancelled</option>
+               </select>
+
+               <button className="px-6 py-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest flex items-center gap-2 transition-all shadow-xl shadow-indigo-600/20 active:scale-95 group ml-auto md:ml-0">
+                      <Download size={14} className="group-hover:translate-y-0.5 transition-transform" /> Export
+               </button>
+           </div>
        );
 
        return (
-              <div className="p-8 lg:p-12 animate-fadeIn space-y-8">
-                     <header className="flex flex-col md:flex-row md:items-center justify-between gap-8">
-                            <div>
-                                   <div className="flex items-center gap-3 mb-2">
-                                          <div className="p-2 bg-indigo-600 rounded-xl text-white shadow-lg shadow-indigo-600/20">
-                                                 <Calendar size={20} />
-                                          </div>
-                                          <span className="text-slate-400 font-black uppercase tracking-[0.2em] text-[10px]">Hotel Operations</span>
-                                   </div>
-                                   <h1 className="text-4xl font-black text-slate-900 tracking-tight">Bookings & Reservations</h1>
-                                   <p className="text-slate-400 font-bold mt-2">Manage all incoming bookings for hotel partners</p>
-                            </div>
-                     </header>
-
-                     <DataTable 
-                            title="Recent Reservations"
-                            description={`${filteredBookings.length} records found`}
-                            columns={columns}
-                            data={filteredBookings}
-                            onSearch={setSearch}
-                            isLoading={isLoading}
-                            actions={actions}
-                            headerAction={headerAction}
-                     />
+              <div className="min-h-full">
+                     <Topbar title="Bookings & Reservations" subtitle="Manage all incoming bookings across verticals" />
+                     
+                     <div className="p-6 md:p-8 space-y-6 md:space-y-8 animate-fadeIn max-w-[1600px] mx-auto">
+                            <DataTable 
+                                   title="Recent Reservations"
+                                   description={`${filteredBookings.length} records found`}
+                                   columns={columns}
+                                   data={filteredBookings}
+                                   onSearch={setSearch}
+                                   isLoading={isLoading}
+                                   actions={actions}
+                                   headerAction={headerAction}
+                            />
+                     </div>
               </div>
        );
 }

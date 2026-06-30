@@ -28,6 +28,7 @@ let Booking = class Booking {
     guestName;
     guestEmail;
     guestContact;
+    userId;
     startDate;
     endDate;
     numberOfGuests;
@@ -68,6 +69,10 @@ __decorate([
     (0, typeorm_1.Column)({ nullable: true }),
     __metadata("design:type", String)
 ], Booking.prototype, "guestContact", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ nullable: true }),
+    __metadata("design:type", String)
+], Booking.prototype, "userId", void 0);
 __decorate([
     (0, typeorm_1.Column)({ type: 'date' }),
     __metadata("design:type", String)

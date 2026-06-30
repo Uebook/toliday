@@ -16,7 +16,7 @@ export declare class BookingService implements OnModuleInit {
     createPublic(createDto: CreateBookingDto & {
         hotelId: string;
     }): Promise<Booking>;
-    findAllByEmail(guestEmail: string): Promise<Booking[]>;
+    findAllByEmail(identifier: string): Promise<Booking[]>;
     findAll(hotelId: string): Promise<Booking[]>;
     findAllGlobal(): Promise<Booking[]>;
     findOne(id: string, hotelId?: string): Promise<Booking>;

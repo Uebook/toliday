@@ -21,7 +21,7 @@ export class FinanceController {
   constructor(private readonly financeService: FinanceService) {}
 
   private checkAdmin(req: any) {
-    if (req.user.role !== StaffRole.ADMIN) {
+    if (req.user.role !== StaffRole.ADMIN && req.user.role !== 'OWNER' && req.user.role !== 'superadmin') {
       throw new UnauthorizedException('Admin access required');
     }
   }

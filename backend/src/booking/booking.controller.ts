@@ -43,7 +43,7 @@ export class BookingController {
 
   @Get('admin/all')
   findAllGlobal(@Request() req) {
-    if (req.user.role !== 'ADMIN' && req.user.role !== 'OWNER') {
+    if (req.user.role !== 'ADMIN' && req.user.role !== 'OWNER' && req.user.role !== 'superadmin') {
       throw new ForbiddenException('Unauthorized');
     }
     return this.bookingService.findAllGlobal();
@@ -107,7 +107,7 @@ export class BookingController {
 
   @Get('admin/consumers')
   getAdminConsumers(@Request() req) {
-    if (req.user.role !== 'ADMIN' && req.user.role !== 'OWNER') {
+    if (req.user.role !== 'ADMIN' && req.user.role !== 'OWNER' && req.user.role !== 'superadmin') {
       throw new ForbiddenException('Unauthorized');
     }
     return this.bookingService.getAdminConsumers();

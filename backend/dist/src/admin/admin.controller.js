@@ -372,7 +372,7 @@ __decorate([
 ], AdminController.prototype, "findAllUsers", null);
 exports.AdminController = AdminController = __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, role_guard_1.RoleGuard),
-    (0, roles_decorator_1.Roles)('ADMIN'),
+    (0, roles_decorator_1.Roles)('ADMIN', 'superadmin', 'OWNER'),
     (0, common_1.Controller)('admin'),
     __metadata("design:paramtypes", [admin_service_1.AdminService])
 ], AdminController);

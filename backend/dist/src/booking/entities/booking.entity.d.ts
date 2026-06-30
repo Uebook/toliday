@@ -14,6 +14,7 @@ export declare class Booking {
     guestName: string;
     guestEmail: string;
     guestContact: string;
+    userId: string;
     startDate: string;
     endDate: string;
     numberOfGuests: number;

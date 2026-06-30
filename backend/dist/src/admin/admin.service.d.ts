@@ -60,6 +60,7 @@ export declare class AdminService {
             id: string;
             guestEmail: string;
             guestContact: string;
+            userId: string;
             startDate: string;
             endDate: string;
             numberOfGuests: number;
@@ -299,6 +300,7 @@ export declare class AdminService {
         id: string;
         guestEmail: string;
         guestContact: string;
+        userId: string;
         startDate: string;
         endDate: string;
         numberOfGuests: number;

@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Topbar from '@/components/layout/Topbar';
 import { useQuery } from '@tanstack/react-query';
 import api from '@/lib/api';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -42,8 +43,8 @@ export default function ConsumerUsersPage() {
                                           {user.name ? user.name.charAt(0) : '?'}
                                    </div>
                                    <div>
-                                          <div className="font-black text-slate-900 text-sm">{user.name || 'Unknown'}</div>
-                                          <div className="text-xs text-slate-500 font-bold mt-0.5">{user.email}</div>
+                                          <div className="font-black text-foreground text-sm">{user.name || 'Unknown'}</div>
+                                          <div className="text-xs text-muted-foreground font-bold mt-0.5">{user.email}</div>
                                    </div>
                             </div>
                      )
@@ -53,8 +54,8 @@ export default function ConsumerUsersPage() {
                      accessor: 'bookingsCount',
                      render: (user: any) => (
                             <div>
-                                   <div className="text-sm font-black text-slate-900">{user.totalBookings} Bookings</div>
-                                   <div className="text-[10px] text-slate-400 font-black uppercase tracking-widest mt-1">₹{user.ltv || 0} LTV</div>
+                                   <div className="text-sm font-black text-foreground">{user.totalBookings} Bookings</div>
+                                   <div className="text-[10px] text-muted-foreground font-black uppercase tracking-widest mt-1">₹{user.ltv || 0} LTV</div>
                             </div>
                      )
               },
@@ -90,14 +91,14 @@ export default function ConsumerUsersPage() {
                      {user.kycStatus === 'PENDING' && (
                             <button
                                    onClick={() => handleAction(user.id, 'VERIFY')}
-                                   className="px-4 py-2 bg-emerald-50 hover:bg-emerald-500 text-emerald-600 hover:text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-sm"
+                                   className="px-4 py-2 bg-emerald-50 hover:bg-emerald-500 text-emerald-600 hover:text-foreground rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-sm"
                             >
                                    Approve KYC
                             </button>
                      )}
                      <button
                             onClick={() => handleAction(user.id, 'SUSPEND')}
-                            className="px-4 py-2 bg-red-50 hover:bg-red-500 text-red-600 hover:text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-sm"
+                            className="px-4 py-2 bg-red-50 hover:bg-red-500 text-red-600 hover:text-foreground rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-sm"
                      >
                             <Ban size={14} className="mr-1 inline" /> Suspend
                      </button>
@@ -105,34 +106,23 @@ export default function ConsumerUsersPage() {
        );
 
        return (
-              <div className="p-8 lg:p-12 animate-fadeIn space-y-8">
-                     <header className="flex flex-col md:flex-row md:items-center justify-between gap-8">
-                            <div>
-                                   <div className="flex items-center gap-3 mb-2">
-                                          <div className="p-2 bg-blue-600 rounded-xl text-white shadow-lg shadow-blue-600/20">
-                                                 <Users size={20} />
-                                          </div>
-                                          <span className="text-slate-400 font-black uppercase tracking-[0.2em] text-[10px]">Global Intelligence</span>
-                                   </div>
-                                   <h1 className="text-4xl font-black text-slate-900 tracking-tight">All Consumers (KYC)</h1>
-                                   <p className="text-slate-400 font-bold mt-2">Manage user identities, approvals, and platform access</p>
-                            </div>
-                     </header>
+              <div className="p-6 md:p-8 space-y-6 md:space-y-8 animate-fadeIn max-w-[1600px] mx-auto min-h-full">
+                     <Topbar title="All Consumers (KYC)" subtitle="Manage user identities, approvals, and platform access" />
 
                      {isLoading ? (
-                            <Card className="rounded-[2.5rem] border-slate-100 shadow-xl">
-                                   <CardContent className="p-16 flex items-center justify-center">
+                            <div className="rounded-[28px] border-border/10 shadow-[0_12px_40px_rgba(0,0,0,0.02)]">
+                                   <div className="p-16 flex items-center justify-center">
                                           <Loader2 className="animate-spin text-blue-500 w-8 h-8" />
-                                   </CardContent>
-                            </Card>
+                                   </div>
+                            </div>
                      ) : error ? (
-                            <Card className="rounded-[2.5rem] border-red-100 shadow-xl bg-red-50/50">
-                                   <CardContent className="p-16 flex flex-col items-center justify-center text-center">
+                            <div className="rounded-[2.5rem] border-red-100 shadow-xl bg-red-50/50">
+                                   <div className="p-16 flex flex-col items-center justify-center text-center">
                                           <ShieldAlert className="text-red-500 w-12 h-12 mb-4" />
-                                          <h3 className="text-xl font-black text-slate-900 mb-2">Error Loading Consumers</h3>
-                                          <p className="text-slate-500 font-bold">Please try again later.</p>
-                                   </CardContent>
-                            </Card>
+                                          <h3 className="text-xl font-black text-foreground mb-2">Error Loading Consumers</h3>
+                                          <p className="text-muted-foreground font-bold">Please try again later.</p>
+                                   </div>
+                            </div>
                      ) : (
                             <DataTable 
                                    title="Consumer Directory"

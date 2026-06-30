@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Topbar from '@/components/layout/Topbar';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '@/lib/api';
 import { Loader2 } from 'lucide-react';
@@ -70,49 +71,38 @@ export default function HotelReviewsPage() {
        );
 
        return (
-              <div className="p-8 lg:p-12 animate-fadeIn space-y-8">
-                     <header className="flex flex-col md:flex-row md:items-center justify-between gap-8">
-                            <div>
-                                   <div className="flex items-center gap-3 mb-2">
-                                          <div className="p-2 bg-rose-600 rounded-xl text-white shadow-lg shadow-rose-600/20">
-                                                 <Star size={20} />
-                                          </div>
-                                          <span className="text-slate-400 font-black uppercase tracking-[0.2em] text-[10px]">Hotel Operations</span>
-                                   </div>
-                                   <h1 className="text-4xl font-black text-slate-900 tracking-tight">Reviews & CX Moderation</h1>
-                                   <p className="text-slate-400 font-bold mt-2">Monitor and moderate guest feedback across all hotel partners</p>
-                            </div>
-                     </header>
+              <div className="p-6 md:p-8 space-y-6 md:space-y-8 animate-fadeIn max-w-[1600px] mx-auto min-h-full">
+                     <Topbar title="Reviews & CX Moderation" subtitle="Monitor and moderate guest feedback across all hotel partners" />
 
-                     <Card className="rounded-[2.5rem] border-slate-100 shadow-xl overflow-hidden">
-                            <CardHeader className="bg-slate-50/50 border-b border-slate-100 p-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                     <div className="rounded-[28px] border-border/10 shadow-[0_12px_40px_rgba(0,0,0,0.02)] overflow-hidden">
+                            <div className="bg-background/40 backdrop-blur-md border-b border-border/10 p-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
                                    <div className="flex gap-4">
-                                          <div className="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm min-w-[150px]">
-                                                 <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Avg Rating</div>
-                                                 <div className="text-2xl font-black text-slate-900 flex items-center gap-2">
+                                          <div className="ios-platter p-4 rounded-[20px] border border-border/10 shadow-sm min-w-[150px]">
+                                                 <div className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1">Avg Rating</div>
+                                                 <div className="text-2xl font-black text-foreground flex items-center gap-2">
                                                         4.2 <Star className="text-amber-400 fill-amber-400" size={20} />
                                                  </div>
                                           </div>
-                                          <div className="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm min-w-[150px]">
-                                                 <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Pending</div>
+                                          <div className="ios-platter p-4 rounded-[20px] border border-border/10 shadow-sm min-w-[150px]">
+                                                 <div className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1">Pending</div>
                                                  <div className="text-2xl font-black text-amber-500">
                                                         {reviews.filter((r: any) => r.status === 'PENDING').length}
                                                  </div>
                                           </div>
                                    </div>
                                    <div className="relative">
-                                          <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+                                          <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
                                           <input
                                                  type="text"
                                                  placeholder="Search reviews..."
                                                  value={search}
                                                  onChange={(e) => setSearch(e.target.value)}
-                                                 className="pl-10 pr-4 py-3 bg-white border border-slate-200 rounded-2xl text-sm font-bold focus:ring-4 focus:ring-rose-500/10 focus:border-rose-500 outline-none w-full md:w-80 transition-all"
+                                                 className="pl-10 pr-4 py-3 bg-black/5 dark:bg-white/5 border border-transparent text-foreground rounded-2xl text-sm font-bold focus:ring-4 focus:ring-rose-500/10 focus:border-rose-500 outline-none w-full md:w-80 transition-all"
                                           />
                                    </div>
-                            </CardHeader>
+                            </div>
                             
-                             <CardContent className="p-0">
+                             <div className="p-0">
                                            
                                    {isLoading ? (
                                            <div className="p-20 flex items-center justify-center">
@@ -121,8 +111,8 @@ export default function HotelReviewsPage() {
                                     ) : (
                                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-8">
                                           {filteredReviews.map((review: any) => (
-                                                 <Card key={review.id} className="relative overflow-hidden group hover:border-rose-200 transition-all shadow-sm hover:shadow-xl bg-white border-slate-100 rounded-[2rem]">
-                                                        <CardContent className="p-6">
+                                                 <div key={review.id} className="relative overflow-hidden group hover:border-rose-200 transition-all shadow-sm hover:shadow-xl ios-platter border-border/10 rounded-[28px]">
+                                                        <div className="p-6">
                                                                <div className="flex items-center justify-between mb-4">
                                                                       <div className="flex gap-1">
                                                                              {[...Array(5)].map((_, i) => (
@@ -140,30 +130,30 @@ export default function HotelReviewsPage() {
                                                                       </div>
                                                                </div>
 
-                                                               <p className="text-sm font-medium text-slate-700 leading-relaxed mb-6 line-clamp-3">
+                                                               <p className="text-sm font-medium text-muted-foreground leading-relaxed mb-6 line-clamp-3">
                                                                       "{review.comment}"
                                                                </p>
 
-                                                               <div className="flex items-center gap-3 pt-4 border-t border-slate-50">
+                                                               <div className="flex items-center gap-3 pt-4 border-t border-border/5">
                                                                       <div className="p-2 bg-indigo-50 rounded-lg text-indigo-500">
                                                                              <Hotel size={14} />
                                                                       </div>
                                                                       <div className="flex-1 min-w-0">
-                                                                             <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Hotel</div>
-                                                                             <div className="text-xs font-bold text-slate-900 truncate">{review.hotelName}</div>
+                                                                             <div className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Hotel</div>
+                                                                             <div className="text-xs font-bold text-foreground truncate">{review.hotelName}</div>
                                                                       </div>
                                                                </div>
 
                                                                <div className="flex items-center justify-between mt-4">
                                                                       <div>
-                                                                             <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Guest</div>
-                                                                             <div className="text-xs font-bold text-slate-900">{review.guestName}</div>
+                                                                             <div className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Guest</div>
+                                                                             <div className="text-xs font-bold text-foreground">{review.guestName}</div>
                                                                       </div>
-                                                                      <div className="text-[10px] font-bold text-slate-400">{review.date}</div>
+                                                                      <div className="text-[10px] font-bold text-muted-foreground">{review.date}</div>
                                                                </div>
 
                                                                {/* Quick Actions Overlay */}
-                                                               <div className="absolute top-2 right-2 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity bg-white/90 p-2 rounded-2xl backdrop-blur-sm shadow-sm border border-slate-100">
+                                                               <div className="absolute top-2 right-2 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity bg-background/90 p-2 rounded-2xl backdrop-blur-md shadow-sm border border-border/10">
                                                                       {review.status === 'PENDING' && (
                                                                              <button
                                                                                     onClick={() => handleAction(review.id, 'APPROVE')}
@@ -184,8 +174,8 @@ export default function HotelReviewsPage() {
                                                                              <Trash2 size={16} />
                                                                       </button>
                                                                </div>
-                                                        </CardContent>
-                                                 </Card>
+                                                        </div>
+                                                 </div>
                                           ))}
 
                                           {filteredReviews.length === 0 && (
@@ -193,13 +183,13 @@ export default function HotelReviewsPage() {
                                                         <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center text-slate-300 mb-4">
                                                                <MessageSquare size={24} />
                                                         </div>
-                                                        <div className="text-slate-400 font-bold">No reviews found matching your criteria.</div>
+                                                        <div className="text-muted-foreground font-bold">No reviews found matching your criteria.</div>
                                                  </div>
                                           )}
                                    </div>
                                    )}
-                            </CardContent>
-                     </Card>
+                            </div>
+                     </div>
               </div>
        );
 }

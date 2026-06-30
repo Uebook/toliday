@@ -45,19 +45,19 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
        }
 
        return (
-              <div className="flex h-screen overflow-hidden bg-[#f8fbff] text-slate-900 transition-colors duration-500">
+              <div className="flex h-screen overflow-hidden bg-slate-50 dark:bg-slate-950 p-3 md:p-4 gap-3 md:gap-4 text-foreground transition-colors duration-300 relative">
+                     {/* Ambient background glows */}
+                     <div className="absolute top-[-10%] right-[-10%] w-[600px] h-[600px] bg-blue-600/8 dark:bg-blue-600/15 blur-[150px] rounded-full pointer-events-none z-0" />
+                     <div className="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] bg-purple-600/8 dark:bg-purple-600/15 blur-[150px] rounded-full pointer-events-none z-0" />
+                     
                      <AdminSidebar />
                      
-                     <main className="flex-1 overflow-y-auto relative scroll-smooth">
-                            {/* Premium Background Effects */}
-                            <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
-                                   <div className="absolute top-[-10%] right-[-10%] w-[50%] h-[50%] bg-primary/5 dark:bg-primary/10 blur-[150px] rounded-full animate-pulse" />
-                                   <div className="absolute bottom-[-10%] left-[-10%] w-[40%] h-[40%] bg-purple-600/5 dark:bg-purple-600/10 blur-[150px] rounded-full" />
-                            </div>
-
-                            <div className="relative z-10 min-h-full">
-                                   <div className="max-w-[1600px] mx-auto">
-                                          {children}
+                     <main className="flex-1 relative rounded-[28px] border border-border/20 bg-white/60 dark:bg-slate-900/40 backdrop-blur-2xl shadow-[0_12px_40px_rgba(0,0,0,0.03)] dark:shadow-[0_12px_40px_rgba(0,0,0,0.3)] z-10 overflow-hidden flex flex-col">
+                            <div className="flex-1 overflow-y-auto relative">
+                                   <div className="relative z-10">
+                                          <div className="max-w-[1600px] mx-auto min-h-full">
+                                                 {children}
+                                          </div>
                                    </div>
                             </div>
                      </main>

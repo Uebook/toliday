@@ -21,8 +21,7 @@ async function checkBookings() {
 
   const bookingRepo = connection.getRepository(Booking);
   const bookings = await bookingRepo.find({
-    where: { hotelId: HOTEL_ID },
-    select: ['id', 'guestName', 'status', 'totalAmount', 'createdAt', 'startDate', 'endDate']
+    where: { hotelId: HOTEL_ID }
   });
 
   console.log('📋 Bookings for hotel in DB:');

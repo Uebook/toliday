@@ -161,7 +161,7 @@ export class BookingService implements OnModuleInit {
 
   async findAllGlobal(): Promise<Booking[]> {
     return this.bookingRepository.find({
-      relations: ['roomType', 'hotel', 'tourPartner', 'busVendor', 'cabVendor'],
+      relations: ['roomType', 'hotel', 'assignedRoom'],
       order: { createdAt: 'DESC' },
     });
   }

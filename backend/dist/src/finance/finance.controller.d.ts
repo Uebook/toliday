@@ -17,4 +17,5 @@ export declare class FinanceController {
     getPayouts(req: any): Promise<import("./entities/payout-request.entity").PayoutRequest[]>;
     requestPayout(req: any, amount: number): Promise<import("./entities/payout-request.entity").PayoutRequest>;
     getInvoices(req: any): Promise<import("./entities/invoice.entity").Invoice[]>;
+    getInvoice(id: string): Promise<import("./entities/invoice.entity").Invoice | null>;
 }

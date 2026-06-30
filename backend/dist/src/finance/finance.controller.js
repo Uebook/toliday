@@ -24,7 +24,7 @@ let FinanceController = class FinanceController {
         this.financeService = financeService;
     }
     checkAdmin(req) {
-        if (req.user.role !== staff_entity_1.StaffRole.ADMIN) {
+        if (req.user.role !== staff_entity_1.StaffRole.ADMIN && req.user.role !== 'OWNER' && req.user.role !== 'superadmin') {
             throw new common_1.UnauthorizedException('Admin access required');
         }
     }
@@ -73,6 +73,9 @@ let FinanceController = class FinanceController {
     getInvoices(req) {
         const { vendorId, vertical } = this.extractVendorContext(req);
         return this.financeService.getInvoices(vendorId, vertical);
+    }
+    getInvoice(id) {
+        return this.financeService.getInvoiceById(id);
     }
 };
 exports.FinanceController = FinanceController;
@@ -136,6 +139,13 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], FinanceController.prototype, "getInvoices", null);
+__decorate([
+    (0, common_1.Get)('invoices/:id'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], FinanceController.prototype, "getInvoice", null);
 exports.FinanceController = FinanceController = __decorate([
     (0, common_1.Controller)('finance'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),

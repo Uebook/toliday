@@ -112,7 +112,7 @@ export default function AdminBusesPage() {
                                           <Bus size={20} />
                                    </div>
                                    <div>
-                                          <div className="text-sm font-black text-slate-900 leading-none mb-1">{v.businessName || v.name}</div>
+                                          <div className="text-sm font-black text-foreground leading-none mb-1">{v.businessName || v.name}</div>
                                           <div className="text-[10px] font-bold text-slate-400 uppercase tracking-tight">ID: {v.id.slice(0, 8)}</div>
                                    </div>
                             </div>
@@ -150,9 +150,9 @@ export default function AdminBusesPage() {
                             {/* Add Bus Modal */}
                             {isAddBusModalOpen && (
                                 <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
-                                    <div className="bg-white rounded-[2.5rem] w-full max-w-lg p-10 shadow-2xl animate-scaleUp">
+                                    <div className="ios-sheet rounded-[28px] w-full max-w-lg p-10 shadow-2xl animate-scaleUp">
                                         <div className="flex items-center justify-between mb-8">
-                                            <h3 className="text-2xl font-black text-slate-900 tracking-tight">Add New Vehicle</h3>
+                                            <h3 className="text-2xl font-black text-foreground tracking-tight">Add New Vehicle</h3>
                                             <button onClick={() => setIsAddBusModalOpen(false)} className="p-2 hover:bg-slate-100 rounded-xl transition-colors"><X size={24} /></button>
                                         </div>
                                         <form className="space-y-6" onSubmit={(e) => {
@@ -166,12 +166,12 @@ export default function AdminBusesPage() {
                                         }}>
                                             <div className="space-y-2">
                                                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Registration Number</label>
-                                                <input name="reg" required className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all" placeholder="e.g. DL 01 BU 1234" />
+                                                <input name="reg" required className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl font-bold text-foreground focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all" placeholder="e.g. DL 01 BU 1234" />
                                             </div>
                                             <div className="grid grid-cols-2 gap-4">
                                                 <div className="space-y-2">
                                                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Bus Type</label>
-                                                    <select name="type" required className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all">
+                                                    <select name="type" required className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl font-bold text-foreground focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all">
                                                         <option value="AC_SLEEPER">AC Sleeper</option>
                                                         <option value="NON_AC_SLEEPER">Non-AC Sleeper</option>
                                                         <option value="AC_SEATER">AC Seater</option>
@@ -179,7 +179,7 @@ export default function AdminBusesPage() {
                                                 </div>
                                                 <div className="space-y-2">
                                                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Total Seats</label>
-                                                    <input name="seats" type="number" required className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all" placeholder="36" />
+                                                    <input name="seats" type="number" required className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl font-bold text-foreground focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all" placeholder="36" />
                                                 </div>
                                             </div>
                                             <button type="submit" disabled={addBusMutation.isPending} className="w-full py-5 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl font-black text-xs uppercase tracking-[0.2em] shadow-xl shadow-blue-600/20 transition-all flex items-center justify-center gap-2">
@@ -193,9 +193,9 @@ export default function AdminBusesPage() {
                             {/* Edit Vendor Modal */}
                             {isEditVendorModalOpen && (
                                 <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
-                                    <div className="bg-white rounded-[2.5rem] w-full max-w-lg p-10 shadow-2xl animate-scaleUp">
+                                    <div className="ios-sheet rounded-[28px] w-full max-w-lg p-10 shadow-2xl animate-scaleUp">
                                         <div className="flex items-center justify-between mb-8">
-                                            <h3 className="text-2xl font-black text-slate-900 tracking-tight">Edit Vendor Profile</h3>
+                                            <h3 className="text-2xl font-black text-foreground tracking-tight">Edit Vendor Profile</h3>
                                             <button onClick={() => setIsEditVendorModalOpen(false)} className="p-2 hover:bg-slate-100 rounded-xl transition-colors"><X size={24} /></button>
                                         </div>
                                         <form className="space-y-6" onSubmit={(e) => {
@@ -207,7 +207,7 @@ export default function AdminBusesPage() {
                                         }}>
                                             <div className="space-y-2">
                                                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Vendor Name</label>
-                                                <input name="businessName" defaultValue={selectedVendor.businessName || selectedVendor.name} required className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all" />
+                                                <input name="businessName" defaultValue={selectedVendor.businessName || selectedVendor.name} required className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl font-bold text-foreground focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all" />
                                             </div>
                                             <button type="submit" disabled={updateVendorMutation.isPending} className="w-full py-5 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl font-black text-xs uppercase tracking-[0.2em] shadow-xl shadow-blue-600/20 transition-all flex items-center justify-center gap-2">
                                                 {updateVendorMutation.isPending ? 'Saving...' : 'Save Details'}
@@ -220,9 +220,9 @@ export default function AdminBusesPage() {
                             {/* Edit Bus Modal */}
                             {isEditBusModalOpen && selectedBus && (
                                 <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
-                                    <div className="bg-white rounded-[2.5rem] w-full max-w-lg p-10 shadow-2xl animate-scaleUp">
+                                    <div className="ios-sheet rounded-[28px] w-full max-w-lg p-10 shadow-2xl animate-scaleUp">
                                         <div className="flex items-center justify-between mb-8">
-                                            <h3 className="text-2xl font-black text-slate-900 tracking-tight">Edit Bus Details</h3>
+                                            <h3 className="text-2xl font-black text-foreground tracking-tight">Edit Bus Details</h3>
                                             <button onClick={() => setIsEditBusModalOpen(false)} className="p-2 hover:bg-slate-100 rounded-xl transition-colors"><X size={24} /></button>
                                         </div>
                                         <form className="space-y-6" onSubmit={(e) => {
@@ -239,12 +239,12 @@ export default function AdminBusesPage() {
                                         }}>
                                             <div className="space-y-2">
                                                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Registration Number</label>
-                                                <input name="reg" defaultValue={selectedBus.registrationNumber} required className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all" />
+                                                <input name="reg" defaultValue={selectedBus.registrationNumber} required className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl font-bold text-foreground focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all" />
                                             </div>
                                             <div className="grid grid-cols-2 gap-4">
                                                 <div className="space-y-2">
                                                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Bus Type</label>
-                                                    <select name="type" defaultValue={selectedBus.type} required className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all">
+                                                    <select name="type" defaultValue={selectedBus.type} required className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl font-bold text-foreground focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all">
                                                         <option value="AC_SLEEPER">AC Sleeper</option>
                                                         <option value="NON_AC_SLEEPER">Non-AC Sleeper</option>
                                                         <option value="AC_SEATER">AC Seater</option>
@@ -252,7 +252,7 @@ export default function AdminBusesPage() {
                                                 </div>
                                                 <div className="space-y-2">
                                                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Total Seats</label>
-                                                    <input name="seats" type="number" defaultValue={selectedBus.totalSeats} required className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all" />
+                                                    <input name="seats" type="number" defaultValue={selectedBus.totalSeats} required className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl font-bold text-foreground focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all" />
                                                 </div>
                                             </div>
                                             <button type="submit" disabled={updateBusMutation.isPending} className="w-full py-5 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl font-black text-xs uppercase tracking-[0.2em] shadow-xl shadow-blue-600/20 transition-all flex items-center justify-center gap-2">
@@ -289,12 +289,12 @@ export default function AdminBusesPage() {
 
                             <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
                                    <div className="xl:col-span-1 space-y-6">
-                                          <div className="bg-white rounded-[2.5rem] p-8 border border-slate-100 shadow-xl shadow-slate-200/50">
+                                          <div className="ios-sheet rounded-[28px] p-8 border border-border/10 shadow-[0_12px_40px_rgba(0,0,0,0.02)] shadow-slate-200/50">
                                                  <div className="flex flex-col items-center text-center">
                                                         <div className="w-24 h-24 rounded-3xl bg-blue-600 flex items-center justify-center text-white mb-6 shadow-xl shadow-blue-600/20">
                                                                <Bus size={48} />
                                                         </div>
-                                                        <h2 className="text-2xl font-black text-slate-900 tracking-tight mb-2">{selectedVendor.businessName || selectedVendor.name}</h2>
+                                                        <h2 className="text-2xl font-black text-foreground tracking-tight mb-2">{selectedVendor.businessName || selectedVendor.name}</h2>
                                                         <button 
                                                             onClick={() => setIsEditVendorModalOpen(true)}
                                                             className="w-full py-4 bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white rounded-2xl font-black text-xs uppercase tracking-widest transition-all flex items-center justify-center gap-2"
@@ -307,9 +307,9 @@ export default function AdminBusesPage() {
 
                                    <div className="xl:col-span-2">
                                           {activeTab === 'FLEET' && (
-                                              <div className="bg-white rounded-[2.5rem] p-10 border border-slate-100 shadow-xl space-y-10">
+                                              <div className="ios-sheet rounded-[28px] p-10 border border-border/10 shadow-[0_12px_40px_rgba(0,0,0,0.02)] space-y-10">
                                                   <div className="flex items-center justify-between">
-                                                      <h3 className="text-xl font-black text-slate-900 tracking-tight flex items-center gap-3">
+                                                      <h3 className="text-xl font-black text-foreground tracking-tight flex items-center gap-3">
                                                           <div className="p-3 bg-blue-50 text-blue-600 rounded-2xl"><Bus size={24} /></div>
                                                           Posted Fleet Data
                                                       </h3>
@@ -329,7 +329,7 @@ export default function AdminBusesPage() {
                                                                       <div className="absolute -top-2 -right-2 px-2 py-0.5 bg-emerald-500 text-white text-[8px] font-black rounded-full uppercase tracking-tighter">Live</div>
                                                                   </div>
                                                                   <div>
-                                                                      <div className="text-sm font-black text-slate-900">{bus.registrationNumber}</div>
+                                                                      <div className="text-sm font-black text-foreground">{bus.registrationNumber}</div>
                                                                       <div className="text-[10px] font-bold text-slate-400 uppercase tracking-tight">{bus.type}</div>
                                                                   </div>
                                                               </div>
@@ -359,8 +359,8 @@ export default function AdminBusesPage() {
                                           )}
 
                                           {activeTab === 'BOOKINGS' && (
-                                              <div className="bg-white rounded-[2.5rem] p-10 border border-slate-100 shadow-xl space-y-10">
-                                                  <h3 className="text-xl font-black text-slate-900 tracking-tight flex items-center gap-3">
+                                              <div className="ios-sheet rounded-[28px] p-10 border border-border/10 shadow-[0_12px_40px_rgba(0,0,0,0.02)] space-y-10">
+                                                  <h3 className="text-xl font-black text-foreground tracking-tight flex items-center gap-3">
                                                       <div className="p-3 bg-blue-50 text-blue-600 rounded-2xl"><Clock size={24} /></div>
                                                       Booking History
                                                   </h3>
@@ -368,7 +368,7 @@ export default function AdminBusesPage() {
                                                       {selectedVendor.bookings?.map((booking: any, i: number) => (
                                                           <div key={i} className="p-6 bg-slate-50 rounded-3xl border border-slate-100 flex items-center justify-between group hover:bg-slate-900 transition-all duration-500">
                                                               <div className="flex items-center gap-6">
-                                                                  <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-slate-900 group-hover:scale-110 transition-transform">
+                                                                  <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-foreground group-hover:scale-110 transition-transform">
                                                                       <CreditCard size={24} />
                                                                   </div>
                                                                   <div>

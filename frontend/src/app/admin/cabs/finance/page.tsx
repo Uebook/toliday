@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Topbar from '@/components/layout/Topbar';
 import { useQuery } from '@tanstack/react-query';
 import api from '@/lib/api';
 import { Loader2 } from 'lucide-react';
@@ -41,8 +42,8 @@ export default function CabsFinancePage() {
                      accessor: 'id',
                      render: (trx: any) => (
                             <div>
-                                   <div className="font-black text-slate-900 text-sm">{trx.id}</div>
-                                   <div className="text-[10px] text-slate-400 font-black uppercase tracking-widest mt-1">
+                                   <div className="font-black text-foreground text-sm">{trx.id}</div>
+                                   <div className="text-[10px] text-muted-foreground font-black uppercase tracking-widest mt-1">
                                           {new Date(trx.date).toLocaleString()}
                                    </div>
                             </div>
@@ -80,7 +81,7 @@ export default function CabsFinancePage() {
                      accessor: 'amount',
                      render: (trx: any) => (
                             <div>
-                                   <div className="text-sm font-black text-slate-900">${trx.amount.toLocaleString()}</div>
+                                   <div className="text-sm font-black text-foreground">${trx.amount.toLocaleString()}</div>
                                    {trx.type === 'INCOME' && (
                                           <div className="text-[10px] font-black text-rose-500 uppercase tracking-widest mt-1">
                                                  +${trx.fee} Platform Fee
@@ -106,55 +107,44 @@ export default function CabsFinancePage() {
        ];
 
        const headerAction = (
-              <button className="px-6 py-3 bg-rose-600 hover:bg-rose-500 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest flex items-center gap-2 transition-all shadow-xl shadow-rose-600/20 active:scale-95 group">
+              <button className="px-6 py-3 bg-rose-600 hover:bg-rose-500 text-foreground rounded-2xl font-black text-[10px] uppercase tracking-widest flex items-center gap-2 transition-all shadow-xl shadow-rose-600/20 active:scale-95 group">
                      <Download size={14} className="group-hover:translate-y-0.5 transition-transform" /> Export Statement
               </button>
        );
 
        return (
-              <div className="p-8 lg:p-12 animate-fadeIn space-y-8">
-                     <header className="flex flex-col md:flex-row md:items-center justify-between gap-8">
-                            <div>
-                                   <div className="flex items-center gap-3 mb-2">
-                                          <div className="p-2 bg-rose-600 rounded-xl text-white shadow-lg shadow-rose-600/20">
-                                                 <IndianRupee size={20} />
-                                          </div>
-                                          <span className="text-slate-400 font-black uppercase tracking-[0.2em] text-[10px]">Cabs Operations</span>
-                                   </div>
-                                   <h1 className="text-4xl font-black text-slate-900 tracking-tight">Finance & Payments</h1>
-                                   <p className="text-slate-400 font-bold mt-2">Manage revenue, commissions, and payouts for cab partners</p>
-                            </div>
-                     </header>
+              <div className="p-6 md:p-8 space-y-6 md:space-y-8 animate-fadeIn max-w-[1600px] mx-auto min-h-full">
+                     <Topbar title="Finance & Payments" subtitle="Manage revenue, commissions, and payouts for cab partners" />
 
                      {/* Top Level Metrics */}
                      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                            <Card className="rounded-[2rem] border-slate-100 shadow-xl overflow-hidden relative group hover:-translate-y-1 transition-transform">
-                                   <CardContent className="p-8 relative z-10">
+                            <div className="ios-platter p-6 rounded-[24px] border border-border/10 shadow-[0_4px_20px_rgba(0,0,0,0.01)] transition-transform hover:scale-[1.03]">
+                                   <div className="p-8 relative z-10">
                                           <div className="text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-2">Total Vertical Revenue</div>
-                                          <div className="text-4xl font-black text-slate-900 mb-4">₹342,500</div>
-                                   </CardContent>
-                            </Card>
-                            <Card className="rounded-[2rem] border-slate-100 shadow-xl overflow-hidden relative group hover:-translate-y-1 transition-transform">
-                                   <CardContent className="p-8 relative z-10">
+                                          <div className="text-4xl font-black text-foreground mb-4">₹342,500</div>
+                                   </div>
+                            </div>
+                            <div className="ios-platter p-6 rounded-[24px] border border-border/10 shadow-[0_4px_20px_rgba(0,0,0,0.01)] transition-transform hover:scale-[1.03]">
+                                   <div className="p-8 relative z-10">
                                           <div className="text-[10px] font-black text-rose-500 uppercase tracking-widest mb-2">Platform Commissions</div>
-                                          <div className="text-4xl font-black text-slate-900 mb-4">₹34,250</div>
-                                   </CardContent>
-                            </Card>
-                            <Card className="rounded-[2rem] border-slate-100 shadow-xl overflow-hidden relative group hover:-translate-y-1 transition-transform bg-slate-900 text-white">
-                                   <CardContent className="p-8 relative z-10 h-full flex flex-col justify-center">
+                                          <div className="text-4xl font-black text-foreground mb-4">₹34,250</div>
+                                   </div>
+                            </div>
+                            <div className="ios-platter p-6 rounded-[24px] border border-border/10 shadow-[0_4px_20px_rgba(0,0,0,0.01)] transition-transform hover:scale-[1.03] bg-slate-900 text-foreground">
+                                   <div className="p-8 relative z-10 h-full flex flex-col justify-center">
                                           <div className="text-[10px] font-black text-rose-400 uppercase tracking-widest mb-2">Pending Partner Payouts</div>
                                           <div className="text-4xl font-black mb-4">₹18,400</div>
-                                   </CardContent>
-                            </Card>
+                                   </div>
+                            </div>
                      </div>
 
                      
                      {isLoading ? (
-                            <Card className="rounded-[2.5rem] border-slate-100 shadow-xl">
-                                   <CardContent className="p-16 flex items-center justify-center">
+                            <div className="rounded-[28px] border-border/10 shadow-[0_12px_40px_rgba(0,0,0,0.02)]">
+                                   <div className="p-16 flex items-center justify-center">
                                           <Loader2 className="animate-spin text-indigo-500 w-8 h-8" />
-                                   </CardContent>
-                            </Card>
+                                   </div>
+                            </div>
                      ) : (
                             <DataTable 
                             title="Recent Transactions"

@@ -26,6 +26,7 @@ export declare class AdminController {
             id: string;
             guestEmail: string;
             guestContact: string;
+            userId: string;
             startDate: string;
             endDate: string;
             numberOfGuests: number;
@@ -270,6 +271,7 @@ export declare class AdminController {
         id: string;
         guestEmail: string;
         guestContact: string;
+        userId: string;
         startDate: string;
         endDate: string;
         numberOfGuests: number;

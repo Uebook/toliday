@@ -103,7 +103,12 @@ export default function AdminSidebar() {
        
        // Track which accordion sections are expanded
        const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
-              dashboard: true // Default open the dashboard section
+              dashboard: true,
+              hotels: true,
+              tours: true,
+              buses: true,
+              cabs: true,
+              system: true
        });
 
        const toggleSection = (id: string) => {
@@ -121,55 +126,105 @@ export default function AdminSidebar() {
 
        if (!user) return null;
 
-       // Filter sidebar items based on RBAC permissions
+       const [serviceFilter, setServiceFilter] = useState('Hotel'); // Default to Hotel
+
+       // Filter sidebar items based on RBAC permissions AND service filter
        const filteredNav = adminNav.filter(group => {
-              if (user.role === 'OWNER' || user.role === 'ADMIN') return true;
-              if (!group.permissionKey) return true;
-              return user.permissions?.[group.permissionKey] === true;
+              // 1. RBAC check
+              const hasAccess = user.role === 'OWNER' || user.role === 'ADMIN' || user.role === 'superadmin' || (!group.permissionKey || user.permissions?.[group.permissionKey] === true);
+              if (!hasAccess) return false;
+
+              // 2. Service Filter check
+              if (serviceFilter !== 'All') {
+                     // Always show dashboard and system settings
+                     if (group.id === 'dashboard' || group.id === 'system') return true;
+
+                     // Match the specific service group
+                     if (serviceFilter === 'Hotel' && group.id !== 'hotels') return false;
+                     if (serviceFilter === 'Packages' && group.id !== 'tours') return false;
+                     if (serviceFilter === 'Buses' && group.id !== 'buses') return false;
+                     if (serviceFilter === 'Cabs' && group.id !== 'cabs') return false;
+              }
+
+              return true;
        });
 
        return (
               <aside
-                     className="flex flex-col h-screen sticky top-0 transition-all duration-500 z-50 bg-[#1c1c1c] border-r border-[#2a2a2a] shadow-xl text-slate-300"
+                     className="flex flex-col h-full rounded-[28px] border border-border/20 shadow-sm transition-all duration-300 ios-spring bg-white/45 dark:bg-slate-900/30 backdrop-blur-2xl"
                      style={{
-                            width: collapsed ? '90px' : '320px',
+                            width: collapsed ? '80px' : '260px',
                      }}
               >
                      {/* Logo Section */}
-                     <div className={`flex items-center gap-4 py-8 ${collapsed ? 'justify-center px-0' : 'px-6'}`}>
+                     <div className={`flex items-center gap-3 py-6 border-b border-border/10 ${collapsed ? 'justify-center px-0' : 'px-5'}`}>
                             <div
-                                   className="flex items-center justify-center rounded-xl flex-shrink-0 transition-transform duration-500"
+                                   className="flex items-center justify-center rounded-xl flex-shrink-0 transition-transform hover:scale-105 active:scale-95 duration-300 cursor-pointer"
                                    style={{
-                                          width: 44, height: 44,
-                                          background: 'linear-gradient(135deg, #2563eb, #7c3aed)',
+                                          width: 40, height: 40,
+                                          background: 'linear-gradient(135deg, hsl(219 90% 50%), hsl(195 90% 45%))',
+                                          boxShadow: '0 6px 20px rgba(37, 99, 235, 0.3)'
                                    }}
                             >
-                                   <Shield size={24} color="white" strokeWidth={2.5} />
+                                   <Shield size={20} color="white" />
                             </div>
                             {!collapsed && (
                                    <div className="flex-1 min-w-0">
-                                          <div className="font-bold text-lg text-white leading-none tracking-tight">TOLIDAY</div>
-                                          <div className="text-[10px] uppercase tracking-widest text-blue-400 font-bold mt-1">Admin OS v2.0</div>
+                                          <div className="font-extrabold text-sm text-[hsl(var(--foreground))] tracking-tight leading-tight truncate">TolidayTrip</div>
+                                          <div className="text-[10px] uppercase font-bold tracking-wider mt-0.5" style={{ color: 'hsl(var(--accent))' }}>Admin OS v2.0</div>
                                    </div>
                             )}
+                            <button
+                                   onClick={() => setCollapsed(!collapsed)}
+                                   className={`p-1.5 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-colors ${collapsed ? 'absolute -right-3 top-8 border border-border/20 bg-white dark:bg-slate-900 z-50 shadow-md' : 'ml-auto'}`}
+                                   style={{ color: 'hsl(var(--muted-foreground))' }}
+                            >
+                                   <ChevronDown
+                                          size={14}
+                                          className="transition-transform duration-300"
+                                          style={{ transform: collapsed ? 'rotate(-90deg)' : 'rotate(90deg)' }}
+                                   />
+                            </button>
                      </div>
+
+                     {/* Service Filter */}
+                     {!collapsed && (
+                            <div className="px-4 mt-5 mb-2">
+                                   <div className="relative group">
+                                          <select 
+                                                 value={serviceFilter}
+                                                 onChange={(e) => setServiceFilter(e.target.value)}
+                                                 className="appearance-none w-full bg-white/50 dark:bg-slate-900/50 backdrop-blur-md border border-border/10 rounded-xl py-2.5 pl-4 pr-10 text-xs font-extrabold text-foreground shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 cursor-pointer hover:bg-white dark:hover:bg-slate-900 transition-colors"
+                                          >
+                                                 <option value="All">All Services (Master View)</option>
+                                                 <option value="Hotel">Hotel Operations</option>
+                                                 <option value="Packages">Tour & Packages</option>
+                                                 <option value="Buses">Bus Operations</option>
+                                                 <option value="Cabs">Cab Operations</option>
+                                          </select>
+                                          <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground group-hover:text-foreground transition-colors">
+                                                 <ChevronDown size={14} />
+                                          </div>
+                                   </div>
+                            </div>
+                     )}
 
                      {/* Search Bar */}
                      {!collapsed && (
-                            <div className="px-6 mb-6">
+                            <div className="px-4 mt-2">
                                    <div className="relative group">
-                                          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" size={14} />
+                                          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground/60" size={14} />
                                           <input 
                                                  type="text" 
                                                  placeholder="Search Modules..." 
-                                                 className="w-full bg-[#2a2a2a] border border-transparent rounded-lg py-2 pl-9 pr-4 text-xs focus:outline-none focus:border-blue-500/50 transition-all text-white placeholder-slate-500"
+                                                 className="w-full bg-black/[0.03] dark:bg-white/[0.03] border border-transparent rounded-xl py-2 pl-9 pr-4 text-xs focus:outline-none focus:bg-white dark:focus:bg-slate-900 focus:border-border/10 focus:shadow-sm transition-all text-foreground placeholder-muted-foreground/60"
                                           />
                                    </div>
                             </div>
                      )}
 
                      {/* Navigation Accordion */}
-                     <nav className="flex-1 overflow-y-auto px-4 pb-8 space-y-2 scrollbar-hide">
+                     <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-2 scrollbar-hide">
                             {filteredNav.map((group) => {
                                    const isExpanded = expandedSections[group.id];
                                    const isActiveGroup = group.items.some(item => pathname === item.href || pathname.startsWith(item.href + '/'));
@@ -179,28 +234,22 @@ export default function AdminSidebar() {
                                                  {/* Accordion Header */}
                                                  <button
                                                         onClick={() => toggleSection(group.id)}
-                                                        className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors duration-200 group relative ${isActiveGroup && !isExpanded ? 'bg-blue-600/10 text-blue-400' : 'text-slate-400 hover:text-slate-200 hover:bg-[#2a2a2a]'} ${collapsed ? 'justify-center px-0' : ''}`}
+                                                        className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 ios-spring ios-tap-scale relative ${isActiveGroup && !isExpanded ? 'bg-blue-600/10 text-blue-600 dark:text-blue-400' : 'text-muted-foreground hover:text-foreground hover:bg-black/5 dark:hover:bg-white/5'} ${collapsed ? 'justify-center px-0' : ''}`}
                                                  >
-                                                        <group.icon size={18} className={`flex-shrink-0 transition-all duration-300 ${isActiveGroup ? 'text-blue-500' : 'group-hover:text-slate-300'}`} />
+                                                        <group.icon size={18} className={`flex-shrink-0 transition-all duration-300 ${isActiveGroup ? 'text-blue-600 dark:text-blue-400' : ''}`} />
                                                         
                                                         {!collapsed && (
                                                                <span className="flex-1 text-left font-medium text-[13px]">{group.label}</span>
                                                         )}
                                                         
                                                         {!collapsed && (
-                                                               <ChevronDown size={14} className={`transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`} />
-                                                        )}
-
-                                                        {collapsed && (
-                                                               <div className="absolute left-full ml-4 px-3 py-1 bg-slate-800 text-white text-[11px] rounded-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-[100] shadow-xl">
-                                                                      {group.label}
-                                                               </div>
+                                                               <ChevronDown size={14} className={`transition-transform duration-300 opacity-50 ${isExpanded ? 'rotate-180' : ''}`} />
                                                         )}
                                                  </button>
 
                                                  {/* Accordion Content */}
                                                  {(!collapsed && isExpanded) && (
-                                                        <div className="ml-9 pl-3 py-1 space-y-1 border-l border-[#333]">
+                                                        <div className="ml-9 py-1 space-y-1 border-l-2 border-border/10">
                                                                {group.items.map((item) => {
                                                                       // Find the most specific matching item in this group
                                                                       const bestMatch = group.items.reduce((best: any, currentItem) => {
@@ -218,9 +267,9 @@ export default function AdminSidebar() {
                                                                              <Link
                                                                                     key={item.href}
                                                                                     href={item.href}
-                                                                                    className={`block px-3 py-2 rounded-md text-[13px] transition-colors ${isActive
-                                                                                           ? 'bg-blue-600 text-white font-medium'
-                                                                                           : 'text-slate-400 hover:text-slate-200 hover:bg-[#2a2a2a]'
+                                                                                    className={`block px-4 py-2 -ml-[2px] border-l-2 text-[12px] transition-all ios-spring ios-tap-scale rounded-r-xl ${isActive
+                                                                                           ? 'border-blue-600 bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-300 font-bold'
+                                                                                           : 'border-transparent text-muted-foreground hover:text-foreground hover:bg-black/5 dark:hover:bg-white/5'
                                                                                     }`}
                                                                              >
                                                                                     {item.label}
@@ -235,33 +284,27 @@ export default function AdminSidebar() {
                      </nav>
 
                      {/* Footer Profile Section */}
-                     <div className="p-5 mt-auto border-t border-[#2a2a2a] bg-[#1c1c1c] space-y-5">
-                            {!collapsed && (
-                                   <div className="flex items-center gap-3 p-2.5 rounded-lg bg-[#2a2a2a] border border-transparent hover:border-blue-500/30 transition-all">
-                                          <div className="w-9 h-9 rounded-md bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center font-bold text-white shadow-lg">
-                                                 {user.name?.charAt(0) || 'A'}
-                                          </div>
-                                          <div className="flex-1 min-w-0">
-                                                 <div className="text-[13px] font-semibold text-white truncate">{user.name}</div>
-                                                 <div className="text-[10px] text-blue-400 font-bold uppercase tracking-wider">{user.role || 'Super Admin'}</div>
-                                          </div>
+                     <div className="p-3 border-t border-border/10 flex items-center gap-2">
+                            <div className="flex-1 flex items-center gap-3 px-2 py-2 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 cursor-pointer transition-colors no-underline">
+                                   <div
+                                          className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-extrabold flex-shrink-0 shadow-sm text-white"
+                                          style={{ background: 'linear-gradient(135deg, hsl(219 90% 50%), hsl(195 90% 45%))' }}
+                                   >
+                                          {user ? user.name?.charAt(0).toUpperCase() || 'A' : '?'}
                                    </div>
-                            )}
-
-                             <div className={`flex items-center justify-between ${collapsed ? 'flex-col gap-4' : ''}`}>
-                                    <div className="flex items-center gap-2">
-                                           <button
-                                                  onClick={() => setCollapsed(!collapsed)}
-                                                  className="p-2.5 rounded-lg bg-[#2a2a2a] text-slate-400 hover:text-white transition-all"
-                                           >
-                                                  {collapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
-                                           </button>
-                                           {!collapsed && <ThemeToggle />}
-                                    </div>
-                                   
+                                   {!collapsed && user && (
+                                          <div className="flex-1 min-w-0">
+                                                 <div className="text-xs font-bold text-[hsl(var(--foreground))] truncate leading-none">{user.name}</div>
+                                                 <div className="text-[10px] uppercase font-bold text-muted-foreground mt-1 leading-none">{user.role || 'Super Admin'}</div>
+                                          </div>
+                                   )}
+                            </div>
+                            <div className="flex items-center gap-1">
+                                   {!collapsed && <ThemeToggle />}
                                    <button
                                           onClick={handleLogout}
-                                          className={`p-2.5 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500 hover:text-white transition-all ${collapsed ? 'w-full' : ''}`}
+                                          className={`p-2 rounded-xl hover:bg-red-500/10 text-red-500 transition-colors ios-tap-scale ${collapsed ? 'mx-auto' : ''}`}
+                                          title="Logout"
                                    >
                                           <LogOut size={16} />
                                    </button>
@@ -270,4 +313,3 @@ export default function AdminSidebar() {
               </aside>
        );
 }
-

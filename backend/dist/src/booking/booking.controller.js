@@ -59,7 +59,7 @@ let BookingController = class BookingController {
         return this.bookingService.create(hotelId, createDto);
     }
     findAllGlobal(req) {
-        if (req.user.role !== 'ADMIN' && req.user.role !== 'OWNER') {
+        if (req.user.role !== 'ADMIN' && req.user.role !== 'OWNER' && req.user.role !== 'superadmin') {
             throw new common_1.ForbiddenException('Unauthorized');
         }
         return this.bookingService.findAllGlobal();
@@ -92,7 +92,7 @@ let BookingController = class BookingController {
         return this.bookingService.update(id, req.user.hotelId, body);
     }
     getAdminConsumers(req) {
-        if (req.user.role !== 'ADMIN' && req.user.role !== 'OWNER') {
+        if (req.user.role !== 'ADMIN' && req.user.role !== 'OWNER' && req.user.role !== 'superadmin') {
             throw new common_1.ForbiddenException('Unauthorized');
         }
         return this.bookingService.getAdminConsumers();

@@ -76,10 +76,11 @@ let BookingService = BookingService_1 = class BookingService {
                 totalAmount: createDto.totalAmount,
                 roomTypeId: createDto.roomTypeId,
                 hotelId: createDto.hotelId,
-                status: booking_entity_1.BookingStatus.PENDING,
+                status: booking_entity_1.BookingStatus.CONFIRMED,
                 bookingReference: ref,
                 gstCompany: createDto.gstCompany,
                 gstNumber: createDto.gstNumber,
+                userId: createDto.userId,
             });
             const saved = await queryRunner.manager.save(booking);
             const ledgerEntry = queryRunner.manager.create(ledger_entry_entity_1.LedgerEntry, {
@@ -119,9 +120,12 @@ let BookingService = BookingService_1 = class BookingService {
             await queryRunner.release();
         }
     }
-    async findAllByEmail(guestEmail) {
+    async findAllByEmail(identifier) {
         return this.bookingRepository.find({
-            where: { guestEmail },
+            where: [
+                { guestEmail: identifier },
+                { userId: identifier }
+            ],
             relations: ['roomType', 'hotel'],
             order: { createdAt: 'DESC' },
         });
@@ -135,7 +139,7 @@ let BookingService = BookingService_1 = class BookingService {
     }
     async findAllGlobal() {
         return this.bookingRepository.find({
-            relations: ['roomType', 'hotel', 'tourPartner', 'busVendor', 'cabVendor'],
+            relations: ['roomType', 'hotel', 'assignedRoom'],
             order: { createdAt: 'DESC' },
         });
     }

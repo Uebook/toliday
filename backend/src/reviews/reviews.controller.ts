@@ -21,7 +21,7 @@ export class ReviewsController {
   constructor(private readonly reviewsService: ReviewsService) {}
 
   private checkAdmin(req: any) {
-    if (req.user.role !== StaffRole.ADMIN && req.user.role !== StaffRole.OWNER) {
+    if (req.user.role !== StaffRole.ADMIN && req.user.role !== StaffRole.OWNER && req.user.role !== 'superadmin') {
       throw new UnauthorizedException('Admin access required');
     }
   }

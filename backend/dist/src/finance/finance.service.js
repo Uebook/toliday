@@ -101,6 +101,11 @@ let FinanceService = class FinanceService {
             order: { createdAt: 'DESC' },
         });
     }
+    async getInvoiceById(id) {
+        return this.invoiceRepo.findOne({
+            where: { id },
+        });
+    }
     async findAllPayouts() {
         return this.payoutRepo.find({
             order: { createdAt: 'DESC' },

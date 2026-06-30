@@ -16,6 +16,7 @@ export declare class FinanceService {
     getPayoutRequests(vendorId: string, vertical: VerticalType): Promise<PayoutRequest[]>;
     requestPayout(vendorId: string, vertical: VerticalType, amount: number): Promise<PayoutRequest>;
     getInvoices(vendorId: string, vertical: VerticalType): Promise<Invoice[]>;
+    getInvoiceById(id: string): Promise<Invoice | null>;
     findAllPayouts(): Promise<PayoutRequest[]>;
     updatePayoutStatus(id: string, status: any): Promise<import("typeorm").UpdateResult>;
     findAllLedgerEntries(vertical?: VerticalType): Promise<LedgerEntry[]>;

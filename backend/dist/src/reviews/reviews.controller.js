@@ -24,7 +24,7 @@ let ReviewsController = class ReviewsController {
         this.reviewsService = reviewsService;
     }
     checkAdmin(req) {
-        if (req.user.role !== staff_entity_1.StaffRole.ADMIN && req.user.role !== staff_entity_1.StaffRole.OWNER) {
+        if (req.user.role !== staff_entity_1.StaffRole.ADMIN && req.user.role !== staff_entity_1.StaffRole.OWNER && req.user.role !== 'superadmin') {
             throw new common_1.UnauthorizedException('Admin access required');
         }
     }

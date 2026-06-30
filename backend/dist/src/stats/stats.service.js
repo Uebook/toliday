@@ -107,6 +107,8 @@ let StatsService = class StatsService {
         const days = period === '7d' ? 7 : period === '30d' ? 30 : 90;
         const now = new Date();
         const dailyData = [];
+        const roomTypes = await this.roomTypeRepository.find({ where: { hotelId } });
+        const totalCapacity = roomTypes.reduce((sum, rt) => sum + (Number(rt.totalRooms) || 0), 0) || 10;
         for (let i = days - 1; i >= 0; i--) {
             const day = (0, date_fns_1.subDays)(now, i);
             const dayStr = (0, date_fns_1.format)(day, 'yyyy-MM-dd');
@@ -124,7 +126,7 @@ let StatsService = class StatsService {
             const activeDay = allBookings.filter((b) => b.startDate <= dayStr &&
                 b.endDate > dayStr &&
                 [booking_entity_1.BookingStatus.CONFIRMED, booking_entity_1.BookingStatus.CHECKED_IN].includes(b.status)).length;
-            const occupancy = Math.min(100, Math.round((activeDay / 10) * 100));
+            const occupancy = Math.min(100, Math.round((activeDay / totalCapacity) * 100));
             dailyData.push({
                 date: dateLabel,
                 revenue,

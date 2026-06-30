@@ -114,7 +114,7 @@ export default function AdminTourPartnersPage() {
                                           {p.businessName?.charAt(0) || 'P'}
                                    </div>
                                    <div>
-                                          <div className="text-sm font-black text-slate-900 leading-none mb-1">{p.businessName || p.name}</div>
+                                          <div className="text-sm font-black text-foreground leading-none mb-1">{p.businessName || p.name}</div>
                                           <div className="text-[10px] font-bold text-slate-400 uppercase tracking-tight">{p.businessType || 'Tour Operator'}</div>
                                    </div>
                             </div>
@@ -152,9 +152,9 @@ export default function AdminTourPartnersPage() {
                             {/* Add Package Modal */}
                             {isAddPkgModalOpen && (
                                 <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
-                                    <div className="bg-white rounded-[2.5rem] w-full max-w-lg p-10 shadow-2xl animate-scaleUp">
+                                    <div className="ios-sheet rounded-[28px] w-full max-w-lg p-10 shadow-2xl animate-scaleUp">
                                         <div className="flex items-center justify-between mb-8">
-                                            <h3 className="text-2xl font-black text-slate-900 tracking-tight">Post New Tour</h3>
+                                            <h3 className="text-2xl font-black text-foreground tracking-tight">Post New Tour</h3>
                                             <button onClick={() => setIsAddPkgModalOpen(false)} className="p-2 hover:bg-slate-100 rounded-xl transition-colors"><X size={24} /></button>
                                         </div>
                                         <form className="space-y-6" onSubmit={(e) => {
@@ -169,16 +169,16 @@ export default function AdminTourPartnersPage() {
                                         }}>
                                             <div className="space-y-2">
                                                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Package Title</label>
-                                                <input name="title" required className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-purple-500/20 transition-all" placeholder="e.g. Kerala Backwaters Tour" />
+                                                <input name="title" required className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl font-bold text-foreground focus:outline-none focus:ring-2 focus:ring-purple-500/20 transition-all" placeholder="e.g. Kerala Backwaters Tour" />
                                             </div>
                                             <div className="grid grid-cols-2 gap-4">
                                                 <div className="space-y-2">
                                                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Duration</label>
-                                                    <input name="duration" required className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-purple-500/20 transition-all" placeholder="5 Days / 4 Nights" />
+                                                    <input name="duration" required className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl font-bold text-foreground focus:outline-none focus:ring-2 focus:ring-purple-500/20 transition-all" placeholder="5 Days / 4 Nights" />
                                                 </div>
                                                 <div className="space-y-2">
                                                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Price</label>
-                                                    <input name="price" type="number" required className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-purple-500/20 transition-all" placeholder="12000" />
+                                                    <input name="price" type="number" required className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl font-bold text-foreground focus:outline-none focus:ring-2 focus:ring-purple-500/20 transition-all" placeholder="12000" />
                                                 </div>
                                             </div>
                                             <button type="submit" disabled={addPkgMutation.isPending} className="w-full py-5 bg-purple-600 hover:bg-purple-500 text-white rounded-2xl font-black text-xs uppercase tracking-[0.2em] shadow-xl shadow-purple-600/20 transition-all flex items-center justify-center gap-2">
@@ -192,9 +192,9 @@ export default function AdminTourPartnersPage() {
                             {/* Edit Partner Modal */}
                             {isEditPartnerModalOpen && (
                                 <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
-                                    <div className="bg-white rounded-[2.5rem] w-full max-w-lg p-10 shadow-2xl animate-scaleUp">
+                                    <div className="ios-sheet rounded-[28px] w-full max-w-lg p-10 shadow-2xl animate-scaleUp">
                                         <div className="flex items-center justify-between mb-8">
-                                            <h3 className="text-2xl font-black text-slate-900 tracking-tight">Edit Partner Profile</h3>
+                                            <h3 className="text-2xl font-black text-foreground tracking-tight">Edit Partner Profile</h3>
                                             <button onClick={() => setIsEditPartnerModalOpen(false)} className="p-2 hover:bg-slate-100 rounded-xl transition-colors"><X size={24} /></button>
                                         </div>
                                         <form className="space-y-6" onSubmit={(e) => {
@@ -206,7 +206,7 @@ export default function AdminTourPartnersPage() {
                                         }}>
                                             <div className="space-y-2">
                                                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Agency Name</label>
-                                                <input name="businessName" defaultValue={selectedPartner.businessName || selectedPartner.name} required className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-purple-500/20 transition-all" />
+                                                <input name="businessName" defaultValue={selectedPartner.businessName || selectedPartner.name} required className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl font-bold text-foreground focus:outline-none focus:ring-2 focus:ring-purple-500/20 transition-all" />
                                             </div>
                                             <button type="submit" disabled={updatePartnerMutation.isPending} className="w-full py-5 bg-purple-600 hover:bg-purple-500 text-white rounded-2xl font-black text-xs uppercase tracking-[0.2em] shadow-xl shadow-purple-600/20 transition-all flex items-center justify-center gap-2">
                                                 {updatePartnerMutation.isPending ? 'Saving...' : 'Save Details'}
@@ -219,9 +219,9 @@ export default function AdminTourPartnersPage() {
                             {/* Edit Package Modal */}
                             {isEditPackageModalOpen && selectedPackage && (
                                 <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
-                                    <div className="bg-white rounded-[2.5rem] w-full max-w-lg p-10 shadow-2xl animate-scaleUp">
+                                    <div className="ios-sheet rounded-[28px] w-full max-w-lg p-10 shadow-2xl animate-scaleUp">
                                         <div className="flex items-center justify-between mb-8">
-                                            <h3 className="text-2xl font-black text-slate-900 tracking-tight">Edit Tour Package</h3>
+                                            <h3 className="text-2xl font-black text-foreground tracking-tight">Edit Tour Package</h3>
                                             <button onClick={() => setIsEditPackageModalOpen(false)} className="p-2 hover:bg-slate-100 rounded-xl transition-colors"><X size={24} /></button>
                                         </div>
                                         <form className="space-y-6" onSubmit={(e) => {
@@ -239,16 +239,16 @@ export default function AdminTourPartnersPage() {
                                         }}>
                                             <div className="space-y-2">
                                                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Package Title</label>
-                                                <input name="title" defaultValue={selectedPackage.title} required className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-purple-500/20 transition-all" />
+                                                <input name="title" defaultValue={selectedPackage.title} required className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl font-bold text-foreground focus:outline-none focus:ring-2 focus:ring-purple-500/20 transition-all" />
                                             </div>
                                             <div className="grid grid-cols-2 gap-4">
                                                 <div className="space-y-2">
                                                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Duration</label>
-                                                    <input name="duration" defaultValue={selectedPackage.duration} required className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-purple-500/20 transition-all" />
+                                                    <input name="duration" defaultValue={selectedPackage.duration} required className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl font-bold text-foreground focus:outline-none focus:ring-2 focus:ring-purple-500/20 transition-all" />
                                                 </div>
                                                 <div className="space-y-2">
                                                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Sale Price</label>
-                                                    <input name="price" type="number" defaultValue={selectedPackage.salePrice} required className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-purple-500/20 transition-all" />
+                                                    <input name="price" type="number" defaultValue={selectedPackage.salePrice} required className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl font-bold text-foreground focus:outline-none focus:ring-2 focus:ring-purple-500/20 transition-all" />
                                                 </div>
                                             </div>
                                             <button type="submit" disabled={updatePackageMutation.isPending} className="w-full py-5 bg-purple-600 hover:bg-purple-500 text-white rounded-2xl font-black text-xs uppercase tracking-[0.2em] shadow-xl shadow-purple-600/20 transition-all flex items-center justify-center gap-2">
@@ -259,23 +259,23 @@ export default function AdminTourPartnersPage() {
                                 </div>
                             )}
 
-                            <div className="flex items-center justify-between mb-8">
+                            <div className="flex items-center justify-between mb-8 px-2">
                                 <button 
                                        onClick={() => setSelectedPartnerId(null)}
-                                       className="flex items-center gap-2 text-slate-500 hover:text-blue-600 font-black text-xs uppercase tracking-widest transition-colors group"
+                                       className="flex items-center gap-2 text-muted-foreground hover:text-purple-500 font-bold text-xs uppercase tracking-widest transition-colors group"
                                 >
-                                       <div className="p-2 rounded-xl bg-white group-hover:bg-blue-600 group-hover:text-white transition-all shadow-sm">
+                                       <div className="p-2.5 rounded-xl bg-black/[0.03] dark:bg-white/[0.03] group-hover:bg-purple-600 group-hover:text-white transition-all shadow-sm">
                                               <ArrowLeft size={16} />
                                        </div>
                                        Back to Agencies
                                 </button>
 
-                                <div className="flex bg-white p-1 rounded-2xl shadow-sm border border-slate-100">
+                                <div className="flex bg-black/[0.02] dark:bg-white/[0.02] p-1.5 rounded-2xl shadow-inner border border-border/10">
                                     {(['PROFILE', 'PACKAGES', 'HISTORY', 'OFFERS'] as const).map(tab => (
                                         <button
                                             key={tab}
                                             onClick={() => setActiveTab(tab)}
-                                            className={`px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === tab ? 'bg-purple-600 text-white shadow-lg' : 'text-slate-400 hover:text-slate-600'}`}
+                                            className={`px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === tab ? 'bg-purple-600 text-white shadow-lg shadow-purple-500/20' : 'text-muted-foreground hover:text-foreground hover:bg-black/[0.02] dark:hover:bg-white/[0.02]'}`}
                                         >
                                             {tab}
                                         </button>
@@ -285,12 +285,12 @@ export default function AdminTourPartnersPage() {
 
                             <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
                                    <div className="xl:col-span-1 space-y-6">
-                                          <div className="bg-white rounded-[2.5rem] p-8 border border-slate-100 shadow-xl shadow-slate-200/50">
+                                          <div className="ios-sheet rounded-[28px] p-8 border border-border/10 shadow-[0_12px_40px_rgba(0,0,0,0.02)]">
                                                  <div className="flex flex-col items-center text-center">
                                                         <div className="w-24 h-24 rounded-3xl bg-purple-600 flex items-center justify-center text-white mb-6 shadow-xl shadow-purple-600/20 text-3xl font-black">
                                                                {selectedPartner.businessName?.charAt(0) || 'P'}
                                                         </div>
-                                                        <h2 className="text-2xl font-black text-slate-900 tracking-tight mb-2">{selectedPartner.businessName || selectedPartner.name}</h2>
+                                                        <h2 className="text-2xl font-black text-foreground tracking-tight mb-2">{selectedPartner.businessName || selectedPartner.name}</h2>
                                                         <p className="text-slate-400 font-bold text-sm mb-6 uppercase tracking-widest">{selectedPartner.businessType || 'Tour Operator'}</p>
                                                         <button 
                                                             onClick={() => setIsEditPartnerModalOpen(true)}
@@ -304,9 +304,9 @@ export default function AdminTourPartnersPage() {
 
                                    <div className="xl:col-span-2">
                                           {activeTab === 'PACKAGES' && (
-                                              <div className="bg-white rounded-[2.5rem] p-10 border border-slate-100 shadow-xl space-y-10">
+                                              <div className="ios-sheet rounded-[28px] p-10 border border-border/10 shadow-[0_12px_40px_rgba(0,0,0,0.02)] space-y-10">
                                                   <div className="flex items-center justify-between">
-                                                      <h3 className="text-xl font-black text-slate-900 tracking-tight flex items-center gap-3">
+                                                      <h3 className="text-xl font-black text-foreground tracking-tight flex items-center gap-3">
                                                           <div className="p-3 bg-purple-50 text-purple-600 rounded-2xl"><Package size={24} /></div>
                                                           Posted Tour Packages
                                                       </h3>
@@ -326,7 +326,7 @@ export default function AdminTourPartnersPage() {
                                                                       <div className="absolute -top-2 -right-2 px-2 py-0.5 bg-emerald-500 text-white text-[8px] font-black rounded-full uppercase tracking-tighter">Live</div>
                                                                   </div>
                                                                   <div className="min-w-0">
-                                                                      <div className="text-lg font-black text-slate-900 truncate max-w-[250px]">{pkg.title}</div>
+                                                                      <div className="text-lg font-black text-foreground truncate max-w-[250px]">{pkg.title}</div>
                                                                       <div className="flex items-center gap-4 mt-1">
                                                                           <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{pkg.duration}</span>
                                                                           <span className="text-[10px] font-black text-purple-600 uppercase tracking-widest bg-purple-50 px-2 py-0.5 rounded-lg">₹{Number(pkg.salePrice).toLocaleString()}</span>
@@ -361,8 +361,8 @@ export default function AdminTourPartnersPage() {
                                           )}
 
                                           {activeTab === 'HISTORY' && (
-                                              <div className="bg-white rounded-[2.5rem] p-10 border border-slate-100 shadow-xl space-y-10">
-                                                  <h3 className="text-xl font-black text-slate-900 tracking-tight flex items-center gap-3">
+                                              <div className="ios-sheet rounded-[28px] p-10 border border-border/10 shadow-[0_12px_40px_rgba(0,0,0,0.02)] space-y-10">
+                                                  <h3 className="text-xl font-black text-foreground tracking-tight flex items-center gap-3">
                                                       <div className="p-3 bg-purple-50 text-purple-600 rounded-2xl"><Clock size={24} /></div>
                                                       Booking History
                                                   </h3>
@@ -370,7 +370,7 @@ export default function AdminTourPartnersPage() {
                                                       {selectedPartner.bookings?.map((booking: any, i: number) => (
                                                           <div key={i} className="p-6 bg-slate-50 rounded-3xl border border-slate-100 flex items-center justify-between group hover:bg-slate-900 transition-all duration-500">
                                                               <div className="flex items-center gap-6">
-                                                                  <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-slate-900 group-hover:scale-110 transition-transform">
+                                                                  <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-foreground group-hover:scale-110 transition-transform">
                                                                       <CreditCard size={24} />
                                                                   </div>
                                                                   <div>
