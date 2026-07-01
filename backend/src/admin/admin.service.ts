@@ -231,6 +231,37 @@ export class AdminService {
     const bRev = parseFloat(busRevenue.sum || '0');
     const cRev = parseFloat(cabRevenue.sum || '0');
 
+    // Counts of Bookings
+    const hBookingsCount = await this.bookingRepository.count({ where: { tourPartnerId: IsNull() } });
+    const pBookingsCount = await this.bookingRepository.count({ where: { hotelId: IsNull() } });
+    const bBookingsCount = await this.busBookingRepository.count();
+    const cBookingsCount = await this.cabBookingRepository.count();
+
+    // Unique Consumers Count
+    const hConsumersRes = await this.bookingRepository
+      .createQueryBuilder('b')
+      .where('b.tourPartnerId IS NULL')
+      .select('COUNT(DISTINCT b.guestEmail)', 'count')
+      .getRawOne();
+    const pConsumersRes = await this.bookingRepository
+      .createQueryBuilder('b')
+      .where('b.hotelId IS NULL')
+      .select('COUNT(DISTINCT b.guestEmail)', 'count')
+      .getRawOne();
+    const bConsumersRes = await this.busBookingRepository
+      .createQueryBuilder('b')
+      .select('COUNT(DISTINCT b.pnr)', 'count')
+      .getRawOne();
+    const cConsumersRes = await this.cabBookingRepository
+      .createQueryBuilder('b')
+      .select('COUNT(DISTINCT b.customerPhone)', 'count')
+      .getRawOne();
+
+    const hConsumers = parseInt(hConsumersRes.count || '0', 10);
+    const pConsumers = parseInt(pConsumersRes.count || '0', 10);
+    const bConsumers = parseInt(bConsumersRes.count || '0', 10);
+    const cConsumers = parseInt(cConsumersRes.count || '0', 10);
+
     const recentBookings = await this.findAllBookings();
     return {
       counts: {
@@ -245,6 +276,20 @@ export class AdminService {
         buses: bRev,
         cabs: cRev,
         total: hRev + pRev + bRev + cRev,
+      },
+      bookingsCount: {
+        hotels: hBookingsCount,
+        packages: pBookingsCount,
+        buses: bBookingsCount,
+        cabs: cBookingsCount,
+        total: hBookingsCount + pBookingsCount + bBookingsCount + cBookingsCount,
+      },
+      consumersCount: {
+        hotels: hConsumers,
+        packages: pConsumers,
+        buses: bConsumers,
+        cabs: cConsumers,
+        total: hConsumers + pConsumers + bConsumers + cConsumers,
       },
       activity: recentBookings.slice(0, 10),
     };

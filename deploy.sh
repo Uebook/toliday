@@ -57,11 +57,17 @@ fi
 # 9. Apply Nginx changes and reload
 echo "🌐 Reloading Nginx server configuration..."
 if [ -f "nginx.conf" ]; then
-    sudo cp nginx.conf /etc/nginx/sites-available/toliday.conf
-    sudo ln -sf /etc/nginx/sites-available/toliday.conf /etc/nginx/sites-enabled/
-    
-    # Remove default site if exists to avoid conflicts
-    sudo rm -f /etc/nginx/sites-enabled/default
+    # Check if SSL is already configured on the server to prevent overwriting it
+    if grep -q "listen 443" /etc/nginx/sites-available/toliday.conf 2>/dev/null; then
+        echo "🔒 SSL is already configured in /etc/nginx/sites-available/toliday.conf. Skipping overwrite to preserve certificates."
+    else
+        echo "📄 Copying clean Nginx configuration..."
+        sudo cp nginx.conf /etc/nginx/sites-available/toliday.conf
+        sudo ln -sf /etc/nginx/sites-available/toliday.conf /etc/nginx/sites-enabled/
+        
+        # Remove default site if exists to avoid conflicts
+        sudo rm -f /etc/nginx/sites-enabled/default
+    fi
     
     echo "🔍 Testing Nginx configuration..."
     sudo nginx -t
