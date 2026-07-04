@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import * as fs from 'fs';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { HotelModule } from './hotel/hotel.module';
@@ -29,6 +28,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { ReviewsModule } from './reviews/reviews.module';
 import { GlobalInventoryModule } from './global-inventory/global-inventory.module';
 import { HousekeepingModule } from './housekeeping/housekeeping.module';
+import { CmsModule } from './cms/cms.module';
 
 @Module({
   imports: [
@@ -40,33 +40,16 @@ import { HousekeepingModule } from './housekeeping/housekeeping.module';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => {
-        const caPath = configService.get<string>('DB_SSL_CA_PATH');
-        console.log(`DB SSL CA Path: ${caPath}`);
-        let ca: string | undefined;
-        if (caPath) {
-          try {
-            ca = fs.readFileSync(caPath).toString();
-            console.log('Successfully read SSL CA certificate');
-          } catch (error) {
-            console.error(
-              `Failed to read SSL CA certificate at ${caPath}:`,
-              error.message,
-            );
-          }
-        } else {
-          console.warn('DB_SSL_CA_PATH is not defined');
-        }
-
         return {
-          type: 'postgres',
+          type: 'mysql',
           host: configService.get<string>('DB_HOST', 'localhost'),
-          port: configService.get<number>('DB_PORT', 5432),
-          username: configService.get<string>('DB_USERNAME', 'postgres'),
-          password: configService.get<string>('DB_PASSWORD', 'postgres'),
+          port: configService.get<number>('DB_PORT', 3306),
+          username: configService.get<string>('DB_USERNAME', 'root'),
+          password: configService.get<string>('DB_PASSWORD', ''),
           database: configService.get<string>('DB_NAME', 'toliday'),
-          ssl: ca ? { ca, rejectUnauthorized: false } : { rejectUnauthorized: false },
           entities: [__dirname + '/**/*.entity{.ts,.js}'],
           synchronize: true,
+          charset: 'utf8mb4',
         };
       },
     }),
@@ -94,6 +77,7 @@ import { HousekeepingModule } from './housekeeping/housekeeping.module';
     ReviewsModule,
     GlobalInventoryModule,
     HousekeepingModule,
+    CmsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

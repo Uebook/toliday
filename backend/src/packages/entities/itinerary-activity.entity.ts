@@ -23,10 +23,10 @@ export class ItineraryActivity {
   @Column({ type: 'text' })
   description: string;
 
-  @Column({ type: 'jsonb', nullable: true })
+  @Column({ type: 'json', nullable: true })
   inclusions: string[];
 
-  @Column({ type: 'jsonb', nullable: true })
+  @Column({ type: 'json', nullable: true })
   images: string[];
 
   @Column()

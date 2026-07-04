@@ -25,10 +25,10 @@ export class BusRoute {
   @Column({ nullable: true })
   estimatedDuration: string;
 
-  @Column({ type: 'jsonb', nullable: true })
+  @Column({ type: 'json', nullable: true })
   boardingPoints: any[]; // e.g. [{ time: '18:00', location: 'City Center' }]
 
-  @Column({ type: 'jsonb', nullable: true })
+  @Column({ type: 'json', nullable: true })
   droppingPoints: any[]; // e.g. [{ time: '06:00', location: 'Bus Stand' }]
 
   @OneToMany(() => BusSchedule, (schedule) => schedule.route)

@@ -37,10 +37,10 @@ export class RoomType {
   @Column({ type: 'varchar', nullable: true })
   size: string;
 
-  @Column({ type: 'jsonb', nullable: true })
+  @Column({ type: 'json', nullable: true })
   amenities: string[];
 
-  @Column({ type: 'jsonb', nullable: true })
+  @Column({ type: 'json', nullable: true })
   images: string[];
 
   @Column({ type: 'int', default: 10 })

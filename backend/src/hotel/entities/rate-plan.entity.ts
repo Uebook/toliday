@@ -43,7 +43,7 @@ export class RatePlan {
   @Column({ type: 'text', nullable: true })
   cancellationPolicy: string;
 
-  @Column({ type: 'jsonb', nullable: true })
+  @Column({ type: 'json', nullable: true })
   inclusions: string[]; // e.g., ["Free WiFi", "Welcome Drink"]
 
   @Column()

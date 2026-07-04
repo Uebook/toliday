@@ -33,7 +33,7 @@ export class BusBooking {
   @JoinColumn({ name: 'scheduleId' })
   schedule: BusSchedule;
 
-  @Column({ type: 'jsonb' })
+  @Column({ type: 'json' })
   passengerDetails: any[]; // [{ name: string, age: number, gender: string, seatName: string }]
 
   @Column({ type: 'simple-array' })

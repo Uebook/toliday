@@ -52,7 +52,7 @@ export class TourPackage {
   @Column({ type: 'simple-array', nullable: true })
   images: string[];
 
-  @Column({ type: 'jsonb', nullable: true })
+  @Column({ type: 'json', nullable: true })
   itinerary: {
     day: number;
     title: string;

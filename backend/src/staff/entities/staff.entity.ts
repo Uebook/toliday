@@ -49,7 +49,7 @@ export class Staff {
   @Column({ nullable: true })
   lastLogin: Date;
 
-  @Column({ type: 'jsonb', nullable: true, default: {} })
+  @Column({ type: 'json', nullable: true })
   permissions: Record<string, boolean>;
 
   @Column({ default: false })

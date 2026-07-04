@@ -44,7 +44,7 @@ export class Tour {
   @Column({ type: 'simple-array', nullable: true })
   excludes: string[];
 
-  @Column({ type: 'jsonb', nullable: true })
+  @Column({ type: 'json', nullable: true })
   itinerary: any[];
 
   @Column({
