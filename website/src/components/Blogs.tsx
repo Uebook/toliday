@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { ArrowLeft, BookOpen, Clock, ChevronRight } from 'lucide-react';
+import { ArrowLeft, BookOpen, Clock, ChevronRight, Loader2 } from 'lucide-react';
+import { fetchCmsBlogs } from '../lib/api';
 
 interface Story {
   id: number;
@@ -13,52 +14,28 @@ interface BlogsProps {
   onSelectStory: (story: Story) => void;
 }
 
-const ALL_BLOGS = [
-  {
-    id: 1,
-    title: 'Skip Airport Queues Like a Pro With This Little-Known Hack',
-    image: 'https://images.unsplash.com/photo-1530521951415-340479d0263f?auto=format&fit=crop&q=80&w=600',
-    category: 'Travel Hacks',
-    readTime: '4 min read'
-  },
-  {
-    id: 2,
-    title: 'Top 15 Places to Visit in May in India',
-    image: 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&q=80&w=600',
-    category: 'Destinations',
-    readTime: '6 min read'
-  },
-  {
-    id: 3,
-    title: '10 Best Places to Visit in February in India',
-    image: 'https://images.unsplash.com/photo-1595658658481-d53d3f999875?auto=format&fit=crop&q=80&w=600',
-    category: 'Destinations',
-    readTime: '5 min read'
-  },
-  {
-    id: 4,
-    title: "Green Getaways: How Odisha's Eco Retreats Redefine Responsible Travel",
-    image: 'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?auto=format&fit=crop&q=80&w=600',
-    category: 'Eco Tourism',
-    readTime: '7 min read'
-  },
-  {
-    id: 5,
-    title: '11 Perfect Places to Bring in the New Year in India',
-    image: 'https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?auto=format&fit=crop&q=80&w=600',
-    category: 'Celebrations',
-    readTime: '5 min read'
-  }
-];
-
 const CATEGORIES = ['All', 'Travel Hacks', 'Destinations', 'Eco Tourism', 'Celebrations'];
 
 export default function Blogs({ onBack, onSelectStory }: BlogsProps) {
   const [activeCategory, setActiveCategory] = useState('All');
+  const [blogsList, setBlogsList] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchCmsBlogs()
+      .then(data => {
+        setBlogsList(data);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error('Failed to fetch CMS blogs:', err);
+        setLoading(false);
+      });
+  }, []);
 
   const filteredBlogs = activeCategory === 'All' 
-    ? ALL_BLOGS 
-    : ALL_BLOGS.filter(b => b.category === activeCategory);
+    ? blogsList 
+    : blogsList.filter(b => b.category === activeCategory);
 
   return (
     <div className="bg-zinc-50 min-h-screen pb-24 text-left pt-28">
@@ -106,8 +83,17 @@ export default function Blogs({ onBack, onSelectStory }: BlogsProps) {
         </div>
 
         {/* Blogs Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredBlogs.map((blog, idx) => (
+        {loading ? (
+          <div className="flex justify-center items-center py-24">
+            <Loader2 className="w-8 h-8 animate-spin text-indigo-650" />
+          </div>
+        ) : filteredBlogs.length === 0 ? (
+          <div className="text-center py-24 text-zinc-400 font-medium">
+            No articles found in this category.
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {filteredBlogs.map((blog, idx) => (
             <motion.div
               key={blog.id}
               initial={{ opacity: 0, y: 15 }}
@@ -151,6 +137,7 @@ export default function Blogs({ onBack, onSelectStory }: BlogsProps) {
             </motion.div>
           ))}
         </div>
+      )}
       </div>
     </div>
   );

@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Hotel, MapPin, Car, Bus, Search, Calendar, Users, Plane, CreditCard, ArrowRightLeft, Shield, Tag, Award, Check, X, FileText, Landmark, Clock, Sparkles, ChevronLeft, ChevronRight, Ticket } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import { fetchHotels, AIRPORTS } from '../lib/api';
+import { fetchHotels, AIRPORTS, fetchCmsHero } from '../lib/api';
 import { DateRange } from 'react-date-range';
 import 'react-date-range/dist/styles.css'; 
 import 'react-date-range/dist/theme/default.css';
@@ -52,6 +52,17 @@ export default function Hero({ onSearch, defaultService, isDedicated }: HeroProp
 
 
   const [activeService, setActiveService] = useState<ServiceType>(defaultService || 'hotels');
+  const [hero, setHero] = useState<any>(null);
+
+  useEffect(() => {
+    fetchCmsHero()
+      .then(data => {
+        if (data) {
+          setHero(data);
+        }
+      })
+      .catch(err => console.error('Failed to fetch CMS hero:', err));
+  }, []);
   
   useEffect(() => {
     if (defaultService) {
@@ -296,7 +307,29 @@ export default function Hero({ onSearch, defaultService, isDedicated }: HeroProp
           transition={{ duration: 0.7, ease: 'easeInOut' }}
           className="absolute inset-0 z-0"
           style={{ background: slideBgs[carouselIndex] }}
-        />
+        >
+          {carouselIndex === 0 && hero?.mediaUrl && (
+            <div className="absolute inset-0 overflow-hidden">
+              {hero.mediaUrl.endsWith('.mp4') || hero.mediaUrl.includes('video') ? (
+                <video
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  className="w-full h-full object-cover opacity-35"
+                >
+                  <source src={hero.mediaUrl} type="video/mp4" />
+                </video>
+              ) : (
+                <img
+                  src={hero.mediaUrl}
+                  alt=""
+                  className="w-full h-full object-cover opacity-35"
+                />
+              )}
+            </div>
+          )}
+        </motion.div>
       </AnimatePresence>
       {/* Subtle vignette at bottom to blend into white search panel */}
       <div className="absolute bottom-0 left-0 right-0 h-32 z-[1] pointer-events-none" style={{ background: 'linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.18) 100%)' }} />
@@ -325,8 +358,12 @@ export default function Hero({ onSearch, defaultService, isDedicated }: HeroProp
                   {/* Left Text */}
                   <div className="flex flex-col gap-2 z-10 max-w-[50%]">
                     <span className="text-[11px] font-extrabold tracking-[0.2em] uppercase text-blue-100/80">Pre-plan to save!</span>
-                    <h2 className="text-3xl md:text-5xl font-extrabold text-white leading-tight drop-shadow">Enjoy up to <span className="text-yellow-300">70% off</span><br/>at Duty-Free</h2>
-                    <p className="text-white/80 text-sm font-semibold mt-2">Shop fragrances, cosmetics &amp; spirits before you fly.</p>
+                    <h2 className="text-3xl md:text-5xl font-extrabold text-white leading-tight drop-shadow">
+                      {hero?.title || <>Enjoy up to <span className="text-yellow-300">70% off</span><br/>at Duty-Free</>}
+                    </h2>
+                    <p className="text-white/80 text-sm font-semibold mt-2">
+                      {hero?.subtitle || "Shop fragrances, cosmetics & spirits before you fly."}
+                    </p>
                   </div>
                   {/* Right SVG Illustration - Summer Beach Scene */}
                   <div className="absolute right-0 bottom-0 top-0 flex items-end justify-end pointer-events-none" style={{ width: '45%' }}>

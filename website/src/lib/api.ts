@@ -370,3 +370,39 @@ export const fetchActivities = async (params: any = {}) => {
   
   return results;
 };
+
+// ==========================================
+// CMS API INTEGRATIONS
+// ==========================================
+
+export const fetchCmsHero = async () => {
+  const response = await fetch(`${API_BASE_URL}/public/cms/hero`);
+  if (!response.ok) throw new Error('Failed to fetch CMS hero');
+  return response.json();
+};
+
+export const fetchCmsPromos = async (service?: string) => {
+  const url = service ? `${API_BASE_URL}/public/cms/promos?service=${service}` : `${API_BASE_URL}/public/cms/promos`;
+  const response = await fetch(url);
+  if (!response.ok) throw new Error('Failed to fetch CMS promos');
+  return response.json();
+};
+
+export const fetchCmsDestinations = async (isInternational?: boolean) => {
+  const url = isInternational !== undefined ? `${API_BASE_URL}/public/cms/destinations?isInternational=${isInternational}` : `${API_BASE_URL}/public/cms/destinations`;
+  const response = await fetch(url);
+  if (!response.ok) throw new Error('Failed to fetch CMS destinations');
+  return response.json();
+};
+
+export const fetchCmsBlogs = async () => {
+  const response = await fetch(`${API_BASE_URL}/public/cms/blogs`);
+  if (!response.ok) throw new Error('Failed to fetch CMS blogs');
+  return response.json();
+};
+
+export const fetchCmsPolicy = async (key: string) => {
+  const response = await fetch(`${API_BASE_URL}/public/cms/policy/${key}`);
+  if (!response.ok) throw new Error('Failed to fetch CMS policy');
+  return response.json();
+};

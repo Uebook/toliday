@@ -1,6 +1,7 @@
-import { useRef } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { ChevronRight, ChevronLeft } from 'lucide-react';
 import { motion } from 'motion/react';
+import { fetchCmsDestinations } from '../lib/api';
 
 const OUTSIDE_DATA = [
   {
@@ -47,6 +48,24 @@ interface OutsideDestinationsProps {
 
 export default function OutsideDestinations({ onSelectDestination }: OutsideDestinationsProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
+  const [dbDestinations, setDbDestinations] = useState<any[]>([]);
+
+  useEffect(() => {
+    fetchCmsDestinations(true)
+      .then(data => {
+        if (data && data.length > 0) {
+          setDbDestinations(data.map((d: any) => ({
+            id: d.id,
+            name: d.name,
+            accommodations: d.description || 'International Escape',
+            image: d.imageUrl
+          })));
+        }
+      })
+      .catch(err => console.error('Failed to fetch CMS international destinations:', err));
+  }, []);
+
+  const activeData = dbDestinations.length > 0 ? dbDestinations : OUTSIDE_DATA;
 
   const scroll = (direction: 'left' | 'right') => {
     if (scrollRef.current) {
@@ -88,7 +107,7 @@ export default function OutsideDestinations({ onSelectDestination }: OutsideDest
             ref={scrollRef}
             className="flex gap-6 overflow-x-auto scroll-smooth pb-4 scrollbar-none snap-x snap-mandatory"
           >
-            {OUTSIDE_DATA.map((dest, idx) => (
+            {activeData.map((dest, idx) => (
               <motion.div
                 key={dest.id}
                 initial={{ opacity: 0, scale: 0.95 }}

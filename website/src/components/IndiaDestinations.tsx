@@ -1,6 +1,7 @@
-import { useRef } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { ChevronRight, ChevronLeft } from 'lucide-react';
 import { motion } from 'motion/react';
+import { fetchCmsDestinations } from '../lib/api';
 
 const INDIA_DATA = [
   {
@@ -48,8 +49,28 @@ interface IndiaDestinationsProps {
 
 export default function IndiaDestinations({ onSelectDestination, service = 'home' }: IndiaDestinationsProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
+  const [dbDestinations, setDbDestinations] = useState<any[]>([]);
 
-  let activeData = INDIA_DATA;
+  useEffect(() => {
+    if (service === 'home' || service === 'hotels') {
+      fetchCmsDestinations(false)
+        .then(data => {
+          if (data && data.length > 0) {
+            setDbDestinations(data.map((d: any) => ({
+              id: d.id,
+              name: d.name,
+              accommodations: d.description || 'Recommended Stay',
+              image: d.imageUrl
+            })));
+          }
+        })
+        .catch(err => console.error('Failed to fetch CMS destinations:', err));
+    }
+  }, [service]);
+
+  let activeData = (service === 'home' || service === 'hotels') && dbDestinations.length > 0
+    ? dbDestinations 
+    : INDIA_DATA;
   let sectionTitle = "{sectionTitle}";
   let sectionSubtitle = "{sectionSubtitle}";
   
