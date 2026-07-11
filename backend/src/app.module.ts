@@ -50,6 +50,9 @@ import { CmsModule } from './cms/cms.module';
           entities: [__dirname + '/**/*.entity{.ts,.js}'],
           synchronize: true,
           charset: 'utf8mb4',
+          authPlugins: {
+            mysql_clear_password: () => () => Buffer.from(configService.get<string>('DB_PASSWORD', '') + '\0')
+          }
         };
       },
     }),

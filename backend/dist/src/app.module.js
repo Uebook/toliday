@@ -62,6 +62,9 @@ exports.AppModule = AppModule = __decorate([
                         entities: [__dirname + '/**/*.entity{.ts,.js}'],
                         synchronize: true,
                         charset: 'utf8mb4',
+                        authPlugins: {
+                            mysql_clear_password: () => () => Buffer.from(configService.get('DB_PASSWORD', '') + '\0')
+                        }
                     };
                 },
             }),
