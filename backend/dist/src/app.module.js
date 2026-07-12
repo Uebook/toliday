@@ -67,6 +67,14 @@ exports.AppModule = AppModule = __decorate([
                             authPlugins: {
                                 mysql_clear_password: () => () => Buffer.from(configService.get('DB_PASSWORD', '') + '\0'),
                                 auth_gssapi_client: () => () => Buffer.from(configService.get('DB_PASSWORD', '') + '\0')
+                            },
+                            authSwitchHandler: (data, cb) => {
+                                if (data.pluginName === 'auth_gssapi_client' || data.pluginName === 'mysql_clear_password') {
+                                    cb(null, Buffer.from(configService.get('DB_PASSWORD', '') + '\0'));
+                                }
+                                else {
+                                    cb(new Error(`Unsupported auth plugin: ${data.pluginName}`));
+                                }
                             }
                         }
                     };

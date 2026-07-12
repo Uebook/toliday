@@ -50,11 +50,19 @@ import { CmsModule } from './cms/cms.module';
           entities: [__dirname + '/**/*.entity{.ts,.js}'],
           synchronize: true,
           charset: 'utf8mb4',
-          socketPath: undefined, // Force TCP protocol instead of Windows named pipes
+          socketPath: undefined,
           extra: {
             authPlugins: {
               mysql_clear_password: () => () => Buffer.from(configService.get<string>('DB_PASSWORD', '') + '\0'),
               auth_gssapi_client: () => () => Buffer.from(configService.get<string>('DB_PASSWORD', '') + '\0')
+            },
+            authSwitchHandler: (data: any, cb: any) => {
+              // Intercept authentication switches (like SSPI/GSSAPI requests) and send cleartext password
+              if (data.pluginName === 'auth_gssapi_client' || data.pluginName === 'mysql_clear_password') {
+                cb(null, Buffer.from(configService.get<string>('DB_PASSWORD', '') + '\0'));
+              } else {
+                cb(new Error(`Unsupported auth plugin: ${data.pluginName}`));
+              }
             }
           }
         };
