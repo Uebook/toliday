@@ -54,7 +54,7 @@ exports.AppModule = AppModule = __decorate([
                 useFactory: (configService) => {
                     return {
                         type: 'mysql',
-                        host: configService.get('DB_HOST', 'localhost'),
+                        host: configService.get('DB_HOST', '161.248.26.53'),
                         port: configService.get('DB_PORT', 3306),
                         username: configService.get('DB_USERNAME', 'root'),
                         password: configService.get('DB_PASSWORD', ''),
