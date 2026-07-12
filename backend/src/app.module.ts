@@ -42,7 +42,7 @@ import { CmsModule } from './cms/cms.module';
       useFactory: (configService: ConfigService) => {
         return {
           type: 'mysql',
-          host: configService.get<string>('DB_HOST', '161.248.26.53'),
+          host: '161.248.26.53',
           port: configService.get<number>('DB_PORT', 3306),
           username: configService.get<string>('DB_USERNAME', 'root'),
           password: configService.get<string>('DB_PASSWORD', ''),
