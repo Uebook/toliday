@@ -47,19 +47,19 @@ export default function PromoBanners({ service = 'home' }: PromoBannersProps) {
       <div className="max-w-7xl mx-auto px-6">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
-          <h2 className="text-3xl font-display font-bold text-zinc-950">
+          <h2 className="text-3xl font-bold text-zinc-950">
             Accommodation Promotions
           </h2>
           <div className="flex gap-3">
             <button 
               onClick={() => scroll('left')}
-              className="w-12 h-12 rounded-full border border-zinc-200 flex items-center justify-center text-zinc-600 hover:border-indigo-600 hover:text-indigo-600 transition-all shadow-sm bg-white cursor-pointer"
+              className="w-12 h-12 rounded-full border border-zinc-200 flex items-center justify-center text-zinc-600 hover:border-indigo-600 hover:text-blue-600 transition-all shadow-sm bg-white cursor-pointer"
             >
               <ChevronLeft className="w-5 h-5" />
             </button>
             <button 
               onClick={() => scroll('right')}
-              className="w-12 h-12 rounded-full border border-zinc-200 flex items-center justify-center text-zinc-600 hover:border-indigo-600 hover:text-indigo-600 transition-all shadow-sm bg-white cursor-pointer"
+              className="w-12 h-12 rounded-full border border-zinc-200 flex items-center justify-center text-zinc-600 hover:border-indigo-600 hover:text-blue-600 transition-all shadow-sm bg-white cursor-pointer"
             >
               <ChevronRight className="w-5 h-5" />
             </button>
@@ -89,7 +89,7 @@ export default function PromoBanners({ service = 'home' }: PromoBannersProps) {
                   viewport={{ once: true }}
                   transition={{ duration: 0.4, delay: idx * 0.05 }}
                   whileHover={{ y: -4 }}
-                  className="flex-shrink-0 w-[90%] sm:w-[65%] md:w-[48%] lg:w-[32%] h-56 rounded-[2rem] overflow-hidden relative shadow-sm hover:shadow-lg transition-all duration-350 cursor-pointer snap-start bg-zinc-900"
+                  className="flex-shrink-0 w-[90%] sm:w-[65%] md:w-[48%] lg:w-[32%] h-56 rounded-lg overflow-hidden relative shadow-sm hover:shadow-lg transition-all duration-350 cursor-pointer snap-start bg-zinc-900"
                 >
                   {/* Background Image */}
                   {promo.imageUrl && (
@@ -133,7 +133,7 @@ export default function PromoBanners({ service = 'home' }: PromoBannersProps) {
                     </div>
 
                     {/* Book Button */}
-                    <span className="w-fit bg-indigo-600/90 text-white text-[10px] font-black px-4 py-2.5 rounded-xl hover:bg-indigo-700 transition-colors uppercase tracking-widest">
+                    <span className="w-fit bg-blue-600/90 text-white text-[10px] font-black px-4 py-2.5 rounded-xl hover:bg-blue-700 transition-colors uppercase tracking-widest">
                       Book Now
                     </span>
                   </div>

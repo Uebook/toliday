@@ -236,10 +236,10 @@ export default function FeaturedHomes({ onSelectProperty }: FeaturedHomesProps) 
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
           <div className="space-y-4 text-left">
-            <span className="bg-indigo-50 text-indigo-600 text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full border border-indigo-100">
+            <span className="bg-blue-50 text-blue-600 text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full border border-blue-100">
               Handpicked Homes
             </span>
-            <h2 className="text-3xl md:text-5xl font-display font-extrabold text-zinc-900 leading-tight">
+            <h2 className="text-3xl md:text-5xl font-extrabold text-zinc-900 leading-tight">
               Featured Homes recommended <br className="hidden md:block" /> 
               for you
             </h2>
@@ -253,7 +253,7 @@ export default function FeaturedHomes({ onSelectProperty }: FeaturedHomesProps) 
                 onClick={() => setActiveTab(tab)}
                 className={`px-5 py-3 rounded-full text-xs font-bold transition-all relative whitespace-nowrap cursor-pointer ${
                   activeTab === tab 
-                    ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-100' 
+                    ? 'bg-blue-600 text-white shadow-lg ' 
                     : 'bg-white text-zinc-500 border border-zinc-200 hover:border-zinc-300'
                 }`}
               >
@@ -276,10 +276,10 @@ export default function FeaturedHomes({ onSelectProperty }: FeaturedHomesProps) 
                 transition={{ duration: 0.3, delay: idx * 0.05 }}
                 whileHover={{ y: -6 }}
                 onClick={() => onSelectProperty(prop)}
-                className="group flex flex-col cursor-pointer bg-white rounded-3xl overflow-hidden"
+                className="group flex flex-col cursor-pointer bg-white rounded-xl overflow-hidden"
               >
                 {/* Image Wrap */}
-                <div className="relative aspect-[4/3] rounded-[2rem] overflow-hidden mb-4 bg-zinc-50 shadow-sm group-hover:shadow-md transition-all duration-300">
+                <div className="relative aspect-[4/3] rounded-lg overflow-hidden mb-4 bg-zinc-50 shadow-sm group-hover:shadow-md transition-all duration-300">
                   <img 
                     src={prop.image} 
                     alt={prop.name} 
@@ -294,7 +294,7 @@ export default function FeaturedHomes({ onSelectProperty }: FeaturedHomesProps) 
 
                 {/* Details */}
                 <div className="flex-1 text-left">
-                  <h3 className="font-bold text-zinc-900 line-clamp-2 min-h-[2.5rem] leading-tight text-sm tracking-tight mb-2 group-hover:text-indigo-600 transition-colors">
+                  <h3 className="font-bold text-zinc-900 line-clamp-2 min-h-[2.5rem] leading-tight text-sm tracking-tight mb-2 group-hover:text-blue-600 transition-colors">
                     {prop.name}
                   </h3>
                   
@@ -302,8 +302,8 @@ export default function FeaturedHomes({ onSelectProperty }: FeaturedHomesProps) 
                   <div className="flex flex-wrap items-center gap-x-2 gap-y-1 mb-2">
                     {renderStars(prop.stars)}
                     <span className="w-1 h-1 bg-zinc-300 rounded-full" />
-                    <div className="flex items-center gap-0.5 text-xs font-bold text-indigo-600">
-                      <MapPin className="w-3 h-3 text-indigo-600" />
+                    <div className="flex items-center gap-0.5 text-xs font-bold text-blue-600">
+                      <MapPin className="w-3 h-3 text-blue-600" />
                       <span>{prop.location}</span>
                     </div>
                   </div>

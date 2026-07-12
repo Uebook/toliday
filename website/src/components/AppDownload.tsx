@@ -15,7 +15,7 @@ export default function AppDownload() {
             viewport={{ once: true }}
             className="relative w-full max-w-[320px] shrink-0"
           >
-            <div className="relative z-10 border-[8px] border-zinc-900 rounded-[3rem] overflow-hidden shadow-2xl aspect-[9/19.5] bg-white">
+            <div className="relative z-10 border-[8px] border-zinc-900 rounded-xl overflow-hidden shadow-md aspect-[9/19.5] bg-white">
               <img 
                 src={mobileScreenshot} 
                 alt="TolidayTrip App Screenshot" 
@@ -30,10 +30,10 @@ export default function AppDownload() {
           {/* Content */}
           <div className="flex-1 space-y-8">
             <div>
-              <span className="text-indigo-600 font-bold text-sm uppercase tracking-widest block mb-4">Try on Mobile</span>
-              <h2 className="text-4xl md:text-6xl font-display font-bold text-zinc-900 leading-tight">
+              <span className="text-blue-600 font-bold text-sm uppercase tracking-widest block mb-4">Try on Mobile</span>
+              <h2 className="text-4xl md:text-6xl font-bold text-zinc-900 leading-tight">
                 Download our app for <br className="hidden lg:block" /> 
-                <span className="text-indigo-600">unbeatable perks!</span>
+                <span className="text-blue-600">unbeatable perks!</span>
               </h2>
             </div>
             
@@ -43,8 +43,8 @@ export default function AppDownload() {
 
             <div className="flex flex-col sm:flex-row items-center gap-10 pt-4">
               {/* QR Code Placeholder */}
-              <div className="p-4 bg-white rounded-3xl shadow-xl border border-zinc-100">
-                <div className="w-32 h-32 bg-zinc-900 rounded-2xl flex items-center justify-center text-white p-2">
+              <div className="p-4 bg-white rounded-xl shadow-md border border-zinc-100">
+                <div className="w-32 h-32 bg-zinc-900 rounded-xl flex items-center justify-center text-white p-2">
                    <QrCode className="w-full h-full" strokeWidth={1.5} />
                 </div>
                 <p className="text-[10px] text-center font-bold text-zinc-400 mt-3 uppercase tracking-tighter">Scan to download</p>
@@ -56,7 +56,7 @@ export default function AppDownload() {
                   href="https://apps.apple.com/in/app/toliday-trip/id1598496330"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-3 bg-zinc-900 text-white px-6 py-4 rounded-2xl hover:bg-zinc-800 transition-all w-full sm:w-64 group shadow-xl cursor-pointer"
+                  className="flex items-center gap-3 bg-zinc-900 text-white px-6 py-4 rounded-2xl hover:bg-zinc-800 transition-all w-full sm:w-64 group shadow-md cursor-pointer"
                 >
                   <div className="p-2 bg-white/10 rounded-lg group-hover:scale-110 transition-transform">
                     <Apple className="w-6 h-6 fill-white" />
@@ -71,7 +71,7 @@ export default function AppDownload() {
                   href="https://play.google.com/store/apps/details?id=com.tolidaytrip&hl=en_IN"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-3 bg-zinc-900 text-white px-6 py-4 rounded-2xl hover:bg-zinc-800 transition-all w-full sm:w-64 group shadow-xl cursor-pointer"
+                  className="flex items-center gap-3 bg-zinc-900 text-white px-6 py-4 rounded-2xl hover:bg-zinc-800 transition-all w-full sm:w-64 group shadow-md cursor-pointer"
                 >
                   <div className="p-2 bg-white/10 rounded-lg group-hover:scale-110 transition-transform">
                     <Play className="w-6 h-6 fill-white" />

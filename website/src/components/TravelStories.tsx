@@ -127,22 +127,22 @@ export default function TravelStories({ onSelectStory, service = 'home' }: Trave
         {/* Header */}
         <div className="flex items-end justify-between mb-12">
           <div>
-            <div className="flex items-center gap-2 text-indigo-600 font-bold text-sm uppercase tracking-widest mb-3">
+            <div className="flex items-center gap-2 text-blue-600 font-bold text-sm uppercase tracking-widest mb-3">
               <BookOpen className="w-4 h-4" />
               <span>Explore More</span>
             </div>
-            <h2 className="text-4xl font-display font-bold text-zinc-900">News And Travel Stories</h2>
+            <h2 className="text-4xl font-bold text-zinc-900">News And Travel Stories</h2>
           </div>
           <div className="flex gap-3">
             <button 
               onClick={() => scroll('left')}
-              className="w-12 h-12 rounded-full border border-zinc-200 flex items-center justify-center text-zinc-600 hover:border-indigo-600 hover:text-indigo-600 transition-all shadow-sm bg-white"
+              className="w-12 h-12 rounded-full border border-zinc-200 flex items-center justify-center text-zinc-600 hover:border-indigo-600 hover:text-blue-600 transition-all shadow-sm bg-white"
             >
               <ChevronLeft className="w-5 h-5" />
             </button>
             <button 
               onClick={() => scroll('right')}
-              className="w-12 h-12 rounded-full border border-zinc-200 flex items-center justify-center text-zinc-600 hover:border-indigo-600 hover:text-indigo-600 transition-all shadow-sm bg-white"
+              className="w-12 h-12 rounded-full border border-zinc-200 flex items-center justify-center text-zinc-600 hover:border-indigo-600 hover:text-blue-600 transition-all shadow-sm bg-white"
             >
               <ChevronRight className="w-5 h-5" />
             </button>
@@ -161,7 +161,7 @@ export default function TravelStories({ onSelectStory, service = 'home' }: Trave
                 key={story.id}
                 onClick={() => onSelectStory(story)}
                 whileHover={{ y: -6 }}
-                className="relative block w-[280px] sm:w-[320px] aspect-[4/3] rounded-[2rem] overflow-hidden shadow-md hover:shadow-xl transition-all shrink-0 group/card cursor-pointer"
+                className="relative block w-[280px] sm:w-[320px] aspect-[4/3] rounded-lg overflow-hidden shadow-md hover:shadow-md transition-all shrink-0 group/card cursor-pointer"
               >
                 {/* Background Image */}
                 <img 
@@ -196,7 +196,7 @@ export default function TravelStories({ onSelectStory, service = 'home' }: Trave
         <div className="mt-6 flex justify-center">
           <div className="w-24 h-1 bg-zinc-100 rounded-full overflow-hidden relative">
             <div 
-              className="absolute left-0 top-0 h-full bg-indigo-600 rounded-full transition-all duration-300"
+              className="absolute left-0 top-0 h-full bg-blue-600 rounded-full transition-all duration-300"
               style={{ width: `${Math.max(15, scrollProgress)}%` }}
             />
           </div>

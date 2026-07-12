@@ -525,7 +525,7 @@ export default function Hero({ onSearch, defaultService, isDedicated }: HeroProp
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
-            className="bg-white rounded-3xl shadow-[0_8px_40px_0_rgba(0,0,0,0.22)] p-6 md:p-7 text-left"
+            className="bg-white rounded-xl shadow-[0_8px_40px_0_rgba(0,0,0,0.22)] p-6 md:p-7 text-left"
           >
             {/* Tab Bar inside white card */}
             {!isDedicated && (
@@ -573,7 +573,7 @@ export default function Hero({ onSearch, defaultService, isDedicated }: HeroProp
                   className="grid grid-cols-1 lg:grid-cols-12 gap-3 items-stretch"
                 >
                   {/* Destination */}
-                  <div className="lg:col-span-4 relative border border-zinc-200 hover:border-zinc-400 rounded-2xl p-3 flex flex-col justify-center bg-zinc-50 transition-all shadow-sm" ref={hotelSuggestRef}>
+                  <div className="lg:col-span-4 relative border border-zinc-200 hover:border-zinc-400 rounded-xl p-3 flex flex-col justify-center bg-zinc-50 transition-all shadow-sm" ref={hotelSuggestRef}>
                     <span className="text-[9px] font-extrabold text-zinc-400 uppercase tracking-widest mb-0.5">DESTINATION / PROPERTY</span>
                     <input 
                       type="text" 
@@ -587,7 +587,7 @@ export default function Hero({ onSearch, defaultService, isDedicated }: HeroProp
 
                     <AnimatePresence>
                       {showHotelSuggest && (
-                        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="absolute left-0 right-0 top-full mt-2 bg-white border border-zinc-100 rounded-2xl shadow-xl z-50 overflow-hidden max-h-60 overflow-y-auto">
+                        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="absolute left-0 right-0 top-full mt-2 bg-white border border-zinc-100 rounded-2xl shadow-md z-50 overflow-hidden max-h-60 overflow-y-auto">
                           <div className="p-3 text-[10px] font-bold text-zinc-400 border-b border-zinc-100 uppercase tracking-wider bg-zinc-50">Popular Destinations</div>
                           {popularCities.map((city) => (
                             <button key={city} onClick={() => { setHotelDestination(city); setShowHotelSuggest(false); }} className="w-full text-left px-4 py-2.5 text-xs font-bold text-zinc-700 hover:bg-brand-orange/5 hover:text-brand-orange transition-colors border-b border-zinc-50 last:border-0">{city}</button>
@@ -598,7 +598,7 @@ export default function Hero({ onSearch, defaultService, isDedicated }: HeroProp
                   </div>
 
                   {/* DATES */}
-                  <div className="lg:col-span-6 relative border border-zinc-200 hover:border-zinc-400 rounded-2xl p-3 flex flex-col justify-center bg-zinc-50 transition-all shadow-sm cursor-pointer" ref={datePickerRef} onClick={() => setShowDatePicker(!showDatePicker)}>
+                  <div className="lg:col-span-6 relative border border-zinc-200 hover:border-zinc-400 rounded-xl p-3 flex flex-col justify-center bg-zinc-50 transition-all shadow-sm cursor-pointer" ref={datePickerRef} onClick={() => setShowDatePicker(!showDatePicker)}>
                     <div className="flex items-center justify-between px-2">
                       <div>
                         <span className="text-[9px] font-extrabold text-zinc-400 uppercase tracking-widest mb-0.5 block">CHECK-IN</span>
@@ -618,7 +618,7 @@ export default function Hero({ onSearch, defaultService, isDedicated }: HeroProp
                           animate={{ opacity: 1, y: 0 }} 
                           exit={{ opacity: 0, y: 10 }} 
                           onClick={(e) => e.stopPropagation()}
-                          className="absolute left-1/2 -translate-x-1/2 lg:translate-x-0 lg:left-0 top-full mt-2 bg-white rounded-2xl shadow-2xl border border-zinc-100 z-[9999] overflow-hidden scale-[0.85] origin-top"
+                          className="absolute left-1/2 -translate-x-1/2 lg:translate-x-0 lg:left-0 top-full mt-2 bg-white rounded-2xl shadow-md border border-zinc-100 z-[9999] overflow-hidden scale-[0.85] origin-top"
                         >
                           <DateRange
                             showDateDisplay={false}
@@ -712,7 +712,7 @@ export default function Hero({ onSearch, defaultService, isDedicated }: HeroProp
                   {/* Main Grid Row */}
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-3 items-stretch">
                     {/* FROM */}
-                    <div className="lg:col-span-3 relative border border-zinc-200 hover:border-zinc-400 rounded-2xl p-3 flex flex-col justify-center bg-zinc-50 transition-all shadow-sm" ref={flightFromSuggestRef}>
+                    <div className="lg:col-span-3 relative border border-zinc-200 hover:border-zinc-400 rounded-xl p-3 flex flex-col justify-center bg-zinc-50 transition-all shadow-sm" ref={flightFromSuggestRef}>
                       <span className="text-[9px] font-extrabold text-zinc-400 uppercase tracking-widest mb-0.5">FROM</span>
                       <input
                         type="text"
@@ -738,7 +738,7 @@ export default function Hero({ onSearch, defaultService, isDedicated }: HeroProp
 
                       <AnimatePresence>
                         {showFlightFromSuggest && (
-                          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="absolute left-0 right-0 top-full mt-2 bg-white border border-zinc-100 rounded-2xl shadow-xl z-50 overflow-hidden max-h-60 overflow-y-auto">
+                          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="absolute left-0 right-0 top-full mt-2 bg-white border border-zinc-100 rounded-2xl shadow-md z-50 overflow-hidden max-h-60 overflow-y-auto">
                             {AIRPORTS.filter(a => 
                               a.code.toLowerCase().includes(flightFromSearch.toLowerCase()) ||
                               a.city.toLowerCase().includes(flightFromSearch.toLowerCase()) ||
@@ -770,7 +770,7 @@ export default function Hero({ onSearch, defaultService, isDedicated }: HeroProp
                     </div>
 
                     {/* TO */}
-                    <div className="lg:col-span-3 relative border border-zinc-200 hover:border-zinc-400 rounded-2xl p-3 flex flex-col justify-center bg-zinc-50 transition-all shadow-sm" ref={flightToSuggestRef}>
+                    <div className="lg:col-span-3 relative border border-zinc-200 hover:border-zinc-400 rounded-xl p-3 flex flex-col justify-center bg-zinc-50 transition-all shadow-sm" ref={flightToSuggestRef}>
                       <span className="text-[9px] font-extrabold text-zinc-400 uppercase tracking-widest mb-0.5">TO</span>
                       <input
                         type="text"
@@ -789,7 +789,7 @@ export default function Hero({ onSearch, defaultService, isDedicated }: HeroProp
 
                       <AnimatePresence>
                         {showFlightToSuggest && (
-                          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="absolute left-0 right-0 top-full mt-2 bg-white border border-zinc-100 rounded-2xl shadow-xl z-50 overflow-hidden max-h-60 overflow-y-auto">
+                          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="absolute left-0 right-0 top-full mt-2 bg-white border border-zinc-100 rounded-2xl shadow-md z-50 overflow-hidden max-h-60 overflow-y-auto">
                             {AIRPORTS.filter(a => 
                               a.code.toLowerCase().includes(flightToSearch.toLowerCase()) ||
                               a.city.toLowerCase().includes(flightToSearch.toLowerCase()) ||
@@ -814,7 +814,7 @@ export default function Hero({ onSearch, defaultService, isDedicated }: HeroProp
                     </div>
 
                     {/* DATES */}
-                    <div className="lg:col-span-4 relative border border-zinc-200 hover:border-zinc-400 rounded-2xl p-3 flex flex-col justify-center bg-zinc-50 transition-all shadow-sm cursor-pointer" ref={flightDatePickerRef} onClick={() => setShowFlightDatePicker(!showFlightDatePicker)}>
+                    <div className="lg:col-span-4 relative border border-zinc-200 hover:border-zinc-400 rounded-xl p-3 flex flex-col justify-center bg-zinc-50 transition-all shadow-sm cursor-pointer" ref={flightDatePickerRef} onClick={() => setShowFlightDatePicker(!showFlightDatePicker)}>
                       <div className="flex items-center justify-between px-2">
                         <div className="text-left">
                           <span className="text-[9px] font-extrabold text-zinc-400 uppercase tracking-widest mb-0.5 block">DEPART DATE</span>
@@ -840,7 +840,7 @@ export default function Hero({ onSearch, defaultService, isDedicated }: HeroProp
                             animate={{ opacity: 1, y: 0 }} 
                             exit={{ opacity: 0, y: 10 }} 
                             onClick={(e) => e.stopPropagation()}
-                            className="absolute left-1/2 -translate-x-1/2 lg:translate-x-0 lg:left-0 top-full mt-2 bg-white rounded-2xl shadow-2xl border border-zinc-100 z-[9999] overflow-hidden scale-[0.85] origin-top"
+                            className="absolute left-1/2 -translate-x-1/2 lg:translate-x-0 lg:left-0 top-full mt-2 bg-white rounded-2xl shadow-md border border-zinc-100 z-[9999] overflow-hidden scale-[0.85] origin-top"
                           >
                             <DateRange
                               showDateDisplay={false}
@@ -933,7 +933,7 @@ export default function Hero({ onSearch, defaultService, isDedicated }: HeroProp
                   className="grid grid-cols-1 lg:grid-cols-12 gap-3 items-stretch"
                 >
                   {/* Destination */}
-                  <div className="lg:col-span-6 relative border border-zinc-200 hover:border-zinc-400 rounded-2xl p-3 flex flex-col justify-center bg-zinc-50 transition-all shadow-sm" ref={holidaySuggestRef}>
+                  <div className="lg:col-span-6 relative border border-zinc-200 hover:border-zinc-400 rounded-xl p-3 flex flex-col justify-center bg-zinc-50 transition-all shadow-sm" ref={holidaySuggestRef}>
                     <span className="text-[9px] font-extrabold text-zinc-400 uppercase tracking-widest mb-0.5">WHERE TO GO</span>
                     <input 
                       type="text" 
@@ -947,7 +947,7 @@ export default function Hero({ onSearch, defaultService, isDedicated }: HeroProp
 
                     <AnimatePresence>
                       {showHolidaySuggest && (
-                        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="absolute left-0 right-0 top-full mt-2 bg-white border border-zinc-100 rounded-2xl shadow-xl z-50 overflow-hidden max-h-60 overflow-y-auto">
+                        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="absolute left-0 right-0 top-full mt-2 bg-white border border-zinc-100 rounded-2xl shadow-md z-50 overflow-hidden max-h-60 overflow-y-auto">
                           <div className="p-3 text-[10px] font-bold text-zinc-400 border-b border-zinc-100 uppercase tracking-wider bg-zinc-50">Popular Destinations</div>
                           {popularCities.map((city) => (
                             <button key={city} onClick={() => { setHolidayDestination(city); setShowHolidaySuggest(false); }} className="w-full text-left px-4 py-2.5 text-xs font-bold text-zinc-700 hover:bg-brand-orange/5 hover:text-brand-orange transition-colors border-b border-zinc-50 last:border-0">{city}</button>
@@ -958,7 +958,7 @@ export default function Hero({ onSearch, defaultService, isDedicated }: HeroProp
                   </div>
 
                   {/* Travel Date */}
-                  <div className="lg:col-span-3 relative border border-zinc-200 hover:border-zinc-400 rounded-2xl p-3 flex flex-col justify-center bg-zinc-50 transition-all shadow-sm cursor-pointer" onClick={(e) => e.currentTarget.querySelector('input')?.showPicker()}>
+                  <div className="lg:col-span-3 relative border border-zinc-200 hover:border-zinc-400 rounded-xl p-3 flex flex-col justify-center bg-zinc-50 transition-all shadow-sm cursor-pointer" onClick={(e) => e.currentTarget.querySelector('input')?.showPicker()}>
                     <input type="date" value={holidayDeparture} min={todayStr} onChange={(e) => setHolidayDeparture(e.target.value)} className="absolute inset-0 opacity-0 cursor-pointer w-full h-full z-10" />
                     <span className="text-[9px] font-extrabold text-zinc-400 uppercase tracking-widest mb-0.5">DATE OF TRAVEL</span>
                     <span className="text-base font-extrabold text-zinc-800">{formatDateDisplay(holidayDeparture)}</span>
@@ -989,7 +989,7 @@ export default function Hero({ onSearch, defaultService, isDedicated }: HeroProp
                   className="grid grid-cols-1 lg:grid-cols-12 gap-3 items-stretch"
                 >
                   {/* FROM */}
-                  <div className="lg:col-span-4 relative border border-zinc-200 hover:border-zinc-400 rounded-2xl p-3 flex flex-col justify-center bg-zinc-50 transition-all shadow-sm" ref={busFromSuggestRef}>
+                  <div className="lg:col-span-4 relative border border-zinc-200 hover:border-zinc-400 rounded-xl p-3 flex flex-col justify-center bg-zinc-50 transition-all shadow-sm" ref={busFromSuggestRef}>
                     <span className="text-[9px] font-extrabold text-zinc-400 uppercase tracking-widest mb-0.5">FROM</span>
                     <input 
                       type="text" 
@@ -1003,7 +1003,7 @@ export default function Hero({ onSearch, defaultService, isDedicated }: HeroProp
 
                     <AnimatePresence>
                       {showBusFromSuggest && (
-                        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="absolute left-0 right-0 top-full mt-2 bg-white border border-zinc-100 rounded-2xl shadow-xl z-50 overflow-hidden max-h-60 overflow-y-auto">
+                        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="absolute left-0 right-0 top-full mt-2 bg-white border border-zinc-100 rounded-2xl shadow-md z-50 overflow-hidden max-h-60 overflow-y-auto">
                           {popularCities.map((city) => (
                             <button key={city} onClick={() => { setBusFrom(city); setShowBusFromSuggest(false); }} className="w-full text-left px-4 py-2.5 text-xs font-bold text-zinc-700 hover:bg-brand-orange/5 hover:text-brand-orange transition-colors border-b border-zinc-50 last:border-0">{city}</button>
                           ))}
@@ -1020,7 +1020,7 @@ export default function Hero({ onSearch, defaultService, isDedicated }: HeroProp
                   </div>
 
                   {/* TO */}
-                  <div className="lg:col-span-4 relative border border-zinc-200 hover:border-zinc-400 rounded-2xl p-3 flex flex-col justify-center bg-zinc-50 transition-all shadow-sm" ref={busToSuggestRef}>
+                  <div className="lg:col-span-4 relative border border-zinc-200 hover:border-zinc-400 rounded-xl p-3 flex flex-col justify-center bg-zinc-50 transition-all shadow-sm" ref={busToSuggestRef}>
                     <span className="text-[9px] font-extrabold text-zinc-400 uppercase tracking-widest mb-0.5">TO</span>
                     <input 
                       type="text" 
@@ -1034,7 +1034,7 @@ export default function Hero({ onSearch, defaultService, isDedicated }: HeroProp
 
                     <AnimatePresence>
                       {showBusToSuggest && (
-                        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="absolute left-0 right-0 top-full mt-2 bg-white border border-zinc-100 rounded-2xl shadow-xl z-50 overflow-hidden max-h-60 overflow-y-auto">
+                        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="absolute left-0 right-0 top-full mt-2 bg-white border border-zinc-100 rounded-2xl shadow-md z-50 overflow-hidden max-h-60 overflow-y-auto">
                           {popularCities.map((city) => (
                             <button key={city} onClick={() => { setBusTo(city); setShowBusToSuggest(false); }} className="w-full text-left px-4 py-2.5 text-xs font-bold text-zinc-700 hover:bg-brand-orange/5 hover:text-brand-orange transition-colors border-b border-zinc-50 last:border-0">{city}</button>
                           ))}
@@ -1044,7 +1044,7 @@ export default function Hero({ onSearch, defaultService, isDedicated }: HeroProp
                   </div>
 
                   {/* DATE */}
-                  <div className="lg:col-span-3 relative border border-zinc-200 hover:border-zinc-400 rounded-2xl p-3 flex flex-col justify-center bg-zinc-50 transition-all shadow-sm cursor-pointer" onClick={(e) => e.currentTarget.querySelector('input')?.showPicker()}>
+                  <div className="lg:col-span-3 relative border border-zinc-200 hover:border-zinc-400 rounded-xl p-3 flex flex-col justify-center bg-zinc-50 transition-all shadow-sm cursor-pointer" onClick={(e) => e.currentTarget.querySelector('input')?.showPicker()}>
                     <input type="date" value={busDate} min={todayStr} onChange={(e) => setBusDate(e.target.value)} className="absolute inset-0 opacity-0 cursor-pointer w-full h-full z-10" />
                     <span className="text-[9px] font-extrabold text-zinc-400 uppercase tracking-widest mb-0.5">DATE OF JOURNEY</span>
                     <span className="text-base font-extrabold text-zinc-800">{formatDateDisplay(busDate)}</span>
@@ -1088,7 +1088,7 @@ export default function Hero({ onSearch, defaultService, isDedicated }: HeroProp
 
                   <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 items-stretch">
                     {/* FROM */}
-                    <div className="lg:col-span-3 relative border border-zinc-200 hover:border-zinc-400 rounded-2xl p-3 flex flex-col justify-center bg-zinc-50 transition-all shadow-sm" ref={cabFromSuggestRef}>
+                    <div className="lg:col-span-3 relative border border-zinc-200 hover:border-zinc-400 rounded-xl p-3 flex flex-col justify-center bg-zinc-50 transition-all shadow-sm" ref={cabFromSuggestRef}>
                       <span className="text-[9px] font-extrabold text-zinc-400 uppercase tracking-widest mb-0.5">FROM</span>
                       <input 
                         type="text" 
@@ -1102,7 +1102,7 @@ export default function Hero({ onSearch, defaultService, isDedicated }: HeroProp
 
                       <AnimatePresence>
                         {showCabFromSuggest && (
-                          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="absolute left-0 right-0 top-full mt-2 bg-white border border-zinc-100 rounded-2xl shadow-xl z-50 overflow-hidden max-h-60 overflow-y-auto">
+                          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="absolute left-0 right-0 top-full mt-2 bg-white border border-zinc-100 rounded-2xl shadow-md z-50 overflow-hidden max-h-60 overflow-y-auto">
                             {popularCities.map((city) => (
                               <button key={city} onClick={() => { setCabFrom(city); setShowCabFromSuggest(false); }} className="w-full text-left px-4 py-2.5 text-xs font-bold text-zinc-700 hover:bg-brand-orange/5 hover:text-brand-orange transition-colors border-b border-zinc-50 last:border-0">{city}</button>
                             ))}
@@ -1119,7 +1119,7 @@ export default function Hero({ onSearch, defaultService, isDedicated }: HeroProp
                     </div>
 
                     {/* TO */}
-                    <div className="lg:col-span-3 relative border border-zinc-200 hover:border-zinc-400 rounded-2xl p-3 flex flex-col justify-center bg-zinc-50 transition-all shadow-sm" ref={cabToSuggestRef}>
+                    <div className="lg:col-span-3 relative border border-zinc-200 hover:border-zinc-400 rounded-xl p-3 flex flex-col justify-center bg-zinc-50 transition-all shadow-sm" ref={cabToSuggestRef}>
                       <span className="text-[9px] font-extrabold text-zinc-400 uppercase tracking-widest mb-0.5">TO</span>
                       <input 
                         type="text" 
@@ -1133,7 +1133,7 @@ export default function Hero({ onSearch, defaultService, isDedicated }: HeroProp
 
                       <AnimatePresence>
                         {showCabToSuggest && (
-                          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="absolute left-0 right-0 top-full mt-2 bg-white border border-zinc-100 rounded-2xl shadow-xl z-50 overflow-hidden max-h-60 overflow-y-auto">
+                          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="absolute left-0 right-0 top-full mt-2 bg-white border border-zinc-100 rounded-2xl shadow-md z-50 overflow-hidden max-h-60 overflow-y-auto">
                             {popularCities.map((city) => (
                               <button key={city} onClick={() => { setCabTo(city); setShowCabToSuggest(false); }} className="w-full text-left px-4 py-2.5 text-xs font-bold text-zinc-700 hover:bg-brand-orange/5 hover:text-brand-orange transition-colors border-b border-zinc-50 last:border-0">{city}</button>
                             ))}
@@ -1143,7 +1143,7 @@ export default function Hero({ onSearch, defaultService, isDedicated }: HeroProp
                     </div>
 
                     {/* DEPART */}
-                    <div className="lg:col-span-2 relative border border-zinc-200 hover:border-zinc-400 rounded-2xl p-3 flex flex-col justify-center bg-zinc-50 transition-all shadow-sm cursor-pointer" onClick={(e) => e.currentTarget.querySelector('input')?.showPicker()}>
+                    <div className="lg:col-span-2 relative border border-zinc-200 hover:border-zinc-400 rounded-xl p-3 flex flex-col justify-center bg-zinc-50 transition-all shadow-sm cursor-pointer" onClick={(e) => e.currentTarget.querySelector('input')?.showPicker()}>
                       <input type="date" value={cabDeparture} min={todayStr} onChange={(e) => setCabDeparture(e.target.value)} className="absolute inset-0 opacity-0 cursor-pointer w-full h-full z-10" />
                       <span className="text-[9px] font-extrabold text-zinc-400 uppercase tracking-widest mb-0.5">DEPART DATE</span>
                       <span className="text-base font-extrabold text-zinc-800">{formatDateDisplay(cabDeparture)}</span>
@@ -1151,7 +1151,7 @@ export default function Hero({ onSearch, defaultService, isDedicated }: HeroProp
                     </div>
 
                     {/* PICKUP TIME */}
-                    <div className="lg:col-span-1.5 relative border border-zinc-200 hover:border-zinc-400 rounded-2xl p-3 flex flex-col justify-center bg-zinc-50 transition-all shadow-sm cursor-pointer" onClick={(e) => e.currentTarget.querySelector('input')?.showPicker()}>
+                    <div className="lg:col-span-1.5 relative border border-zinc-200 hover:border-zinc-400 rounded-xl p-3 flex flex-col justify-center bg-zinc-50 transition-all shadow-sm cursor-pointer" onClick={(e) => e.currentTarget.querySelector('input')?.showPicker()}>
                       <input type="time" value={cabTime} onChange={(e) => setCabTime(e.target.value)} className="absolute inset-0 opacity-0 cursor-pointer w-full h-full z-10" />
                       <span className="text-[9px] font-extrabold text-zinc-400 uppercase tracking-widest mb-0.5">PICKUP TIME</span>
                       <span className="text-base font-extrabold text-zinc-800">{formatTimeDisplay(cabTime)}</span>
@@ -1184,7 +1184,7 @@ export default function Hero({ onSearch, defaultService, isDedicated }: HeroProp
                   className="grid grid-cols-1 lg:grid-cols-12 gap-3 items-stretch"
                 >
                   {/* DESTINATION OR ACTIVITY */}
-                  <div className="lg:col-span-8 relative border border-zinc-200 hover:border-zinc-400 rounded-2xl p-3 flex flex-col justify-center bg-zinc-50 transition-all shadow-sm" ref={activitySuggestRef}>
+                  <div className="lg:col-span-8 relative border border-zinc-200 hover:border-zinc-400 rounded-xl p-3 flex flex-col justify-center bg-zinc-50 transition-all shadow-sm" ref={activitySuggestRef}>
                     <span className="text-[9px] font-extrabold text-zinc-400 uppercase tracking-widest mb-0.5">DESTINATION OR ACTIVITY</span>
                     <input 
                       type="text" 
@@ -1198,7 +1198,7 @@ export default function Hero({ onSearch, defaultService, isDedicated }: HeroProp
 
                     <AnimatePresence>
                       {showActivitySuggest && (
-                        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="absolute left-0 right-0 top-full mt-2 bg-white border border-zinc-100 rounded-2xl shadow-xl z-50 overflow-hidden max-h-60 overflow-y-auto">
+                        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="absolute left-0 right-0 top-full mt-2 bg-white border border-zinc-100 rounded-2xl shadow-md z-50 overflow-hidden max-h-60 overflow-y-auto">
                           <div className="p-3 text-[10px] font-bold text-zinc-400 border-b border-zinc-100 uppercase tracking-wider bg-zinc-50">Popular Destinations</div>
                           {popularCities.map((city) => (
                             <button key={city} onClick={() => { setActivityDestination(city); setShowActivitySuggest(false); }} className="w-full text-left px-4 py-2.5 text-xs font-bold text-zinc-700 hover:bg-brand-orange/5 hover:text-brand-orange transition-colors border-b border-zinc-50 last:border-0">{city}</button>
@@ -1209,7 +1209,7 @@ export default function Hero({ onSearch, defaultService, isDedicated }: HeroProp
                   </div>
 
                   {/* DATE OF ACTIVITY */}
-                  <div className="lg:col-span-4 relative border border-zinc-200 hover:border-zinc-400 rounded-2xl p-3 flex flex-col justify-center bg-zinc-50 transition-all shadow-sm cursor-pointer" onClick={(e) => e.currentTarget.querySelector('input')?.showPicker()}>
+                  <div className="lg:col-span-4 relative border border-zinc-200 hover:border-zinc-400 rounded-xl p-3 flex flex-col justify-center bg-zinc-50 transition-all shadow-sm cursor-pointer" onClick={(e) => e.currentTarget.querySelector('input')?.showPicker()}>
                     <input type="date" value={activityDate} min={todayStr} onChange={(e) => setActivityDate(e.target.value)} className="absolute inset-0 opacity-0 cursor-pointer w-full h-full z-10" />
                     <span className="text-[9px] font-extrabold text-zinc-400 uppercase tracking-widest mb-0.5">DATE OF ACTIVITY (OPTIONAL)</span>
                     <span className="text-base font-extrabold text-zinc-800">{activityDate ? formatDateDisplay(activityDate) : 'Add a Date'}</span>
@@ -1296,7 +1296,7 @@ export default function Hero({ onSearch, defaultService, isDedicated }: HeroProp
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="mt-14 w-full max-w-5xl bg-white/10 backdrop-blur-xl rounded-[2rem] py-5 px-8 md:px-12 flex flex-col md:flex-row items-center justify-between gap-6 shadow-2xl border border-white/20 relative z-10"
+          className="mt-14 w-full max-w-5xl bg-white/10 backdrop-blur-xl rounded-lg py-5 px-8 md:px-12 flex flex-col md:flex-row items-center justify-between gap-6 shadow-md border border-white/20 relative z-10"
         >
           <div className="flex items-center gap-4 text-left">
             <div className="w-10 h-10 rounded-full bg-brand-orange/20 flex items-center justify-center text-brand-orange shrink-0">
@@ -1363,7 +1363,7 @@ function GuestConfigPopover({
       initial={{ opacity: 0, y: 10, scale: 0.95 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, y: 10, scale: 0.95 }}
-      className="absolute right-0 top-full mt-2 w-80 bg-white rounded-2xl shadow-2xl border border-zinc-100 p-6 z-50"
+      className="absolute right-0 top-full mt-2 w-80 bg-white rounded-2xl shadow-md border border-zinc-100 p-6 z-50"
     >
       <div className="flex justify-between items-center mb-4">
         <h4 className="font-bold text-zinc-900 text-xs tracking-wider uppercase">Travellers Configuration</h4>
@@ -1441,7 +1441,7 @@ function FlightPaxPopover({
       initial={{ opacity: 0, y: 10, scale: 0.95 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, y: 10, scale: 0.95 }}
-      className="absolute right-0 top-full mt-2 w-80 bg-white rounded-2xl shadow-2xl border border-zinc-150 p-5 z-50 text-zinc-800"
+      className="absolute right-0 top-full mt-2 w-80 bg-white rounded-2xl shadow-md border border-zinc-150 p-5 z-50 text-zinc-800"
     >
       <div className="space-y-1">
         {/* Adults Row */}
@@ -1573,10 +1573,10 @@ function MockUtilityModal({
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: 20 }}
         onClick={(e) => e.stopPropagation()}
-        className="relative bg-white rounded-3xl p-6 md:p-8 max-w-md w-full shadow-2xl border border-zinc-100 text-zinc-950"
+        className="relative bg-white rounded-xl p-6 md:p-8 max-w-md w-full shadow-md border border-zinc-100 text-zinc-950"
       >
         <div className="flex justify-between items-center mb-6 border-b border-zinc-100 pb-3">
-          <h3 className="font-display font-bold text-lg text-zinc-900">{title}</h3>
+          <h3 className="font-bold text-lg text-zinc-900">{title}</h3>
           <button onClick={onClose} className="p-1 rounded-full hover:bg-zinc-100 text-zinc-400 hover:text-zinc-600 transition-colors cursor-pointer">
             <X className="w-5 h-5" />
           </button>
@@ -1875,7 +1875,7 @@ function ComingSoonModal({ feature, onClose }: { feature: string; onClose: () =>
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.85, y: 20 }}
         transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-        className="relative bg-white rounded-[2rem] p-10 shadow-2xl border border-zinc-100 max-w-sm w-full text-center overflow-hidden"
+        className="relative bg-white rounded-lg p-10 shadow-md border border-zinc-100 max-w-sm w-full text-center overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Decorative blobs */}
@@ -1893,7 +1893,7 @@ function ComingSoonModal({ feature, onClose }: { feature: string; onClose: () =>
           Coming Soon
         </div>
 
-        <h2 className="relative z-10 text-2xl font-display font-extrabold text-zinc-900 mb-3">{feature}</h2>
+        <h2 className="relative z-10 text-2xl font-extrabold text-zinc-900 mb-3">{feature}</h2>
         <p className="relative z-10 text-zinc-500 text-sm leading-relaxed mb-8">
           We're working hard to bring you <span className="font-bold text-zinc-700">{feature}</span>. This feature will be available soon. Stay tuned!
         </p>
@@ -1902,7 +1902,7 @@ function ComingSoonModal({ feature, onClose }: { feature: string; onClose: () =>
         <div className="relative z-10 flex flex-col gap-3">
           <button
             onClick={onClose}
-            className="w-full bg-brand-orange text-white py-3.5 rounded-2xl font-bold hover:bg-orange-600 transition-all active:scale-95 shadow-lg shadow-brand-orange/30"
+            className="w-full bg-brand-orange text-white py-3.5 rounded-lg font-bold hover:bg-orange-600 transition-all active:scale-95 shadow-lg shadow-brand-orange/30"
           >
             Got it!
           </button>

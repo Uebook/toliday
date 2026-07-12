@@ -136,19 +136,19 @@ export default function IndiaDestinations({ onSelectDestination, service = 'home
       <div className="max-w-7xl mx-auto px-6">
         {/* Header with Title and Controls */}
         <div className="flex items-end justify-between mb-10">
-          <h2 className="text-3xl font-display font-bold text-zinc-950 text-left">
+          <h2 className="text-3xl font-bold text-zinc-950 text-left">
             Top destinations in India
           </h2>
           <div className="flex gap-3">
             <button 
               onClick={() => scroll('left')}
-              className="w-12 h-12 rounded-full border border-zinc-200 flex items-center justify-center text-zinc-600 hover:border-indigo-600 hover:text-indigo-600 transition-all shadow-sm bg-white cursor-pointer"
+              className="w-12 h-12 rounded-full border border-zinc-200 flex items-center justify-center text-zinc-600 hover:border-indigo-600 hover:text-blue-600 transition-all shadow-sm bg-white cursor-pointer"
             >
               <ChevronLeft className="w-5 h-5" />
             </button>
             <button 
               onClick={() => scroll('right')}
-              className="w-12 h-12 rounded-full border border-zinc-200 flex items-center justify-center text-zinc-600 hover:border-indigo-600 hover:text-indigo-600 transition-all shadow-sm bg-white cursor-pointer"
+              className="w-12 h-12 rounded-full border border-zinc-200 flex items-center justify-center text-zinc-600 hover:border-indigo-600 hover:text-blue-600 transition-all shadow-sm bg-white cursor-pointer"
             >
               <ChevronRight className="w-5 h-5" />
             </button>
@@ -173,7 +173,7 @@ export default function IndiaDestinations({ onSelectDestination, service = 'home
                 className="flex-shrink-0 w-[80%] sm:w-[45%] md:w-[22.5%] snap-start cursor-pointer group/card"
               >
                 {/* Rounded wrapper */}
-                <div className="relative aspect-[4/3] rounded-[2rem] overflow-hidden mb-4 shadow-sm group-hover/card:shadow-lg transition-all duration-300">
+                <div className="relative aspect-[4/3] rounded-lg overflow-hidden mb-4 shadow-sm group-hover/card:shadow-lg transition-all duration-300">
                   <img 
                     src={dest.image} 
                     alt={dest.name} 
@@ -186,7 +186,7 @@ export default function IndiaDestinations({ onSelectDestination, service = 'home
 
                 {/* Info Text */}
                 <div className="text-center">
-                  <h3 className="font-extrabold text-zinc-900 group-hover/card:text-indigo-600 transition-colors text-sm mb-0.5">
+                  <h3 className="font-extrabold text-zinc-900 group-hover/card:text-blue-600 transition-colors text-sm mb-0.5">
                     {dest.name}
                   </h3>
                   <p className="text-[11px] text-zinc-500 font-bold">

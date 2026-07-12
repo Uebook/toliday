@@ -36,7 +36,7 @@ function AppHomeScreen() {
             { label: 'FLIGHTS', bg: 'bg-blue-50 text-blue-600', icon: '✈️' },
             { label: 'HOTELS', bg: 'bg-emerald-50 text-emerald-600', icon: '🏢' },
             { label: 'BUS', bg: 'bg-amber-50 text-amber-600', icon: '🚌' },
-            { label: 'Visa', bg: 'bg-indigo-50 text-indigo-600', icon: '💳' },
+            { label: 'Visa', bg: 'bg-blue-50 text-blue-600', icon: '💳' },
             { label: 'More', bg: 'bg-zinc-150 text-zinc-700', icon: '➕' },
           ].map((cat, i) => (
             <div key={i} className="flex flex-col items-center gap-1 cursor-pointer hover:scale-105 transition-transform">
@@ -49,7 +49,7 @@ function AppHomeScreen() {
         </div>
 
         {/* Kashmir Banner */}
-        <div className="relative h-20 rounded-2xl overflow-hidden bg-zinc-800 text-white shadow-sm flex items-center p-3">
+        <div className="relative h-20 rounded-xl overflow-hidden bg-zinc-800 text-white shadow-sm flex items-center p-3">
           <img 
             src="https://images.unsplash.com/photo-1596895567226-622e29b40080?auto=format&fit=crop&q=80&w=300"
             alt="Kashmir"
@@ -81,7 +81,7 @@ function AppHomeScreen() {
           </div>
 
           {/* Offer Card */}
-          <div className="bg-white rounded-2xl border border-zinc-100 p-3 shadow-xs space-y-2 relative overflow-hidden">
+          <div className="bg-white rounded-xl border border-zinc-100 p-3 shadow-xs space-y-2 relative overflow-hidden">
             <div className="text-center space-y-0.5">
               <p className="text-[8px] font-bold text-zinc-400">Coupon Code</p>
               <p className="text-xs font-black text-indigo-650 tracking-wider">TTFDOM</p>
@@ -107,7 +107,7 @@ function AppHomeScreen() {
 
       {/* Footer Navigation Bar */}
       <div className="absolute bottom-0 inset-x-0 bg-white border-t border-zinc-100 py-1.5 flex justify-around items-center z-30 text-[8px] font-black text-zinc-400">
-        <div className="flex flex-col items-center text-indigo-600 gap-0.5">
+        <div className="flex flex-col items-center text-blue-600 gap-0.5">
           <span className="text-xs leading-none">🏠</span>
           <span>Home</span>
         </div>
@@ -157,7 +157,7 @@ function AppPackagesScreen() {
       {/* Scrollable Content */}
       <div className="flex-1 overflow-y-auto no-scrollbar px-3.5 py-4 space-y-4 pb-14 text-left">
         {/* Corporate Travel Banner */}
-        <div className="bg-gradient-to-r from-sky-700 to-indigo-900 rounded-2xl p-3 text-white shadow-sm flex justify-between items-center">
+        <div className="bg-gradient-to-r from-sky-700 to-indigo-900 rounded-xl p-3 text-white shadow-sm flex justify-between items-center">
           <div className="space-y-0.5">
             <h5 className="font-extrabold text-[9.5px]">Corporate Travel</h5>
             <p className="text-[7px] text-sky-200 font-medium">Streamline Business Travel</p>
@@ -166,7 +166,7 @@ function AppPackagesScreen() {
         </div>
 
         {/* ICICI Bank Offer Banner */}
-        <div className="bg-gradient-to-r from-orange-500 to-rose-600 rounded-2xl p-3 text-white shadow-sm space-y-1">
+        <div className="bg-gradient-to-r from-orange-500 to-rose-600 rounded-xl p-3 text-white shadow-sm space-y-1">
           <div className="flex justify-between items-center">
             <span className="font-black text-[9px] tracking-wide">ICICI Bank Offers</span>
             <span className="text-[6px] uppercase font-black bg-white/20 px-1.5 py-0.5 rounded">Tag</span>
@@ -182,7 +182,7 @@ function AppPackagesScreen() {
           </div>
 
           {/* Package Card */}
-          <div className="bg-white rounded-2xl border border-zinc-100 overflow-hidden shadow-xs flex flex-col">
+          <div className="bg-white rounded-xl border border-zinc-100 overflow-hidden shadow-xs flex flex-col">
             <div className="relative h-24">
               <img 
                 src="https://images.unsplash.com/photo-1595658658481-d53d3f999875?auto=format&fit=crop&q=80&w=300" 
@@ -255,11 +255,11 @@ function AppWalletScreen() {
       {/* Scrollable Content */}
       <div className="flex-1 overflow-y-auto no-scrollbar px-3.5 py-4 space-y-4 pb-14 text-left">
         {/* Wallet Balance Card */}
-        <div className="bg-white border border-zinc-100 rounded-2xl p-3 shadow-xs flex justify-between items-center text-left">
+        <div className="bg-white border border-zinc-100 rounded-xl p-3 shadow-xs flex justify-between items-center text-left">
           <div className="space-y-0.5">
             <p className="text-[7px] text-zinc-400 font-bold uppercase tracking-wider">Add money to</p>
             <h5 className="font-extrabold text-zinc-900 text-[10.5px]">TolidayTrip Wallet</h5>
-            <p className="text-[8.5px] font-extrabold text-indigo-600 mt-1">Available Balance: Rs 0</p>
+            <p className="text-[8.5px] font-extrabold text-blue-600 mt-1">Available Balance: Rs 0</p>
           </div>
           <span className="text-xl">👛</span>
         </div>
@@ -340,7 +340,7 @@ function AppWalletScreen() {
           <span className="text-xs leading-none">👤</span>
           <span>My Account</span>
         </div>
-        <div className="flex flex-col items-center text-indigo-600 gap-0.5">
+        <div className="flex flex-col items-center text-blue-600 gap-0.5">
           <span className="text-xs leading-none">👛</span>
           <span>Wallet</span>
         </div>
@@ -367,7 +367,7 @@ export default function AboutSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8 }}
-              className="relative w-[260px] h-[530px] rounded-[3rem] border-[8px] border-zinc-900 bg-zinc-900 shadow-2xl z-25 overflow-hidden group hover:scale-[1.02] transition-transform duration-500 flex flex-col"
+              className="relative w-[260px] h-[530px] rounded-xl border-[8px] border-zinc-900 bg-zinc-900 shadow-md z-25 overflow-hidden group hover:scale-[1.02] transition-transform duration-500 flex flex-col"
             >
               {/* Speaker & Camera Notch */}
               <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-6 bg-zinc-900 rounded-b-2xl z-40 flex items-center justify-center">
@@ -388,7 +388,7 @@ export default function AboutSection() {
               whileInView={{ opacity: 1, x: 0, rotate: -6 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="relative absolute left-4 sm:left-12 md:left-16 lg:left-4 w-[160px] sm:w-[180px] aspect-[9/19.5] rounded-[2rem] border-[4px] border-zinc-900/90 bg-zinc-900 shadow-2xl z-10 overflow-hidden hidden sm:block hover:rotate-0 transition-transform duration-500 cursor-pointer flex flex-col"
+              className="relative absolute left-4 sm:left-12 md:left-16 lg:left-4 w-[160px] sm:w-[180px] aspect-[9/19.5] rounded-lg border-[4px] border-zinc-900/90 bg-zinc-900 shadow-md z-10 overflow-hidden hidden sm:block hover:rotate-0 transition-transform duration-500 cursor-pointer flex flex-col"
             >
               {/* Glossy glare overlay */}
               <div className="absolute inset-0 bg-gradient-to-tr from-white/10 via-transparent to-white/5 pointer-events-none z-35" />
@@ -404,7 +404,7 @@ export default function AboutSection() {
               whileInView={{ opacity: 1, x: 0, rotate: 6 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8, delay: 0.4 }}
-              className="relative absolute right-4 sm:right-12 md:right-16 lg:right-4 w-[160px] sm:w-[180px] aspect-[9/19.5] rounded-[2rem] border-[4px] border-zinc-900/90 bg-zinc-900 shadow-2xl z-20 overflow-hidden hidden sm:block hover:rotate-0 transition-transform duration-500 cursor-pointer flex flex-col"
+              className="relative absolute right-4 sm:right-12 md:right-16 lg:right-4 w-[160px] sm:w-[180px] aspect-[9/19.5] rounded-lg border-[4px] border-zinc-900/90 bg-zinc-900 shadow-md z-20 overflow-hidden hidden sm:block hover:rotate-0 transition-transform duration-500 cursor-pointer flex flex-col"
             >
               {/* Glossy glare overlay */}
               <div className="absolute inset-0 bg-gradient-to-tr from-white/10 via-transparent to-white/5 pointer-events-none z-35" />
@@ -417,10 +417,10 @@ export default function AboutSection() {
 
           {/* Right Side: About Information */}
           <div className="lg:col-span-6 space-y-6 text-left">
-            <div className="text-indigo-600 font-bold text-xs tracking-[0.2em] uppercase">About TolidayTrip</div>
+            <div className="text-blue-600 font-bold text-xs tracking-[0.2em] uppercase">About TolidayTrip</div>
             
-            <h2 className="text-4xl md:text-5xl font-display font-medium text-zinc-900 leading-[1.1] tracking-tight">
-              Your World. <br /> <span className="text-indigo-600 italic font-bold">Travel Solutions.</span>
+            <h2 className="text-4xl md:text-5xl font-medium text-zinc-900 leading-[1.1] tracking-tight">
+              Your World. <br /> <span className="text-blue-600 italic font-bold">Travel Solutions.</span>
             </h2>
             
             <p className="text-zinc-600 leading-relaxed text-lg">
@@ -435,7 +435,7 @@ export default function AboutSection() {
                 { title: '24/7 Dedicated Care', desc: 'Round-the-clock support desk (care@toliday.in) for worry-free bookings' }
               ].map((item, i) => (
                 <li key={i} className="flex gap-4 items-start group">
-                  <div className="mt-1 w-2.5 h-2.5 rounded-full bg-indigo-600 group-hover:scale-150 transition-transform shrink-0" />
+                  <div className="mt-1 w-2.5 h-2.5 rounded-full bg-blue-600 group-hover:scale-150 transition-transform shrink-0" />
                   <div>
                     <span className="text-zinc-900 font-bold text-base block leading-snug">{item.title}</span>
                     <span className="text-zinc-600 text-sm">{item.desc}</span>
