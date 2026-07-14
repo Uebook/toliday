@@ -28,7 +28,7 @@ export class S3Service {
 
     // Local Storage
     try {
-      const uploadDir = join(process.cwd(), 'uploads');
+      const uploadDir = join(__dirname, '..', '..', 'uploads');
       if (!fs.existsSync(uploadDir)) {
         fs.mkdirSync(uploadDir, { recursive: true });
       }
@@ -51,7 +51,7 @@ export class S3Service {
       const key = fileUrl.split('/').pop();
       if (!key) return;
 
-      const filePath = join(process.cwd(), 'uploads', key);
+      const filePath = join(__dirname, '..', '..', 'uploads', key);
       if (fs.existsSync(filePath)) {
         fs.unlinkSync(filePath);
         console.log(`Local File Deleted: ${filePath}`);

@@ -36,7 +36,7 @@ export async function createApp() {
   app.useGlobalPipes(new ValidationPipe());
 
   // Serve uploads folder statically
-  app.use('/uploads', express.static(join(process.cwd(), 'uploads')));
+  app.use('/uploads', express.static(join(__dirname, '..', 'uploads')));
 
   return app;
 }

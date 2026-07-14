@@ -70,7 +70,7 @@ async function createApp() {
         credentials: true,
     });
     app.useGlobalPipes(new common_1.ValidationPipe());
-    app.use('/uploads', express.static((0, path_1.join)(process.cwd(), 'uploads')));
+    app.use('/uploads', express.static((0, path_1.join)(__dirname, '..', 'uploads')));
     return app;
 }
 async function bootstrap() {
