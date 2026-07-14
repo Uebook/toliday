@@ -67,6 +67,18 @@ export class SignUpDto {
   @IsString()
   city?: string;
 
+  @IsOptional()
+  @IsString()
+  address?: string;
+
+  @IsOptional()
+  @IsString()
+  latitude?: string;
+
+  @IsOptional()
+  @IsString()
+  longitude?: string;
+
   // Bank Details
   @IsOptional()
   @IsString()

@@ -83,7 +83,7 @@ let AuthService = class AuthService {
         catch (e) { }
     }
     async signup(signUpDto) {
-        const { email, password, name, hotelName, contactNumber, ownerFirstName, ownerLastName, ownerPhone, businessName, businessType, city, bankHolder, bankName, bankAccount, bankIfsc, gstNumber, panNumber, gstDoc, panDoc, licenseDoc, partnerType, tourismLicenseNumber, registrationNumber, website, yearsInOperation, operatingArea, } = signUpDto;
+        const { email, password, name, hotelName, contactNumber, ownerFirstName, ownerLastName, ownerPhone, businessName, businessType, city, address, latitude, longitude, bankHolder, bankName, bankAccount, bankIfsc, gstNumber, panNumber, gstDoc, panDoc, licenseDoc, partnerType, tourismLicenseNumber, registrationNumber, website, yearsInOperation, operatingArea, } = signUpDto;
         this.logDebug(`AuthService.signup for ${email} as ${partnerType}`);
         const existingStaff = await this.staffRepository.findOne({
             where: { email },
@@ -126,7 +126,7 @@ let AuthService = class AuthService {
                 name: businessName || name,
                 email,
                 contactNumber,
-                address: city,
+                address: address || city,
                 gstNumber,
                 panNumber,
             });
@@ -138,7 +138,7 @@ let AuthService = class AuthService {
                 name: businessName || name,
                 email,
                 phone: contactNumber,
-                address: city,
+                address: address || city,
                 gstNumber,
                 panNumber,
             });
@@ -157,6 +157,9 @@ let AuthService = class AuthService {
                 businessName,
                 businessType,
                 city,
+                address,
+                latitude: latitude ? parseFloat(latitude) : undefined,
+                longitude: longitude ? parseFloat(longitude) : undefined,
                 bankHolder,
                 bankName,
                 bankAccount,
@@ -203,24 +206,25 @@ let AuthService = class AuthService {
         const { email, password } = loginDto;
         const staff = await this.staffRepository.findOne({
             where: { email },
-            relations: ['hotel', 'tourPartner'],
+            relations: ['hotel', 'tourPartner', 'busVendor', 'cabVendor'],
         });
         if (!staff) {
-            throw new common_1.UnauthorizedException('Invalid credentials');
+            throw new common_1.UnauthorizedException('Account not found. You are not a member.');
         }
-        const partner = staff.hotel || staff.tourPartner;
+        const partner = staff.hotel || staff.tourPartner || staff.busVendor || staff.cabVendor;
         if (staff.role !== staff_entity_1.StaffRole.ADMIN && partner) {
-            if (partner.status === hotel_entity_1.HotelStatus.PENDING ||
-                partner.status === 'PENDING') {
-                throw new common_1.UnauthorizedException('We are verifying your details. Only approved accounts can login.');
+            const status = partner.status;
+            if (status === hotel_entity_1.HotelStatus.PENDING || status === 'PENDING') {
+                throw new common_1.UnauthorizedException('Status is PENDING. We are verifying your details. Only approved accounts can login.');
             }
-            else if (partner.status === hotel_entity_1.HotelStatus.REJECTED ||
-                partner.status === 'REJECTED') {
-                throw new common_1.UnauthorizedException('Your registration was rejected. Please contact support.');
+            else if (status === hotel_entity_1.HotelStatus.REJECTED || status === 'REJECTED') {
+                throw new common_1.UnauthorizedException('Status is REJECTED. Your registration was rejected. Please contact support.');
             }
-            else if (partner.status === hotel_entity_1.HotelStatus.BLOCKED ||
-                partner.status === 'BLOCKED') {
-                throw new common_1.UnauthorizedException('Your account has been blocked. Please contact support.');
+            else if (status === hotel_entity_1.HotelStatus.BLOCKED || status === 'BLOCKED') {
+                throw new common_1.UnauthorizedException('Status is BLOCKED (Suspended). Your account has been suspended. Please contact support.');
+            }
+            else if (status === 'INACTIVE') {
+                throw new common_1.UnauthorizedException('Status is INACTIVE. Your account is inactive. Please contact support.');
             }
         }
         const isPasswordValid = await bcrypt.compare(password, staff.passwordHash);

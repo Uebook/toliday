@@ -28,6 +28,7 @@ export declare class Hotel {
     childPolicy: string;
     cancellationPolicy: string;
     petPolicy: string;
+    propertyRules: string[];
     amenities: string[];
     images: string[];
     ownerFirstName: string;

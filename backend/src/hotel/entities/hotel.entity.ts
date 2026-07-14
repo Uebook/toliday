@@ -78,6 +78,9 @@ export class Hotel {
   petPolicy: string;
 
   @Column({ type: 'simple-array', nullable: true })
+  propertyRules: string[];
+
+  @Column({ type: 'simple-array', nullable: true })
   amenities: string[];
 
   @Column({ type: 'simple-array', nullable: true })

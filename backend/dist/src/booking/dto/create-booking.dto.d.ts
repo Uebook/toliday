@@ -1,6 +1,6 @@
 export declare class CreateBookingDto {
     guestName: string;
-    guestEmail: string;
+    guestEmail?: string;
     guestContact?: string;
     startDate: string;
     endDate: string;

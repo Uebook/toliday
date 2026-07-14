@@ -103,6 +103,7 @@ export default function HotelList({ onBack, onSelectHotel, searchParams }: Hotel
   const [maxBudget, setMaxBudget] = useState('');
   const [selectedRatings, setSelectedRatings] = useState<number[]>([]);
   const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
+  const [selectedRoomViews, setSelectedRoomViews] = useState<string[]>([]);
   const [breakfastIncluded, setBreakfastIncluded] = useState(false);
 
   const [appliedFilters, setAppliedFilters] = useState({
@@ -113,6 +114,7 @@ export default function HotelList({ onBack, onSelectHotel, searchParams }: Hotel
     maxBudget: '',
     selectedRatings: [] as number[],
     selectedTypes: [] as string[],
+    selectedRoomViews: [] as string[],
     breakfastIncluded: false
   });
 
@@ -131,6 +133,7 @@ export default function HotelList({ onBack, onSelectHotel, searchParams }: Hotel
     setMaxBudget('');
     setSelectedRatings([]);
     setSelectedTypes([]);
+    setSelectedRoomViews([]);
     setBreakfastIncluded(false);
     setAppliedFilters({
       searchLocality: '',
@@ -140,6 +143,7 @@ export default function HotelList({ onBack, onSelectHotel, searchParams }: Hotel
       maxBudget: '',
       selectedRatings: [],
       selectedTypes: [],
+      selectedRoomViews: [],
       breakfastIncluded: false
     });
     setCurrentPage(1);
@@ -154,6 +158,7 @@ export default function HotelList({ onBack, onSelectHotel, searchParams }: Hotel
       maxBudget,
       selectedRatings,
       selectedTypes,
+      selectedRoomViews,
       breakfastIncluded
     });
     setCurrentPage(1);
@@ -169,6 +174,14 @@ export default function HotelList({ onBack, onSelectHotel, searchParams }: Hotel
 
   const toggleRating = (minRating: number) => {
     setSelectedRatings(prev => prev.includes(minRating) ? prev.filter(r => r !== minRating) : [...prev, minRating]);
+  };
+
+  const toggleType = (type: string) => {
+    setSelectedTypes(prev => prev.includes(type) ? prev.filter(t => t !== type) : [...prev, type]);
+  };
+
+  const toggleRoomView = (view: string) => {
+    setSelectedRoomViews(prev => prev.includes(view) ? prev.filter(v => v !== view) : [...prev, view]);
   };
 
   // Derived filtered list
@@ -198,6 +211,16 @@ export default function HotelList({ onBack, onSelectHotel, searchParams }: Hotel
     if (appliedFilters.selectedRatings.length > 0) {
       if (!appliedFilters.selectedRatings.some(minR => hotel.rating >= minR)) return false;
     }
+    // Property Type filter
+    if (appliedFilters.selectedTypes.length > 0) {
+      const type = (hotel.propertyType || 'Hotel').toLowerCase();
+      if (!appliedFilters.selectedTypes.some(t => type === t.toLowerCase())) return false;
+    }
+    // Room View filter
+    if (appliedFilters.selectedRoomViews.length > 0) {
+      const views = (hotel.roomViews || []).map((v: string) => v.toLowerCase());
+      if (!appliedFilters.selectedRoomViews.some(v => views.includes(v.toLowerCase()))) return false;
+    }
     // Breakfast filter
     if (appliedFilters.breakfastIncluded) {
       const amen = (hotel.amenities || []).join(' ').toLowerCase();
@@ -207,7 +230,19 @@ export default function HotelList({ onBack, onSelectHotel, searchParams }: Hotel
   });
 
   // Apply sorting
-  if (sortBy === 'Price: Low to High') {
+  if (sortBy === 'Recommended') {
+    filteredHotels.sort((a, b) => {
+      // 1. First by rank (highest first)
+      if ((b.rank || 0) !== (a.rank || 0)) {
+        return (b.rank || 0) - (a.rank || 0);
+      }
+      // 2. Then by isFeatured (true first)
+      if (b.isFeatured && !a.isFeatured) return 1;
+      if (!b.isFeatured && a.isFeatured) return -1;
+      // 3. Fallback to rating
+      return b.rating - a.rating;
+    });
+  } else if (sortBy === 'Price: Low to High') {
     filteredHotels.sort((a, b) => a.discountPrice - b.discountPrice);
   } else if (sortBy === 'Price: High to Low') {
     filteredHotels.sort((a, b) => b.discountPrice - a.discountPrice);
@@ -217,7 +252,7 @@ export default function HotelList({ onBack, onSelectHotel, searchParams }: Hotel
 
   const totalPages = Math.ceil(filteredHotels.length / 4) || 1;
 
-  const activeFilterCount = selectedStars.length + selectedPriceRanges.length + selectedRatings.length + (breakfastIncluded ? 1 : 0) + (searchLocality ? 1 : 0);
+  const activeFilterCount = selectedStars.length + selectedPriceRanges.length + selectedRatings.length + selectedTypes.length + selectedRoomViews.length + (breakfastIncluded ? 1 : 0) + (searchLocality ? 1 : 0);
 
   const getCount = (predicate: (hotel: any) => boolean) => hotelsData.filter(predicate).length;
 
@@ -234,6 +269,9 @@ export default function HotelList({ onBack, onSelectHotel, searchParams }: Hotel
   const countRatingEx = getCount(h => h.rating >= 4.5);
   const countRatingVG = getCount(h => h.rating >= 4.0);
   const countRatingG = getCount(h => h.rating >= 3.5);
+
+  const countType = (type: string) => getCount(h => (h.propertyType || 'Hotel').toLowerCase() === type.toLowerCase());
+  const countView = (view: string) => getCount(h => (h.roomViews || []).map((v: string) => v.toLowerCase()).includes(view.toLowerCase()));
 
   const destinationText = searchParams?.destination || (filteredHotels.length > 0 ? filteredHotels[0]?.location?.split(',')[0] : 'Noida');
   const roomsText = searchParams?.rooms || 1;
@@ -256,15 +294,20 @@ export default function HotelList({ onBack, onSelectHotel, searchParams }: Hotel
         let formatted = data.map((h: any) => ({
           ...h,
           location: h.city || h.address || 'Unknown Location',
+          city: h.city || '',
+          address: h.address || h.location || h.city || '',
           lat: h.latitude || 0,
           lng: h.longitude || 0,
           rating: h.stars || h.rating || 0,
           reviews: h.reviews?.length || 0,
           price: h.price || 5000, // Fallback base price if none provided
           discountPrice: h.discountPrice || h.price || 4000,
-          images: h.images?.length > 0 ? h.images : ['https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&q=80&w=800'],
+          images: h.images?.length > 0 ? h.images : [],
           amenities: h.amenities?.length > 0 ? h.amenities : [],
-          tag: h.status === 'APPROVED' ? 'Verified' : 'New'
+          tag: h.status === 'APPROVED' ? 'VERIFIED' : null,
+          isFeatured: !!h.isFeatured,
+          rank: h.rank || 0,
+          isCoupleFriendly: h.isCoupleFriendly === true || h.coupleFriendly === true || (h.amenities || []).some((a: string) => a.toLowerCase().includes('couple'))
         }));
 
         if (searchParams?.destination) {
@@ -408,6 +451,9 @@ export default function HotelList({ onBack, onSelectHotel, searchParams }: Hotel
                   {searchLocality && <span className="flex items-center gap-1.5 bg-orange-50 text-brand-orange px-3 py-1.5 rounded-lg text-xs font-medium border border-orange-100">{searchLocality}<button onClick={() => setSearchLocality('')}><X className="w-3 h-3" /></button></span>}
                   {selectedStars.map(s => <span key={s} className="flex items-center gap-1.5 bg-orange-50 text-brand-orange px-3 py-1.5 rounded-lg text-xs font-medium border border-orange-100">{s} Star<button onClick={() => toggleStar(s)}><X className="w-3 h-3" /></button></span>)}
                   {selectedPriceRanges.map(r => <span key={r} className="flex items-center gap-1.5 bg-orange-50 text-brand-orange px-3 py-1.5 rounded-lg text-xs font-medium border border-orange-100">{r}<button onClick={() => togglePriceRange(r)}><X className="w-3 h-3" /></button></span>)}
+                  {selectedRatings.map(r => <span key={r} className="flex items-center gap-1.5 bg-orange-50 text-brand-orange px-3 py-1.5 rounded-lg text-xs font-medium border border-orange-100">{r}+ Rating<button onClick={() => toggleRating(r)}><X className="w-3 h-3" /></button></span>)}
+                  {selectedTypes.map(t => <span key={t} className="flex items-center gap-1.5 bg-orange-50 text-brand-orange px-3 py-1.5 rounded-lg text-xs font-medium border border-orange-100">{t}<button onClick={() => toggleType(t)}><X className="w-3 h-3" /></button></span>)}
+                  {selectedRoomViews.map(v => <span key={v} className="flex items-center gap-1.5 bg-orange-50 text-brand-orange px-3 py-1.5 rounded-lg text-xs font-medium border border-orange-100">{v}<button onClick={() => toggleRoomView(v)}><X className="w-3 h-3" /></button></span>)}
                   {breakfastIncluded && <span className="flex items-center gap-1.5 bg-orange-50 text-brand-orange px-3 py-1.5 rounded-lg text-xs font-medium border border-orange-100">Breakfast<button onClick={() => setBreakfastIncluded(false)}><X className="w-3 h-3" /></button></span>}
                 </div>
               </div>
@@ -547,23 +593,30 @@ export default function HotelList({ onBack, onSelectHotel, searchParams }: Hotel
 
             {/* Property Type */}
             <div className="bg-white rounded-3xl p-6 shadow-sm border border-zinc-100">
-              <h3 className="font-bold text-zinc-900 mb-5 text-sm">Property Type</h3>
+              <h3 className="font-bold text-zinc-900 mb-5 text-sm uppercase tracking-wider">Property Type</h3>
               <div className="space-y-3">
                 {[
-                  { label: 'Hotel', count: 800 },
-                  { label: 'Apartment', count: 257 },
-                  { label: 'Homestay', count: 126 },
-                  { label: 'Hostel', count: 15 },
-                  { label: 'Resort', count: 12 }
+                  { label: 'Hotel', count: countType('Hotel') },
+                  { label: 'Apartment', count: countType('Apartment') },
+                  { label: 'Homestay', count: countType('Homestay') },
+                  { label: 'Hostel', count: countType('Hostel') },
+                  { label: 'Resort', count: countType('Resort') }
                 ].map(type => (
                    <label key={type.label} className="flex items-center gap-3 cursor-pointer group">
-                      <input type="checkbox" className="w-5 h-5 rounded border-zinc-200 text-indigo-600 focus:ring-indigo-500" />
+                      <div className="relative flex items-center justify-center">
+                        <input 
+                          type="checkbox" 
+                          checked={selectedTypes.includes(type.label)}
+                          onChange={() => toggleType(type.label)}
+                          className="peer appearance-none w-5 h-5 rounded-lg border-2 border-zinc-200 checked:bg-brand-orange checked:border-brand-orange transition-all cursor-pointer" 
+                        />
+                        <Check className="absolute w-3 h-3 text-white opacity-0 peer-checked:opacity-100 transition-opacity" />
+                      </div>
                       <span className="text-sm font-medium text-zinc-600 group-hover:text-zinc-900 flex-1">{type.label}</span>
-                      <span className="text-[10px] text-zinc-400 font-medium">({type.count})</span>
+                      <span className="text-[10px] text-zinc-400 font-bold bg-zinc-50 px-2 py-0.5 rounded-full">{type.count}</span>
                    </label>
                 ))}
               </div>
-              <button className="mt-4 text-[10px] font-bold text-indigo-600 uppercase tracking-widest hover:underline">Show 3 more</button>
             </div>
 
             {/* Locality Dropdown */}
@@ -591,16 +644,24 @@ export default function HotelList({ onBack, onSelectHotel, searchParams }: Hotel
 
             {/* Room Views */}
             <div className="bg-white rounded-3xl p-6 shadow-sm border border-zinc-100">
-              <h3 className="font-bold text-zinc-900 mb-5 text-sm">Room Views</h3>
+              <h3 className="font-bold text-zinc-900 mb-5 text-sm uppercase tracking-wider">Room Views</h3>
               <div className="space-y-3">
                 {[
-                  { label: 'Garden View', count: 41 },
-                  { label: 'City View', count: 331 }
+                  { label: 'Garden View', count: countView('Garden View') },
+                  { label: 'City View', count: countView('City View') }
                 ].map(view => (
                    <label key={view.label} className="flex items-center gap-3 cursor-pointer group">
-                      <input type="checkbox" className="w-5 h-5 rounded border-zinc-200 text-indigo-600 focus:ring-indigo-500" />
+                      <div className="relative flex items-center justify-center">
+                        <input 
+                          type="checkbox" 
+                          checked={selectedRoomViews.includes(view.label)}
+                          onChange={() => toggleRoomView(view.label)}
+                          className="peer appearance-none w-5 h-5 rounded-lg border-2 border-zinc-200 checked:bg-brand-orange checked:border-brand-orange transition-all cursor-pointer" 
+                        />
+                        <Check className="absolute w-3 h-3 text-white opacity-0 peer-checked:opacity-100 transition-opacity" />
+                      </div>
                       <span className="text-sm font-medium text-zinc-600 group-hover:text-zinc-900 flex-1">{view.label}</span>
-                      <span className="text-[10px] text-zinc-400 font-medium">({view.count})</span>
+                      <span className="text-[10px] text-zinc-400 font-bold bg-zinc-50 px-2 py-0.5 rounded-full">{view.count}</span>
                    </label>
                 ))}
               </div>
@@ -654,86 +715,119 @@ export default function HotelList({ onBack, onSelectHotel, searchParams }: Hotel
                 return (
                   <motion.div
                     key={hotel.id}
-                    initial={{ opacity: 0, y: 20 }}
+                    initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.1 }}
                     onClick={() => onSelectHotel(hotel)}
-                    className="bg-white rounded-[2.5rem] p-4 flex flex-col md:flex-row gap-6 shadow-sm border border-zinc-100 hover:shadow-xl hover:shadow-indigo-500/5 transition-all group cursor-pointer"
+                    className="bg-white rounded-md border border-zinc-200 flex flex-col md:flex-row hover:shadow-lg transition-shadow cursor-pointer overflow-hidden"
                   >
-                    {/* Hotel Image Slider */}
-                    <div className="relative w-full md:w-80 h-64 md:h-auto shrink-0 rounded-[2rem] overflow-hidden">
-                      <ImageSlider images={hotel.images} />
+                    {/* Left: Hotel Image Slider */}
+                    <div className="relative w-full md:w-[280px] h-[220px] shrink-0 bg-zinc-100">
+                      <ImageSlider images={hotel.images && hotel.images.length > 0 ? hotel.images : ['https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&q=80&w=800']} />
                       <button 
                         onClick={(e) => {
                           e.stopPropagation();
                           toggleWishlist(hotel.id);
                         }}
-                        className="absolute top-4 right-4 w-10 h-10 bg-white/80 backdrop-blur-md rounded-full flex items-center justify-center text-zinc-900 hover:text-rose-500 transition-colors z-10"
+                        className="absolute top-3 right-3 w-8 h-8 bg-white rounded-full flex items-center justify-center text-zinc-400 hover:text-rose-500 shadow-sm z-10 transition-colors"
                       >
-                        <Heart className={`w-5 h-5 ${wishlist.includes(hotel.id) ? 'fill-rose-500 text-rose-500' : 'text-zinc-900'}`} />
+                        <Heart className={`w-4 h-4 ${wishlist.includes(hotel.id) ? 'fill-rose-500 text-rose-500' : ''}`} />
                       </button>
-                      {hotel.tag && (
-                        <div className="absolute bottom-4 left-4 bg-indigo-600 text-white px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest z-10">
-                          {hotel.tag}
+                    </div>
+
+                    {/* Middle: Hotel Info */}
+                    <div className="flex-1 p-4 md:p-5 flex flex-col">
+                      <div>
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <h2 className="text-xl font-bold text-black flex items-center gap-2">
+                            {hotel.name}
+                            <div className="flex">
+                              {[...Array(Math.max(1, Math.floor(hotel.rating)))].map((_, i) => (
+                                <Star key={i} className="w-3 h-3 fill-zinc-700 text-zinc-700" />
+                              ))}
+                            </div>
+                          </h2>
+                          {hotel.isFeatured && (
+                            <span className="bg-amber-100 text-amber-800 text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider">
+                              Top Choice
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-[13px] text-zinc-500 mt-1.5">
+                          <span className="text-blue-600 hover:underline">{hotel.city || hotel.location.split(',')[0]}</span> 
+                          {hotel.address && hotel.address !== (hotel.city || hotel.location.split(',')[0]) && (
+                            <><span className="mx-1">|</span> {hotel.address}</>
+                          )}
+                        </p>
+                      </div>
+
+                      <div className="mt-4 flex gap-2">
+                        {hotel.tag && (
+                          <span className="text-[11px] border border-zinc-300 text-zinc-600 px-2 py-0.5 rounded-sm uppercase tracking-wide">
+                            {hotel.tag}
+                          </span>
+                        )}
+                        {hotel.isCoupleFriendly && (
+                          <span className="text-[11px] border border-zinc-300 text-zinc-600 px-2 py-0.5 rounded-sm">
+                            Couple Friendly
+                          </span>
+                        )}
+                      </div>
+
+                      {hotel.amenities && hotel.amenities.length > 0 && (
+                        <div className="pt-4 space-y-1.5">
+                          {hotel.amenities.slice(0,3).map((amenity: string, i: number) => {
+                            const lower = amenity.toLowerCase();
+                            let Icon = Check;
+                            if (lower.includes('wifi') || lower.includes('internet')) Icon = Wifi;
+                            else if (lower.includes('break') || lower.includes('coffee') || lower.includes('tea')) Icon = Coffee;
+                            else if (lower.includes('dine') || lower.includes('food') || lower.includes('meal') || lower.includes('restaurant')) Icon = Utensils;
+                            
+                            return (
+                              <p key={i} className="text-[13px] text-emerald-700 flex items-center gap-2 font-medium capitalize">
+                                <Icon className="w-4 h-4"/> {amenity}
+                              </p>
+                            );
+                          })}
+                          {hotel.amenities.length > 3 && (
+                            <p className="text-[12px] text-zinc-500 font-medium pl-6 pt-0.5">
+                              + {hotel.amenities.length - 3} more amenities
+                            </p>
+                          )}
                         </div>
                       )}
                     </div>
 
-                    {/* Hotel Info */}
-                    <div className="flex-1 flex flex-col justify-between py-2">
-                      <div>
-                        <div className="flex items-start justify-between mb-2">
-                          <div>
-                            <h2 className="text-2xl font-display font-bold text-zinc-900 group-hover:text-indigo-600 transition-colors">{hotel.name}</h2>
-                            <div className="flex items-center gap-1 text-zinc-400 text-sm mt-1">
-                              <MapPin className="w-4 h-4" />
-                              {hotel.location}
-                            </div>
-                          </div>
-                          <div className="text-right">
-                            <div className="flex items-center gap-1.5 bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full text-sm font-bold">
-                              {hotel.rating} <Star className="w-3.5 h-3.5 fill-emerald-700" />
-                            </div>
-                            <p className="text-[10px] text-zinc-400 mt-1 uppercase font-bold tracking-tight">{hotel.reviews} reviews</p>
-                          </div>
+                    {/* Right: Price & Rating */}
+                    <div className="w-full md:w-[240px] p-4 md:p-5 flex flex-col items-end justify-between border-t md:border-t-0 md:border-l border-zinc-200 bg-white">
+                      {/* Rating */}
+                      <div className="flex flex-col items-end">
+                        <div className="flex items-center gap-2">
+                          <span className="text-blue-700 font-bold text-sm">
+                            {hotel.rating >= 4.5 ? 'Excellent' : hotel.rating >= 4.0 ? 'Very Good' : 'Good'}
+                          </span>
+                          <span className="bg-blue-700 text-white font-bold text-sm px-2 py-0.5 rounded-sm">
+                            {hotel.rating.toFixed(1)}
+                          </span>
                         </div>
-
-                        <div className="flex flex-wrap gap-4 mt-6">
-                          <div className="flex items-center gap-2 text-zinc-500 text-sm">
-                            <Wifi className="w-4 h-4 text-indigo-500" />
-                            Free WiFi
-                          </div>
-                          <div className="flex items-center gap-2 text-zinc-500 text-sm">
-                            <Coffee className="w-4 h-4 text-orange-500" />
-                            Breakfast
-                          </div>
-                          <div className="flex items-center gap-2 text-zinc-500 text-sm">
-                            <Utensils className="w-4 h-4 text-emerald-500" />
-                            Fine Dining
-                          </div>
-                        </div>
+                        <p className="text-xs text-zinc-500 mt-1">({hotel.reviews} Ratings)</p>
                       </div>
 
-                      <div className="flex items-end justify-between mt-8 md:mt-0">
-                        <div>
-                          <div className="flex items-center gap-2 mb-1">
-                            <span className="text-zinc-400 text-xs line-through">₹{hotel.price.toLocaleString('en-IN')}</span>
-                            <span className="bg-emerald-100 text-emerald-700 text-[9px] font-bold px-1.5 py-0.5 rounded uppercase font-sans">Save ₹{(hotel.price - hotel.discountPrice).toLocaleString('en-IN')}</span>
-                          </div>
-                          <p className="text-3xl font-display font-bold text-indigo-600">
-                            ₹{hotel.discountPrice.toLocaleString('en-IN')}
-                            <span className="text-zinc-400 text-sm font-medium ml-1">/ night</span>
-                          </p>
-                          <div className="flex items-center gap-1.5 mt-2">
-                            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                            <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-tight">
-                              Booked <span className="text-emerald-600">12 times</span> in last 24h
-                            </p>
-                          </div>
-                        </div>
-                        <button className="bg-indigo-600 text-white px-10 py-4 rounded-2xl font-bold hover:bg-indigo-700 transition-all transform hover:-translate-y-1 active:translate-y-0 shadow-lg shadow-indigo-100/50 flex flex-col items-center">
-                          View Deal
-                          <span className="text-[9px] opacity-70 font-normal uppercase tracking-widest mt-0.5">Best Price Guaranteed</span>
+                      {/* Pricing */}
+                      <div className="flex flex-col items-end mt-6">
+                        {hotel.discountPrice < hotel.price && (
+                          <span className="text-[13px] text-zinc-500 line-through">₹ {hotel.price.toLocaleString('en-IN')}</span>
+                        )}
+                        <p className="text-[26px] font-bold text-black leading-none mt-1">
+                          ₹ {hotel.discountPrice.toLocaleString('en-IN')}
+                        </p>
+                        <p className="text-[11px] text-zinc-500 mt-1.5">+ ₹ {Math.round(hotel.discountPrice * 0.12).toLocaleString('en-IN')} taxes & fees</p>
+                        <p className="text-[11px] text-zinc-500 mt-0.5">Per Night</p>
+                      </div>
+
+                      <div className="w-full mt-4 text-right">
+                        <button className="w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-white text-[13px] font-bold py-2.5 px-6 rounded-sm cursor-pointer uppercase transition-colors shadow-sm">
+                          Book Now
                         </button>
                       </div>
                     </div>

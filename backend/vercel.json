@@ -1,28 +1,15 @@
 {
   "version": 2,
-  "env": {
-    "DB_HOST": "database-1.cna8g6omyo9y.eu-north-1.rds.amazonaws.com",
-    "DB_PORT": "5432",
-    "DB_USER": "postgres",
-    "DB_PASSWORD": "6gza7WP9mRRXEQzkGuIs",
-    "DB_NAME": "postgres",
-    "AWS_ACCESS_KEY_ID": "AKIA3R7XDFYWQ3M6JFNJ",
-    "AWS_SECRET_ACCESS_KEY": "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",
-    "AWS_REGION": "eu-north-1",
-    "AWS_S3_BUCKET_NAME": "toliday",
-    "Whatsapp_key": "182|zc7cfD8E7U8UNKKYSXiXjV1NOY2Ekenj5abXIWDK79d30ffc",
-    "WHATSAPP_PHONE_NUMBER_ID": "978285145360464"
-  },
   "builds": [
     {
-      "src": "api/index.ts",
+      "src": "api_vercel/index.ts",
       "use": "@vercel/node"
     }
   ],
   "rewrites": [
     {
       "source": "/(.*)",
-      "destination": "/api/index.ts"
+      "destination": "/api_vercel/index.ts"
     }
   ],
   "headers": [

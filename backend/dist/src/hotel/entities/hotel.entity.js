@@ -42,6 +42,7 @@ let Hotel = class Hotel {
     childPolicy;
     cancellationPolicy;
     petPolicy;
+    propertyRules;
     amenities;
     images;
     ownerFirstName;
@@ -145,6 +146,10 @@ __decorate([
     (0, typeorm_1.Column)({ nullable: true, type: 'text' }),
     __metadata("design:type", String)
 ], Hotel.prototype, "petPolicy", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ type: 'simple-array', nullable: true }),
+    __metadata("design:type", Array)
+], Hotel.prototype, "propertyRules", void 0);
 __decorate([
     (0, typeorm_1.Column)({ type: 'simple-array', nullable: true }),
     __metadata("design:type", Array)

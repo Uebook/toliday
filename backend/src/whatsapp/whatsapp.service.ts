@@ -16,6 +16,13 @@ export class WhatsappService {
       return;
     }
 
+    // Ensure phone number contains only digits
+    let cleanTo = to.replace(/\D/g, '');
+    // If it's a 10 digit Indian number without country code, prefix it
+    if (cleanTo.length === 10) {
+      cleanTo = '91' + cleanTo;
+    }
+
     const components: any[] = [];
     if (headerParams.length > 0) {
       components.push({
@@ -33,7 +40,7 @@ export class WhatsappService {
     const payload = {
       messaging_product: 'whatsapp',
       recipient_type: 'individual',
-      to: to,
+      to: cleanTo,
       type: 'template',
       template: {
         name: templateName,

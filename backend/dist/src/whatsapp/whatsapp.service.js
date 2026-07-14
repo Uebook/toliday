@@ -23,6 +23,10 @@ let WhatsappService = WhatsappService_1 = class WhatsappService {
             this.logger.warn('WhatsApp API credentials are not configured. Message not sent.');
             return;
         }
+        let cleanTo = to.replace(/\D/g, '');
+        if (cleanTo.length === 10) {
+            cleanTo = '91' + cleanTo;
+        }
         const components = [];
         if (headerParams.length > 0) {
             components.push({
@@ -39,7 +43,7 @@ let WhatsappService = WhatsappService_1 = class WhatsappService {
         const payload = {
             messaging_product: 'whatsapp',
             recipient_type: 'individual',
-            to: to,
+            to: cleanTo,
             type: 'template',
             template: {
                 name: templateName,

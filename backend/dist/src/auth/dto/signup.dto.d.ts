@@ -16,6 +16,9 @@ export declare class SignUpDto {
     businessName?: string;
     businessType?: string;
     city?: string;
+    address?: string;
+    latitude?: string;
+    longitude?: string;
     bankHolder?: string;
     bankName?: string;
     bankAccount?: string;

@@ -32,6 +32,7 @@ __decorate([
 ], CreateBookingDto.prototype, "guestName", void 0);
 __decorate([
     (0, class_validator_1.IsEmail)(),
+    (0, class_validator_1.IsOptional)(),
     __metadata("design:type", String)
 ], CreateBookingDto.prototype, "guestEmail", void 0);
 __decorate([

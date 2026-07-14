@@ -195,16 +195,8 @@ export default function App() {
                 searchParams={searchParams}
                 onBack={() => setView('hotels')} 
                 onSelectHotel={(hotel) => {
-                  const action = () => {
-                    setSelectedHotel(hotel);
-                    setView('hotel-details');
-                  };
-                  if (!user) {
-                    setPendingAction(() => action);
-                    setView('auth');
-                  } else {
-                    action();
-                  }
+                  setSelectedHotel(hotel);
+                  setView('hotel-details');
                 }}
               />
             </motion.div>
@@ -221,8 +213,16 @@ export default function App() {
                 searchParams={searchParams}
                 onBack={() => setView('hotel-list')} 
                 onProceedToCheckout={(room) => {
-                  setSelectedRoom(room);
-                  setView('checkout');
+                  const action = () => {
+                    setSelectedRoom(room);
+                    setView('checkout');
+                  };
+                  if (!user) {
+                    setPendingAction(() => action);
+                    setView('auth');
+                  } else {
+                    action();
+                  }
                 }}
               />
             </motion.div>

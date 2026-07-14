@@ -75,7 +75,7 @@ export default function CheckoutFlow({ hotel, room, entity, searchParams, onBack
   const getPriceData = () => {
     if (hotel && room) {
       const basePrice = room.price * nightsCount * roomsCount;
-      return { base: basePrice, tax: Math.round(basePrice * 0.12), name: hotel.name, details: room.type, img: room.image || hotel.image, type: 'Hotel', pricePerNight: room.price, nights: nightsCount, rooms: roomsCount };
+      return { base: basePrice, tax: Math.round(basePrice * 0.12), name: hotel.name, details: room.type, img: room.image || (hotel.images && hotel.images[0]) || 'https://images.unsplash.com/photo-1542314831-c53cd3816002?auto=format&fit=crop&q=80&w=400', type: 'Hotel', pricePerNight: room.price, nights: nightsCount, rooms: roomsCount };
     }
     if (entity?.type === 'bus') {
       const base = entity.bus.price * (entity.seats?.length || 1);
@@ -202,9 +202,9 @@ export default function CheckoutFlow({ hotel, room, entity, searchParams, onBack
             animate={{ opacity: 1, x: 0 }}
             className="space-y-8"
           >
-            <div className="bg-white rounded-[2.5rem] p-8 shadow-sm border border-zinc-100">
-              <h2 className="text-2xl font-display font-bold text-zinc-900 mb-8 flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-sans italic text-lg">1</div>
+            <div className="bg-white rounded-xl p-6 shadow-sm border border-zinc-100">
+              <h2 className="text-2xl font-bold text-zinc-900 mb-8 flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-sans italic text-lg">1</div>
                 Primary Contact Information
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -216,7 +216,7 @@ export default function CheckoutFlow({ hotel, room, entity, searchParams, onBack
                       type="text" 
                       value={formData.firstName}
                       onChange={(e) => setFormData({...formData, firstName: e.target.value})}
-                      className="w-full pl-12 pr-6 py-4 bg-zinc-50 border border-zinc-100 rounded-2xl outline-none focus:ring-2 focus:ring-indigo-500/10 transition-all text-sm font-semibold" 
+                      className="w-full pl-12 pr-6 py-2.5 bg-zinc-50 border border-zinc-100 rounded-md outline-none focus:ring-2 focus:ring-blue-500/20 transition-all text-sm font-semibold" 
                       placeholder="John" 
                     />
                   </div>
@@ -229,7 +229,7 @@ export default function CheckoutFlow({ hotel, room, entity, searchParams, onBack
                       type="text" 
                       value={formData.lastName}
                       onChange={(e) => setFormData({...formData, lastName: e.target.value})}
-                      className="w-full pl-12 pr-6 py-4 bg-zinc-50 border border-zinc-100 rounded-2xl outline-none focus:ring-2 focus:ring-indigo-500/10 transition-all text-sm font-semibold" 
+                      className="w-full pl-12 pr-6 py-2.5 bg-zinc-50 border border-zinc-100 rounded-md outline-none focus:ring-2 focus:ring-blue-500/20 transition-all text-sm font-semibold" 
                       placeholder="Doe" 
                     />
                   </div>
@@ -242,7 +242,7 @@ export default function CheckoutFlow({ hotel, room, entity, searchParams, onBack
                       type="email" 
                       value={formData.email}
                       onChange={(e) => setFormData({...formData, email: e.target.value})}
-                      className="w-full pl-12 pr-6 py-4 bg-zinc-50 border border-zinc-100 rounded-2xl outline-none focus:ring-2 focus:ring-indigo-500/10 transition-all text-sm font-semibold" 
+                      className="w-full pl-12 pr-6 py-2.5 bg-zinc-50 border border-zinc-100 rounded-md outline-none focus:ring-2 focus:ring-blue-500/20 transition-all text-sm font-semibold" 
                       placeholder="john@example.com" 
                     />
                   </div>
@@ -255,7 +255,7 @@ export default function CheckoutFlow({ hotel, room, entity, searchParams, onBack
                       type="tel" 
                       value={formData.phone}
                       onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                      className="w-full pl-12 pr-6 py-4 bg-zinc-50 border border-zinc-100 rounded-2xl outline-none focus:ring-2 focus:ring-indigo-500/10 transition-all text-sm font-semibold" 
+                      className="w-full pl-12 pr-6 py-2.5 bg-zinc-50 border border-zinc-100 rounded-md outline-none focus:ring-2 focus:ring-blue-500/20 transition-all text-sm font-semibold" 
                       placeholder="+91 98765 43210" 
                     />
                   </div>
@@ -265,7 +265,7 @@ export default function CheckoutFlow({ hotel, room, entity, searchParams, onBack
                   <textarea 
                     value={formData.requests}
                     onChange={(e) => setFormData({...formData, requests: e.target.value})}
-                    className="w-full px-6 py-4 bg-zinc-50 border border-zinc-100 rounded-2xl outline-none focus:ring-2 focus:ring-indigo-500/10 transition-all min-h-[100px] text-sm font-medium" 
+                    className="w-full px-6 py-2.5 bg-zinc-50 border border-zinc-100 rounded-md outline-none focus:ring-2 focus:ring-blue-500/20 transition-all min-h-[100px] text-sm font-medium" 
                     placeholder="Late arrival, extra pillows, allergic to dust..."
                   />
                 </div>
@@ -279,7 +279,7 @@ export default function CheckoutFlow({ hotel, room, entity, searchParams, onBack
                       type="checkbox" 
                       checked={gstEnabled}
                       onChange={(e) => setGstEnabled(e.target.checked)}
-                      className="w-5 h-5 rounded border-zinc-300 text-indigo-600 focus:ring-indigo-500/20"
+                      className="w-5 h-5 rounded border-zinc-300 text-blue-600 focus:ring-indigo-500/20"
                     />
                     <span className="text-sm font-semibold text-zinc-700">Add GST Details (Optional)</span>
                   </label>
@@ -297,7 +297,7 @@ export default function CheckoutFlow({ hotel, room, entity, searchParams, onBack
                           type="text" 
                           value={gstCompany}
                           onChange={(e) => setGstCompany(e.target.value)}
-                          className="w-full px-6 py-4 bg-zinc-50 border border-zinc-100 rounded-2xl outline-none focus:ring-2 focus:ring-indigo-500/10 transition-all text-sm font-semibold" 
+                          className="w-full px-6 py-2.5 bg-zinc-50 border border-zinc-100 rounded-md outline-none focus:ring-2 focus:ring-blue-500/20 transition-all text-sm font-semibold" 
                           placeholder="e.g. Toliday Pvt Ltd" 
                         />
                       </div>
@@ -307,7 +307,7 @@ export default function CheckoutFlow({ hotel, room, entity, searchParams, onBack
                           type="text" 
                           value={gstNumber}
                           onChange={(e) => setGstNumber(e.target.value)}
-                          className="w-full px-6 py-4 bg-zinc-50 border border-zinc-100 rounded-2xl outline-none focus:ring-2 focus:ring-indigo-500/10 transition-all text-sm font-semibold" 
+                          className="w-full px-6 py-2.5 bg-zinc-50 border border-zinc-100 rounded-md outline-none focus:ring-2 focus:ring-blue-500/20 transition-all text-sm font-semibold" 
                           placeholder="e.g. 07AAAAA1111A1Z1" 
                         />
                       </div>
@@ -323,7 +323,7 @@ export default function CheckoutFlow({ hotel, room, entity, searchParams, onBack
                   <h3 className="text-xs font-bold text-zinc-400 uppercase tracking-widest pl-1 text-left">Passenger Details ({passengers} Traveller{passengers > 1 ? 's' : ''})</h3>
                   <div className="space-y-4">
                     {passengersInfo.map((pax, index) => (
-                      <div key={index} className="p-5 bg-zinc-50 rounded-2xl border border-zinc-150 space-y-4 text-left">
+                      <div key={index} className="p-5 bg-zinc-50 rounded-md border border-zinc-150 space-y-4 text-left">
                         <p className="text-xs font-bold text-zinc-800">Passenger {index + 1}</p>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
                           <input 
@@ -384,7 +384,7 @@ export default function CheckoutFlow({ hotel, room, entity, searchParams, onBack
                 !formData.firstName || !formData.email || !formData.phone || 
                 (entity?.type === 'flight' && passengersInfo.some(p => !p.firstName || !p.lastName || !p.age))
               }
-              className="w-full bg-indigo-600 text-white py-5 rounded-[2rem] font-bold text-lg hover:bg-indigo-700 transition-all shadow-xl shadow-indigo-100 disabled:opacity-50 flex items-center justify-center gap-2 group cursor-pointer"
+              className="w-full bg-blue-600 text-white py-3.5 rounded-lg font-bold text-lg hover:bg-blue-700 transition-all shadow-sm  disabled:opacity-50 flex items-center justify-center gap-2 group cursor-pointer"
             >
               Continue to Review
               <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -410,11 +410,11 @@ export default function CheckoutFlow({ hotel, room, entity, searchParams, onBack
               className="space-y-6 text-left"
             >
               <div>
-                <h2 className="text-2xl font-display font-extrabold text-zinc-950">Review Flight Details</h2>
+                <h2 className="text-2xl font-extrabold text-zinc-950">Review Flight Details</h2>
               </div>
 
               {/* Segment Timeline block */}
-              <div className="bg-white rounded-[2rem] p-6 md:p-8 shadow-sm border border-zinc-100 space-y-8">
+              <div className="bg-white rounded-lg p-6 md:p-6 shadow-sm border border-zinc-100 space-y-8">
                 {/* Outbound Leg Header */}
                 <div className="flex flex-wrap items-center justify-between gap-2 pb-4 border-b border-zinc-100">
                   <div className="flex items-center gap-2">
@@ -527,7 +527,7 @@ export default function CheckoutFlow({ hotel, room, entity, searchParams, onBack
                     </div>
 
                     {/* Layover Banner */}
-                    <div className="flex items-center justify-between py-3 px-6 bg-zinc-50 rounded-2xl border border-zinc-100 relative">
+                    <div className="flex items-center justify-between py-3 px-6 bg-zinc-50 rounded-md border border-zinc-100 relative">
                       <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-[1px] bg-zinc-200 -z-0" />
                       <div className="w-full flex justify-center z-10">
                         <div className="bg-white border border-zinc-200 rounded-full px-8 py-2 text-center shadow-xs">
@@ -585,7 +585,7 @@ export default function CheckoutFlow({ hotel, room, entity, searchParams, onBack
                 )}
 
                 {/* Baggage allowance details */}
-                <div className="border border-zinc-100 rounded-2xl p-4 bg-zinc-50/50 space-y-3 text-left">
+                <div className="border border-zinc-100 rounded-md p-4 bg-zinc-50/50 space-y-3 text-left">
                   {!hasStops ? (
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between text-xs gap-2">
                       <span className="font-extrabold text-zinc-700 bg-zinc-100 px-3 py-1 rounded-lg">
@@ -652,7 +652,7 @@ export default function CheckoutFlow({ hotel, room, entity, searchParams, onBack
 
                 {/* Policy Accordions */}
                 <div className="space-y-3 pt-4 border-t border-zinc-100">
-                  <div className="border border-zinc-100 rounded-2xl overflow-hidden bg-white">
+                  <div className="border border-zinc-100 rounded-md overflow-hidden bg-white">
                     <button
                       type="button"
                       onClick={() => setExpandedCancellation(!expandedCancellation)}
@@ -685,7 +685,7 @@ export default function CheckoutFlow({ hotel, room, entity, searchParams, onBack
                     )}
                   </div>
 
-                  <div className="border border-zinc-100 rounded-2xl overflow-hidden bg-white">
+                  <div className="border border-zinc-100 rounded-md overflow-hidden bg-white">
                     <button
                       type="button"
                       onClick={() => setExpandedChange(!expandedChange)}
@@ -722,7 +722,7 @@ export default function CheckoutFlow({ hotel, room, entity, searchParams, onBack
 
               {/* Student verification ID (if Student fare) */}
               {searchParams?.fareType === 'student' && (
-                <div className="bg-orange-50/50 border border-orange-200 p-6 rounded-[2rem] text-left space-y-4 shadow-sm">
+                <div className="bg-orange-50/50 border border-orange-200 p-6 rounded-lg text-left space-y-4 shadow-sm">
                   <div className="flex items-center gap-3">
                     <Sparkles className="w-5 h-5 text-brand-orange animate-pulse" />
                     <div>
@@ -759,9 +759,9 @@ export default function CheckoutFlow({ hotel, room, entity, searchParams, onBack
               )}
 
               {/* Travel Insurance Card */}
-              <div className="bg-white rounded-[2rem] p-6 md:p-8 shadow-sm border border-zinc-100 space-y-6">
+              <div className="bg-white rounded-lg p-6 md:p-6 shadow-sm border border-zinc-100 space-y-6">
                 <div className="flex items-center gap-4 text-left">
-                  <div className="w-12 h-12 bg-purple-50 text-purple-600 rounded-2xl flex items-center justify-center shadow-sm shrink-0">
+                  <div className="w-12 h-12 bg-purple-50 text-purple-600 rounded-md flex items-center justify-center shadow-sm shrink-0">
                     <ShieldCheck className="w-6 h-6" />
                   </div>
                   <div>
@@ -864,13 +864,13 @@ export default function CheckoutFlow({ hotel, room, entity, searchParams, onBack
               animate={{ opacity: 1, x: 0 }}
               className="space-y-8"
             >
-              <div className="bg-white rounded-[2.5rem] p-8 shadow-sm border border-zinc-100">
-                <h2 className="text-2xl font-display font-bold text-zinc-900 mb-8 flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-sans italic text-lg">2</div>
+              <div className="bg-white rounded-xl p-6 shadow-sm border border-zinc-100">
+                <h2 className="text-2xl font-bold text-zinc-900 mb-8 flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-sans italic text-lg">2</div>
                   Coupon & Review
                 </h2>
                 
-                <div className="bg-zinc-50 p-6 rounded-3xl border border-zinc-100 mb-8">
+                <div className="bg-zinc-50 p-6 rounded-xl border border-zinc-100 mb-8">
                   <h4 className="text-xs font-bold text-zinc-400 uppercase tracking-widest mb-4">Have a promo code?</h4>
                   <div className="flex gap-3">
                     <div className="relative flex-1">
@@ -880,12 +880,12 @@ export default function CheckoutFlow({ hotel, room, entity, searchParams, onBack
                         value={coupon}
                         onChange={(e) => setCoupon(e.target.value)}
                         placeholder="Enter code (e.g. WELCOME10, FLIGHTNEW500)"
-                        className="w-full pl-12 pr-6 py-3.5 bg-white border border-zinc-100 rounded-2xl outline-none focus:ring-2 focus:ring-indigo-500/10 transition-all font-bold text-sm tracking-widest text-zinc-800"
+                        className="w-full pl-12 pr-6 py-3.5 bg-white border border-zinc-100 rounded-md outline-none focus:ring-2 focus:ring-blue-500/20 transition-all font-bold text-sm tracking-widest text-zinc-800"
                       />
                     </div>
                     <button 
                       onClick={handleApplyCoupon}
-                      className="bg-zinc-900 text-white px-6 py-3.5 rounded-2xl font-bold text-sm hover:bg-zinc-800 transition-all cursor-pointer"
+                      className="bg-zinc-900 text-white px-6 py-3.5 rounded-md font-bold text-sm hover:bg-zinc-800 transition-all cursor-pointer"
                     >
                       Apply
                     </button>
@@ -898,11 +898,11 @@ export default function CheckoutFlow({ hotel, room, entity, searchParams, onBack
                   )}
                   {!isCouponApplied && (
                     <div className="mt-4 flex gap-2">
-                      <div className="flex-1 p-3 bg-white border border-dashed border-indigo-200 rounded-xl flex items-center gap-3">
-                        <Gift className="w-5 h-5 text-indigo-600" />
+                      <div className="flex-1 p-3 bg-white border border-dashed border-blue-200 rounded-xl flex items-center gap-3">
+                        <Gift className="w-5 h-5 text-blue-600" />
                         <div>
                           <p className="text-[10px] font-bold text-zinc-400 uppercase">Available Offer</p>
-                          <p className="text-xs font-bold text-indigo-600">
+                          <p className="text-xs font-bold text-blue-600">
                             Apply WELCOME10 for 10% OFF
                           </p>
                         </div>
@@ -912,14 +912,14 @@ export default function CheckoutFlow({ hotel, room, entity, searchParams, onBack
                 </div>
   
                 <div className="space-y-8">
-                  <div className="flex flex-col md:flex-row gap-6 p-6 bg-zinc-50/50 rounded-[2.5rem] border border-zinc-100/50">
-                    <div className="w-full md:w-32 h-32 rounded-3xl overflow-hidden bg-zinc-100 shadow-sm shrink-0">
+                  <div className="flex flex-col md:flex-row gap-6 p-6 bg-zinc-50/50 rounded-xl border border-zinc-100/50">
+                    <div className="w-full md:w-32 h-32 rounded-xl overflow-hidden bg-zinc-100 shadow-sm shrink-0">
                       <img src={priceData.img} className="w-full h-full object-cover" alt={priceData.name} />
                     </div>
                     <div className="flex-1">
                       <div className="flex justify-between items-start mb-2">
                         <div>
-                          <h5 className="text-xl font-display font-bold text-zinc-900">{priceData.name}</h5>
+                          <h5 className="text-xl font-bold text-zinc-900">{priceData.name}</h5>
                           <p className="text-zinc-500 text-sm flex items-center gap-1">
                             <MapPin className="w-3.5 h-3.5" />
                             Confirmed Selection
@@ -931,9 +931,9 @@ export default function CheckoutFlow({ hotel, room, entity, searchParams, onBack
                       </div>
                       
                       <div className="flex flex-wrap gap-4 mt-4">
-                        <div className="flex items-center gap-2 px-4 py-2 bg-white rounded-2xl border border-zinc-100 shadow-sm">
-                          <div className="w-8 h-8 rounded-xl bg-indigo-50 flex items-center justify-center">
-                            <Calendar className="w-4 h-4 text-indigo-600" />
+                        <div className="flex items-center gap-2 px-4 py-2 bg-white rounded-md border border-zinc-100 shadow-sm">
+                          <div className="w-8 h-8 rounded-xl bg-blue-50 flex items-center justify-center">
+                            <Calendar className="w-4 h-4 text-blue-600" />
                           </div>
                           <div>
                             <p className="text-[10px] font-bold text-zinc-400 uppercase leading-none mb-1">Date</p>
@@ -949,7 +949,7 @@ export default function CheckoutFlow({ hotel, room, entity, searchParams, onBack
                           </div>
                         </div>
   
-                        <div className="flex items-center gap-2 px-4 py-2 bg-indigo-600 rounded-2xl shadow-lg shadow-indigo-100">
+                        <div className="flex items-center gap-2 px-4 py-2 bg-blue-600 rounded-md shadow-sm ">
                           <div className="w-8 h-8 rounded-xl bg-white/20 flex items-center justify-center">
                             <ShieldCheck className="w-4 h-4 text-white" />
                           </div>
@@ -962,29 +962,29 @@ export default function CheckoutFlow({ hotel, room, entity, searchParams, onBack
                     </div>
                   </div>
   
-                  <div className="bg-indigo-50/30 p-8 rounded-[2.5rem] border border-indigo-100/50">
+                  <div className="bg-blue-50/30 p-6 rounded-xl border border-blue-100/50">
                     <h4 className="text-sm font-bold text-indigo-900 mb-4 flex items-center gap-2">
-                      <Info className="w-4 h-4 text-indigo-600" />
+                      <Info className="w-4 h-4 text-blue-600" />
                       Booking Details
                     </h4>
                     <div className="space-y-3">
-                       <div className="flex items-center justify-between px-6 py-4 bg-white rounded-3xl border border-indigo-100">
+                       <div className="flex items-center justify-between px-6 py-2.5 bg-white rounded-xl border border-blue-100">
                          <div>
-                           <p className="text-lg font-display font-bold text-zinc-900">{priceData.details}</p>
+                           <p className="text-lg font-bold text-zinc-900">{priceData.details}</p>
                            <p className="text-xs text-zinc-500">Scheduled for priority processing</p>
                          </div>
                          <div className="text-right">
-                           <p className="text-xl font-display font-bold text-indigo-600">₹{priceData.base.toLocaleString('en-IN')}</p>
+                           <p className="text-xl font-bold text-blue-600">₹{priceData.base.toLocaleString('en-IN')}</p>
                          </div>
                        </div>
                        
                        {(priceData as any).boarding && (
                          <div className="grid grid-cols-2 gap-3">
-                           <div className="px-6 py-4 bg-white/50 rounded-2xl border border-zinc-100">
+                           <div className="px-6 py-2.5 bg-white/50 rounded-md border border-zinc-100">
                              <p className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest mb-1">Boarding</p>
                              <p className="text-xs font-bold text-zinc-900 line-clamp-1">{(priceData as any).boarding}</p>
                            </div>
-                           <div className="px-6 py-4 bg-white/50 rounded-2xl border border-zinc-100">
+                           <div className="px-6 py-2.5 bg-white/50 rounded-md border border-zinc-100">
                              <p className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest mb-1">Dropping</p>
                              <p className="text-xs font-bold text-zinc-900 line-clamp-1">{(priceData as any).dropping}</p>
                            </div>
@@ -993,13 +993,13 @@ export default function CheckoutFlow({ hotel, room, entity, searchParams, onBack
 
                        {/* Guest & GST Details Display */}
                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                         <div className="px-6 py-4 bg-white rounded-3xl border border-indigo-100">
+                         <div className="px-6 py-2.5 bg-white rounded-xl border border-blue-100">
                            <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-1">Primary Guest</p>
                            <p className="text-sm font-bold text-zinc-800">{formData.firstName} {formData.lastName}</p>
                            <p className="text-xs text-zinc-500">{formData.email} | {formData.phone}</p>
                          </div>
                          {gstEnabled && (
-                           <div className="px-6 py-4 bg-white rounded-3xl border border-indigo-100">
+                           <div className="px-6 py-2.5 bg-white rounded-xl border border-blue-100">
                              <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-1">GST Details</p>
                              <p className="text-sm font-bold text-zinc-800">{gstCompany}</p>
                              <p className="text-xs text-zinc-500">GSTIN: {gstNumber}</p>
@@ -1013,7 +1013,7 @@ export default function CheckoutFlow({ hotel, room, entity, searchParams, onBack
               <button 
                 onClick={() => setStep('payment')}
                 disabled={searchParams?.fareType === 'student' && !idVerified}
-                className="w-full bg-indigo-600 text-white py-5 rounded-[2rem] font-bold text-lg hover:bg-indigo-700 shadow-xl shadow-indigo-100 flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
+                className="w-full bg-blue-600 text-white py-3.5 rounded-lg font-bold text-lg hover:bg-blue-700 shadow-sm  flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
               >
                 Confirm to Payment
                 <ChevronRight className="w-5 h-5" />
@@ -1028,16 +1028,16 @@ export default function CheckoutFlow({ hotel, room, entity, searchParams, onBack
             animate={{ opacity: 1, x: 0 }}
             className="space-y-8"
           >
-            <div className="bg-white rounded-[2.5rem] p-8 shadow-sm border border-zinc-100">
-              <h2 className="text-2xl font-display font-bold text-zinc-900 mb-8 flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-sans italic text-lg">3</div>
+            <div className="bg-white rounded-xl p-6 shadow-sm border border-zinc-100">
+              <h2 className="text-2xl font-bold text-zinc-900 mb-8 flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-sans italic text-lg">3</div>
                 Payment Method
               </h2>
               
               <div className="space-y-6">
-                <div className="p-6 rounded-3xl border-2 border-indigo-600 bg-indigo-50/30 flex items-center justify-between group cursor-pointer">
+                <div className="p-6 rounded-xl border-2 border-indigo-600 bg-blue-50/30 flex items-center justify-between group cursor-pointer">
                   <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-indigo-600 shadow-sm">
+                    <div className="w-12 h-12 bg-white rounded-md flex items-center justify-center text-blue-600 shadow-sm">
                       <CreditCard className="w-6 h-6" />
                     </div>
                     <div>
@@ -1046,28 +1046,28 @@ export default function CheckoutFlow({ hotel, room, entity, searchParams, onBack
                     </div>
                   </div>
                   <div className="w-6 h-6 rounded-full border-2 border-indigo-600 flex items-center justify-center">
-                    <div className="w-3 h-3 rounded-full bg-indigo-600" />
+                    <div className="w-3 h-3 rounded-full bg-blue-600" />
                   </div>
                 </div>
 
                 <div className="space-y-4 pt-4">
                   <div className="space-y-2">
                     <label className="text-xs font-bold text-zinc-400 uppercase pl-1">Card Number</label>
-                    <input type="text" className="w-full px-6 py-4 bg-zinc-50 border border-zinc-100 rounded-2xl outline-none transition-all placeholder:text-zinc-300" placeholder="•••• •••• •••• ••••" />
+                    <input type="text" className="w-full px-6 py-2.5 bg-zinc-50 border border-zinc-100 rounded-md outline-none transition-all placeholder:text-zinc-300" placeholder="•••• •••• •••• ••••" />
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <label className="text-xs font-bold text-zinc-400 uppercase pl-1">Expiry Date</label>
-                      <input type="text" className="w-full px-6 py-4 bg-zinc-50 border border-zinc-100 rounded-2xl outline-none" placeholder="MM/YY" />
+                      <input type="text" className="w-full px-6 py-2.5 bg-zinc-50 border border-zinc-100 rounded-md outline-none" placeholder="MM/YY" />
                     </div>
                     <div className="space-y-2">
                       <label className="text-xs font-bold text-zinc-400 uppercase pl-1">CVV</label>
-                      <input type="password" className="w-full px-6 py-4 bg-zinc-50 border border-zinc-100 rounded-2xl outline-none" placeholder="•••" />
+                      <input type="password" className="w-full px-6 py-2.5 bg-zinc-50 border border-zinc-100 rounded-md outline-none" placeholder="•••" />
                     </div>
                   </div>
                 </div>
 
-                <div className="bg-emerald-50 p-4 rounded-2xl flex items-center gap-3">
+                <div className="bg-emerald-50 p-4 rounded-md flex items-center gap-3">
                   <ShieldCheck className="w-5 h-5 text-emerald-600" />
                   <p className="text-xs font-medium text-emerald-700">Your payment information is stored securely and never shared.</p>
                 </div>
@@ -1150,7 +1150,7 @@ export default function CheckoutFlow({ hotel, room, entity, searchParams, onBack
                 }
               }}
               disabled={isSubmitting}
-              className="w-full bg-zinc-900 text-white py-5 rounded-[2rem] font-bold text-lg hover:bg-black transition-all shadow-xl shadow-zinc-200 flex items-center justify-center gap-2 group disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
+              className="w-full bg-zinc-900 text-white py-3.5 rounded-lg font-bold text-lg hover:bg-black transition-all shadow-sm  flex items-center justify-center gap-2 group disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
             >
               {isSubmitting ? (
                 <><Loader2 className="w-5 h-5 animate-spin" /> Processing...</>
@@ -1159,7 +1159,7 @@ export default function CheckoutFlow({ hotel, room, entity, searchParams, onBack
               )}
             </button>
             {bookingError && (
-              <div className="flex items-center gap-2 text-rose-600 bg-rose-50 border border-rose-100 rounded-2xl px-4 py-3 text-sm font-medium">
+              <div className="flex items-center gap-2 text-rose-600 bg-rose-50 border border-rose-100 rounded-md px-4 py-3 text-sm font-medium">
                 <AlertCircle className="w-4 h-4 shrink-0" />
                 {bookingError}
               </div>
@@ -1173,17 +1173,17 @@ export default function CheckoutFlow({ hotel, room, entity, searchParams, onBack
             animate={{ opacity: 1, scale: 1 }}
             className="text-center space-y-8 py-10"
           >
-            <div className="w-24 h-24 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl shadow-emerald-50">
+            <div className="w-24 h-24 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm ">
               <CheckCircle2 className="w-12 h-12" />
             </div>
             <div>
-              <h2 className="text-4xl font-display font-bold text-zinc-900 mb-4">Booking Confirmed!</h2>
+              <h2 className="text-4xl font-bold text-zinc-900 mb-4">Booking Confirmed!</h2>
               <p className="text-zinc-500 max-w-sm mx-auto leading-relaxed">
                 Thank you for choosing <span className="font-bold text-zinc-900">{priceData.name}</span>. A confirmation email has been sent to <span className="font-bold text-zinc-900">{formData.email}</span>.
               </p>
             </div>
             
-            <div className="bg-white rounded-[3rem] p-8 max-w-md mx-auto shadow-sm border border-zinc-100 text-left space-y-6">
+            <div className="bg-white rounded-xl p-6 max-w-md mx-auto shadow-sm border border-zinc-100 text-left space-y-6">
               <div className="flex justify-between items-center pb-4 border-b border-zinc-50">
                 <span className="text-xs font-bold text-zinc-400 uppercase tracking-widest">Booking ID</span>
                 <span className="text-sm font-bold text-zinc-900">#{ bookingRef || 'BK-92837401'}</span>
@@ -1229,16 +1229,16 @@ export default function CheckoutFlow({ hotel, room, entity, searchParams, onBack
                 </div>
               )}
               <div className="pt-4 border-t border-zinc-50">
-                <div className="flex justify-between items-center bg-indigo-50 p-4 rounded-2xl">
-                  <span className="text-xs font-bold text-indigo-600 uppercase">Paid Total</span>
-                  <span className="text-lg font-display font-bold text-indigo-900">₹{total.toLocaleString('en-IN')}</span>
+                <div className="flex justify-between items-center bg-blue-50 p-4 rounded-md">
+                  <span className="text-xs font-bold text-blue-600 uppercase">Paid Total</span>
+                  <span className="text-lg font-bold text-indigo-900">₹{total.toLocaleString('en-IN')}</span>
                 </div>
               </div>
             </div>
 
             <button 
               onClick={onComplete}
-              className="px-10 py-5 bg-indigo-600 text-white rounded-[2rem] font-bold hover:bg-indigo-700 transition-all shadow-xl shadow-indigo-100 flex items-center justify-center gap-2 mx-auto"
+              className="px-10 py-3.5 bg-blue-600 text-white rounded-lg font-bold hover:bg-blue-700 transition-all shadow-sm  flex items-center justify-center gap-2 mx-auto"
             >
               Go to My Bookings
               <ChevronRight className="w-5 h-5" />
@@ -1258,12 +1258,12 @@ export default function CheckoutFlow({ hotel, room, entity, searchParams, onBack
               <div>
                 <button 
                   onClick={onBack}
-                  className="text-zinc-500 text-sm font-medium hover:text-indigo-600 mb-2 flex items-center gap-1 transition-colors"
+                  className="text-zinc-500 text-sm font-medium hover:text-blue-600 mb-2 flex items-center gap-1 transition-colors"
                 >
                   <ChevronLeft className="w-4 h-4" />
                   Back to selection
                 </button>
-                <h1 className="text-3xl font-display font-bold text-zinc-900">Complete Your Booking</h1>
+                <h1 className="text-2xl font-bold text-zinc-900">Complete Your Booking</h1>
               </div>
               
               {/* Stepper Display */}
@@ -1272,7 +1272,7 @@ export default function CheckoutFlow({ hotel, room, entity, searchParams, onBack
                   {(['customer', 'review', 'payment'] as CheckoutStep[]).map((s, i) => (
                     <div key={s} className="flex items-center gap-4">
                       <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all ${
-                        step === s ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-100 scale-110' : 
+                        step === s ? 'bg-blue-600 text-white shadow-sm  scale-110' : 
                         (['customer', 'review', 'payment'].indexOf(step) > i ? 'bg-emerald-500 text-white' : 'bg-zinc-200 text-zinc-500')
                       }`}>
                         {['customer', 'review', 'payment'].indexOf(step) > i ? <CheckCircle2 className="w-4 h-4" /> : i + 1}
@@ -1294,7 +1294,7 @@ export default function CheckoutFlow({ hotel, room, entity, searchParams, onBack
                 {entity?.type === 'flight' ? (
                   <>
                     {/* Fare Summary Card */}
-                    <div className="bg-white rounded-[2rem] p-6 md:p-8 shadow-sm border border-zinc-100 space-y-6 text-left relative overflow-hidden">
+                    <div className="bg-white rounded-lg p-6 md:p-6 shadow-sm border border-zinc-100 space-y-6 text-left relative overflow-hidden">
                       <div className="absolute top-0 right-0 w-32 h-32 bg-blue-50/20 rounded-bl-[5rem] -z-0" />
                       
                       {/* Alert banner */}
@@ -1352,7 +1352,7 @@ export default function CheckoutFlow({ hotel, room, entity, searchParams, onBack
                             <span className="text-zinc-950 font-extrabold text-sm block">Total Amount</span>
                             <span className="text-[9px] text-zinc-400 font-bold uppercase tracking-wider mt-0.5 block">*Convenience fee may apply</span>
                           </div>
-                          <span className="text-2xl font-display font-extrabold text-zinc-950">₹{total.toLocaleString('en-IN')}</span>
+                          <span className="text-2xl font-extrabold text-zinc-950">₹{total.toLocaleString('en-IN')}</span>
                         </div>
                       </div>
 
@@ -1370,7 +1370,7 @@ export default function CheckoutFlow({ hotel, room, entity, searchParams, onBack
                           type="button"
                           onClick={() => setStep('payment')}
                           disabled={searchParams?.fareType === 'student' && !idVerified}
-                          className="w-full bg-blue-600 hover:bg-blue-750 text-white py-4 rounded-2xl font-extrabold text-sm transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2 cursor-pointer"
+                          className="w-full bg-blue-600 hover:bg-blue-750 text-white py-2.5 rounded-md font-extrabold text-sm transition-all shadow-md hover:shadow-sm flex items-center justify-center gap-2 cursor-pointer"
                         >
                           Continue
                         </button>
@@ -1378,7 +1378,7 @@ export default function CheckoutFlow({ hotel, room, entity, searchParams, onBack
                     </div>
 
                     {/* Apply Coupon Code Card */}
-                    <div className="bg-white rounded-[2rem] p-6 md:p-8 shadow-sm border border-zinc-100 space-y-4 text-left">
+                    <div className="bg-white rounded-lg p-6 md:p-6 shadow-sm border border-zinc-100 space-y-4 text-left">
                       <div className="flex items-center gap-2 pb-2 border-b border-zinc-50">
                         <svg className="w-5 h-5 text-zinc-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M7 7h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -1490,19 +1490,19 @@ export default function CheckoutFlow({ hotel, room, entity, searchParams, onBack
                     </div>
                   </>
                 ) : (
-                  <div className="bg-white rounded-[3rem] p-8 shadow-sm border border-zinc-100 overflow-hidden relative">
-                    <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-50/50 rounded-bl-[5rem] -z-0" />
+                  <div className="bg-white rounded-xl p-6 shadow-sm border border-zinc-100 overflow-hidden relative">
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-blue-50/50 rounded-bl-[5rem] -z-0" />
                     
-                    <h3 className="text-xl font-display font-bold text-zinc-900 mb-6 pb-4 border-b border-zinc-50 relative z-10">Booking Summary</h3>
+                    <h3 className="text-xl font-bold text-zinc-900 mb-6 pb-4 border-b border-zinc-50 relative z-10">Booking Summary</h3>
                     
                     {/* Entity Mini Card */}
                     <div className="flex gap-4 mb-8 relative z-10">
-                      <div className="w-16 h-16 rounded-2xl overflow-hidden bg-zinc-100 shrink-0 shadow-sm">
+                      <div className="w-16 h-16 rounded-md overflow-hidden bg-zinc-100 shrink-0 shadow-sm">
                         <img src={priceData.img} className="w-full h-full object-cover" alt={priceData.name} />
                       </div>
                       <div>
                         <h4 className="text-sm font-bold text-zinc-900 line-clamp-1">{priceData.name}</h4>
-                        <p className="text-[10px] font-bold text-indigo-600 uppercase tracking-tight">{priceData.type}</p>
+                        <p className="text-[10px] font-bold text-blue-600 uppercase tracking-tight">{priceData.type}</p>
                         <div className="flex flex-col gap-0.5 mt-1">
                           <div className="flex items-center gap-1">
                             <MapPin className="w-2.5 h-2.5 text-zinc-400" />
@@ -1527,7 +1527,7 @@ export default function CheckoutFlow({ hotel, room, entity, searchParams, onBack
                     <div className="space-y-4 mb-8 pt-4 border-t border-zinc-50 relative z-10">
                       {/* Per night breakdown — only for hotels */}
                       {hotel && room && (priceData as any).pricePerNight && (
-                        <div className="bg-orange-50 border border-orange-100 rounded-2xl px-4 py-3 mb-2">
+                        <div className="bg-orange-50 border border-orange-100 rounded-md px-4 py-3 mb-2">
                           <p className="text-[11px] font-bold text-orange-600 uppercase tracking-widest mb-1">Price Breakdown</p>
                           <div className="flex items-center justify-between text-sm">
                             <span className="text-zinc-500">₹{(priceData as any).pricePerNight.toLocaleString('en-IN')} <span className="text-zinc-400">× {(priceData as any).nights} night{(priceData as any).nights > 1 ? 's' : ''}</span></span>
@@ -1567,25 +1567,25 @@ export default function CheckoutFlow({ hotel, room, entity, searchParams, onBack
                       <div className="flex justify-between items-end mb-2">
                         <span className="text-zinc-900 font-bold">Total Payable</span>
                         <div className="text-right">
-                          <p className="text-3xl font-display font-bold text-indigo-600">₹{total.toLocaleString('en-IN')}</p>
+                          <p className="text-2xl font-bold text-blue-600">₹{total.toLocaleString('en-IN')}</p>
                           <p className="text-[10px] text-zinc-400 font-bold uppercase tracking-widest mt-1">Inclusive of all taxes</p>
                         </div>
                       </div>
                     </div>
                     
-                    <div className="mt-8 p-4 bg-zinc-50 rounded-2xl border border-zinc-100 flex items-start gap-3">
+                    <div className="mt-8 p-4 bg-zinc-50 rounded-md border border-zinc-100 flex items-start gap-3">
                       <Info className="w-4 h-4 text-zinc-400 mt-1 shrink-0" />
                       <p className="text-[10px] text-zinc-500 leading-relaxed uppercase tracking-tight font-bold">
-                        By proceeding, you agree to our <span className="text-indigo-600 cursor-pointer">Terms & Conditions</span> and <span className="text-indigo-600 cursor-pointer">Booking Policy</span>.
+                        By proceeding, you agree to our <span className="text-blue-600 cursor-pointer">Terms & Conditions</span> and <span className="text-blue-600 cursor-pointer">Booking Policy</span>.
                       </p>
                     </div>
                   </div>
                 )}
 
                 {entity?.type !== 'flight' && (
-                  <div className="bg-gradient-to-br from-indigo-600 to-indigo-800 rounded-[2.5rem] p-6 text-white shadow-xl shadow-indigo-100">
+                  <div className="bg-gradient-to-br from-indigo-600 to-indigo-800 rounded-xl p-6 text-white shadow-sm ">
                     <div className="flex items-center gap-4 mb-4">
-                      <div className="w-12 h-12 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center">
+                      <div className="w-12 h-12 bg-white/20 backdrop-blur-md rounded-md flex items-center justify-center">
                         <ShieldCheck className="w-6 h-6" />
                       </div>
                       <div>

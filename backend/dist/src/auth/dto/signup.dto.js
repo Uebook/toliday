@@ -29,6 +29,9 @@ class SignUpDto {
     businessName;
     businessType;
     city;
+    address;
+    latitude;
+    longitude;
     bankHolder;
     bankName;
     bankAccount;
@@ -122,6 +125,21 @@ __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], SignUpDto.prototype, "city", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], SignUpDto.prototype, "address", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], SignUpDto.prototype, "latitude", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], SignUpDto.prototype, "longitude", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),

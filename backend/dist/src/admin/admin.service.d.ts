@@ -167,6 +167,7 @@ export declare class AdminService {
         childPolicy: string;
         cancellationPolicy: string;
         petPolicy: string;
+        propertyRules: string[];
         amenities: string[];
         images: string[];
         ownerFirstName: string;

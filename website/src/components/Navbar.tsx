@@ -93,9 +93,7 @@ export default function Navbar({ forceSolid = false, user, onNavigate, currentVi
   const isBusesActive = currentView.startsWith('bus');
   
   const isTransparent = isHomeActive && !isScrolled && !forceSolid;
-
-  const extranetUrl = 'https://extranet-portal.vercel.app/';
-
+  const extranetUrl = 'https://portal.tolidaytrip.com/';
   const navLinks = [
     { label: 'Home', action: () => onNavigate('home'), active: isHomeActive },
     { label: 'Hotels', action: () => onNavigate('hotels'), active: isHotelsActive },

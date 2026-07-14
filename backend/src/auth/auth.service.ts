@@ -57,6 +57,9 @@ export class AuthService {
       businessName,
       businessType,
       city,
+      address,
+      latitude,
+      longitude,
       bankHolder,
       bankName,
       bankAccount,
@@ -121,7 +124,7 @@ export class AuthService {
         name: businessName || name,
         email,
         contactNumber,
-        address: city,
+        address: address || city,
         gstNumber,
         panNumber,
       });
@@ -132,7 +135,7 @@ export class AuthService {
         name: businessName || name,
         email,
         phone: contactNumber,
-        address: city,
+        address: address || city,
         gstNumber,
         panNumber,
       });
@@ -151,6 +154,9 @@ export class AuthService {
         businessName,
         businessType,
         city,
+        address,
+        latitude: latitude ? parseFloat(latitude) : undefined,
+        longitude: longitude ? parseFloat(longitude) : undefined,
         bankHolder,
         bankName,
         bankAccount,
@@ -206,35 +212,31 @@ export class AuthService {
 
     const staff = await this.staffRepository.findOne({
       where: { email },
-      relations: ['hotel', 'tourPartner'],
+      relations: ['hotel', 'tourPartner', 'busVendor', 'cabVendor'],
     });
     if (!staff) {
-      throw new UnauthorizedException('Invalid credentials');
+      throw new UnauthorizedException('Account not found. You are not a member.');
     }
 
     // Check account status across all verticals
-    const partner = staff.hotel || staff.tourPartner;
+    const partner = staff.hotel || staff.tourPartner || staff.busVendor || staff.cabVendor;
     if (staff.role !== StaffRole.ADMIN && partner) {
-      if (
-        partner.status === HotelStatus.PENDING ||
-        (partner as any).status === 'PENDING'
-      ) {
+      const status = (partner as any).status;
+      if (status === HotelStatus.PENDING || status === 'PENDING') {
         throw new UnauthorizedException(
-          'We are verifying your details. Only approved accounts can login.',
+          'Status is PENDING. We are verifying your details. Only approved accounts can login.',
         );
-      } else if (
-        partner.status === HotelStatus.REJECTED ||
-        (partner as any).status === 'REJECTED'
-      ) {
+      } else if (status === HotelStatus.REJECTED || status === 'REJECTED') {
         throw new UnauthorizedException(
-          'Your registration was rejected. Please contact support.',
+          'Status is REJECTED. Your registration was rejected. Please contact support.',
         );
-      } else if (
-        partner.status === HotelStatus.BLOCKED ||
-        (partner as any).status === 'BLOCKED'
-      ) {
+      } else if (status === HotelStatus.BLOCKED || status === 'BLOCKED') {
         throw new UnauthorizedException(
-          'Your account has been blocked. Please contact support.',
+          'Status is BLOCKED (Suspended). Your account has been suspended. Please contact support.',
+        );
+      } else if (status === 'INACTIVE') {
+        throw new UnauthorizedException(
+          'Status is INACTIVE. Your account is inactive. Please contact support.',
         );
       }
     }

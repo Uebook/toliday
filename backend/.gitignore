@@ -1,4 +1,11 @@
 .vercel
 .env*.local
-dist/
+# dist/
 *.tsbuildinfo
+node_modules/
+.env
+.env.production
+database.sqlite
+uploads/
+
+

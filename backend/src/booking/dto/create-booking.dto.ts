@@ -13,7 +13,8 @@ export class CreateBookingDto {
   guestName: string;
 
   @IsEmail()
-  guestEmail: string;
+  @IsOptional()
+  guestEmail?: string;
 
   @IsString()
   @IsOptional()
