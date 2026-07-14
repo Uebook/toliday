@@ -20,6 +20,15 @@ export class CmsHero {
   @Column({ default: 'hotels' })
   ctaLink: string;
 
+  @Column({ default: '#ffffff' })
+  textColor: string;
+
+  @Column({ default: true })
+  isActive: boolean;
+
+  @Column({ default: 0 })
+  sortOrder: number;
+
   @CreateDateColumn()
   createdAt: Date;
 

@@ -55,9 +55,30 @@ export class CmsController {
 
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Roles('ADMIN', 'superadmin', 'OWNER')
+  @Get('admin/cms/hero')
+  getAdminHeroes() {
+    return this.cmsService.getAdminHeroes();
+  }
+
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  @Roles('ADMIN', 'superadmin', 'OWNER')
+  @Post('admin/cms/hero')
+  createHero(@Body() data: any) {
+    return this.cmsService.createHero(data);
+  }
+
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  @Roles('ADMIN', 'superadmin', 'OWNER')
   @Patch('admin/cms/hero/:id')
   updateHero(@Param('id') id: string, @Body() data: any) {
     return this.cmsService.updateHero(id, data);
+  }
+
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  @Roles('ADMIN', 'superadmin', 'OWNER')
+  @Delete('admin/cms/hero/:id')
+  deleteHero(@Param('id') id: string) {
+    return this.cmsService.deleteHero(id);
   }
 
   @UseGuards(JwtAuthGuard, RoleGuard)

@@ -52,13 +52,15 @@ export default function Hero({ onSearch, defaultService, isDedicated }: HeroProp
 
 
   const [activeService, setActiveService] = useState<ServiceType>(defaultService || 'hotels');
-  const [hero, setHero] = useState<any>(null);
+  const [heroes, setHeroes] = useState<any[]>([]);
 
   useEffect(() => {
     fetchCmsHero()
       .then(data => {
-        if (data) {
-          setHero(data);
+        if (Array.isArray(data)) {
+          setHeroes(data);
+        } else if (data) {
+          setHeroes([data]);
         }
       })
       .catch(err => console.error('Failed to fetch CMS hero:', err));
@@ -137,24 +139,21 @@ export default function Hero({ onSearch, defaultService, isDedicated }: HeroProp
   // --- Offer Carousel ---
   const [carouselIndex, setCarouselIndex] = useState(0);
   const [carouselDir, setCarouselDir] = useState(1); // 1 = forward, -1 = backward
-  const carouselTotal = 3;
-  const carouselGoTo = (idx: number) => {
-    setCarouselDir(idx > carouselIndex ? 1 : -1);
-    setCarouselIndex(idx);
-  };
+
   const carouselNext = () => {
     setCarouselDir(1);
-    setCarouselIndex(prev => (prev + 1) % carouselTotal);
+    setCarouselIndex(prev => {
+      const total = heroes.length || 1;
+      return (prev + 1) % total;
+    });
   };
-  const carouselPrev = () => {
-    setCarouselDir(-1);
-    setCarouselIndex(prev => (prev - 1 + carouselTotal) % carouselTotal);
-  };
+
   useEffect(() => {
-    const t = setInterval(carouselNext, 5000);
-    return () => clearInterval(t);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    if (heroes.length > 1) {
+      const t = setInterval(carouselNext, 5000);
+      return () => clearInterval(t);
+    }
+  }, [heroes.length]);
 
   // --- Occupancy / Guest Config ---
   const [isGuestPickerOpen, setIsGuestPickerOpen] = useState(false);
@@ -288,59 +287,51 @@ export default function Hero({ onSearch, defaultService, isDedicated }: HeroProp
     onSearch(activeService, params);
   };
 
-  // Slide background colors (used for full hero bg)
-  const slideBgs = [
-    'linear-gradient(120deg, #0f62a8 0%, #1a7fc4 55%, #2092d6 100%)',   // Slide 1 - Blue (Duty-Free)
-    'linear-gradient(120deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)',   // Slide 2 - Deep Navy (DBS)
-    'linear-gradient(120deg, #c05800 0%, #e07000 50%, #f08020 100%)',   // Slide 3 - Orange (Luxury)
-  ];
-
   return (
     <div className="relative min-h-screen pt-[94px] pb-10 flex flex-col items-center justify-center overflow-hidden">
       {/* Full-hero animated background - changes with carousel slide */}
       <AnimatePresence mode="sync">
-        <motion.div
-          key={`bg-${carouselIndex}`}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.7, ease: 'easeInOut' }}
-          className="absolute inset-0 z-0"
-          style={{ background: slideBgs[carouselIndex] }}
-        >
-          {carouselIndex === 0 && hero?.mediaUrl && (
+        {heroes.length > 0 && heroes[carouselIndex] && (
+          <motion.div
+            key={`bg-${heroes[carouselIndex].id || carouselIndex}`}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.7, ease: 'easeInOut' }}
+            className="absolute inset-0 z-0 bg-zinc-900"
+          >
             <div className="absolute inset-0 overflow-hidden">
-              {hero.mediaUrl.endsWith('.mp4') || hero.mediaUrl.includes('video') ? (
+              {heroes[carouselIndex].mediaUrl?.endsWith('.mp4') || heroes[carouselIndex].mediaUrl?.includes('video') ? (
                 <video
                   autoPlay
                   loop
                   muted
                   playsInline
-                  className="w-full h-full object-cover opacity-35"
+                  className="w-full h-full object-cover opacity-40"
                 >
-                  <source src={hero.mediaUrl} type="video/mp4" />
+                  <source src={heroes[carouselIndex].mediaUrl} type="video/mp4" />
                 </video>
               ) : (
                 <img
-                  src={hero.mediaUrl}
+                  src={heroes[carouselIndex].mediaUrl}
                   alt=""
-                  className="w-full h-full object-cover opacity-35"
+                  className="w-full h-full object-cover opacity-40"
                 />
               )}
             </div>
-          )}
-        </motion.div>
+          </motion.div>
+        )}
       </AnimatePresence>
       {/* Subtle vignette at bottom to blend into white search panel */}
       <div className="absolute bottom-0 left-0 right-0 h-32 z-[1] pointer-events-none" style={{ background: 'linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.18) 100%)' }} />
 
       <div className="relative z-10 w-full flex flex-col items-center">
-        {/* ===== FULL-WIDTH CAROUSEL (Adani style) ===== */}
+        {/* ===== FULL-WIDTH CAROUSEL ===== */}
         <div className="w-full relative" style={{ minHeight: 240 }}>
           <AnimatePresence mode="wait" custom={carouselDir}>
-            {carouselIndex === 0 && (
+            {heroes.length > 0 && heroes[carouselIndex] && (
               <motion.div
-                key="slide-0"
+                key={`slide-${heroes[carouselIndex].id || carouselIndex}`}
                 custom={carouselDir}
                 variants={{
                   enter: (d: number) => ({ x: d * 120, opacity: 0 }),
@@ -353,135 +344,28 @@ export default function Hero({ onSearch, defaultService, isDedicated }: HeroProp
                 transition={{ duration: 0.5, ease: 'easeInOut' }}
                 className="absolute inset-0"
               >
-                {/* Slide 1: Duty-Free Summer Savings */}
                 <div className="relative w-full h-full flex items-center justify-between max-w-7xl mx-auto px-8 md:px-16 py-8">
                   {/* Left Text */}
-                  <div className="flex flex-col gap-2 z-10 max-w-[50%]">
-                    <span className="text-[11px] font-extrabold tracking-[0.2em] uppercase text-blue-100/80">Pre-plan to save!</span>
-                    <h2 className="text-3xl md:text-5xl font-extrabold text-white leading-tight drop-shadow">
-                      {hero?.title || <>Enjoy up to <span className="text-yellow-300">70% off</span><br/>at Duty-Free</>}
+                  <div className="flex flex-col gap-2 z-10 max-w-[60%]">
+                    <h2 
+                      className="text-3xl md:text-5xl font-extrabold leading-tight drop-shadow-md" 
+                      style={{ color: heroes[carouselIndex].textColor || '#ffffff' }}
+                    >
+                      {heroes[carouselIndex].title}
                     </h2>
-                    <p className="text-white/80 text-sm font-semibold mt-2">
-                      {hero?.subtitle || "Shop fragrances, cosmetics & spirits before you fly."}
+                    <p 
+                      className="text-sm font-semibold mt-2 drop-shadow"
+                      style={{ color: heroes[carouselIndex].textColor ? `${heroes[carouselIndex].textColor}E6` : 'rgba(255,255,255,0.8)' }}
+                    >
+                      {heroes[carouselIndex].subtitle}
                     </p>
-                  </div>
-                  {/* Right SVG Illustration - Summer Beach Scene */}
-                  <div className="absolute right-0 bottom-0 top-0 flex items-end justify-end pointer-events-none" style={{ width: '45%' }}>
-                    <svg viewBox="0 0 320 180" className="w-full h-full" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      {/* Sun */}
-                      <circle cx="260" cy="38" r="28" fill="#FFD93D" opacity="0.95" />
-                      <circle cx="260" cy="38" r="22" fill="#FFEA61" />
-                      {[0,45,90,135,180,225,270,315].map((deg, i) => (
-                        <line key={i} x1="260" y1="38" x2={260 + 36 * Math.cos((deg - 90) * Math.PI / 180)} y2={38 + 36 * Math.sin((deg - 90) * Math.PI / 180)} stroke="#FFD93D" strokeWidth="2.5" strokeLinecap="round" />
-                      ))}
-                      {/* Sea */}
-                      <path d="M0 130 Q40 115 80 130 Q120 145 160 130 Q200 115 240 130 Q280 145 320 130 L320 180 L0 180 Z" fill="#1a6fa5" opacity="0.85" />
-                      <path d="M0 145 Q50 132 100 145 Q150 158 200 145 Q250 132 320 145 L320 180 L0 180 Z" fill="#0a3d62" opacity="0.9" />
-                      {/* Sand */}
-                      <ellipse cx="100" cy="172" rx="90" ry="16" fill="#F4D35E" opacity="0.8" />
-                      {/* Beach umbrella */}
-                      <line x1="105" y1="165" x2="105" y2="110" stroke="#c77e3b" strokeWidth="3" strokeLinecap="round" />
-                      <path d="M65 115 Q105 85 145 115 Z" fill="#e63946" opacity="0.95" />
-                      <path d="M65 115 Q105 100 145 115" stroke="#fff" strokeWidth="1.5" strokeDasharray="4 3" />
-                      {/* Duty-free bag */}
-                      <rect x="55" y="148" width="32" height="22" rx="5" fill="white" opacity="0.95" />
-                      <path d="M62 148 V144 a7 7 0 0 1 14 0 V148" stroke="#0a3d62" strokeWidth="2.5" fill="none" strokeLinecap="round" />
-                      <text x="71" y="163" fontFamily="sans-serif" fontSize="7" fontWeight="900" fill="#0a3d62" textAnchor="middle">DF</text>
-                      {/* Palm tree */}
-                      <path d="M185 170 Q186 140 190 115" stroke="#6B4226" strokeWidth="5" strokeLinecap="round" fill="none" />
-                      <path d="M190 115 Q205 100 220 110 Q205 108 198 120" fill="#2ecc71" opacity="0.9" />
-                      <path d="M190 115 Q175 100 162 112 Q178 108 185 120" fill="#27ae60" opacity="0.9" />
-                      <path d="M190 115 Q195 95 210 98 Q200 100 195 115" fill="#2ecc71" opacity="0.85" />
-                      {/* Cursive sticker badge */}
-                      <rect x="215" y="55" width="90" height="38" rx="19" fill="#fff" opacity="0.18" />
-                      <text x="260" y="71" fontFamily="Georgia, serif" fontSize="10" fontStyle="italic" fontWeight="bold" fill="#fff" textAnchor="middle" opacity="0.95">Summer</text>
-                      <text x="260" y="85" fontFamily="Georgia, serif" fontSize="9" fontStyle="italic" fill="#FFD93D" textAnchor="middle" opacity="0.95">Savings ✦</text>
-                    </svg>
-                  </div>
-                </div>
-              </motion.div>
-            )}
-            {carouselIndex === 1 && (
-              <motion.div
-                key="slide-1"
-                custom={carouselDir}
-                variants={{
-                  enter: (d: number) => ({ x: d * 80, opacity: 0 }),
-                  center: { x: 0, opacity: 1 },
-                  exit: (d: number) => ({ x: -d * 80, opacity: 0 })
-                }}
-                initial="enter"
-                animate="center"
-                exit="exit"
-                className="absolute inset-0"
-              >
-                {/* Slide 2: DBS Card Flights Offer */}
-                <div className="relative w-full h-full flex items-center justify-between max-w-7xl mx-auto px-8 md:px-16 py-8">
-                  <div className="flex flex-col gap-2 z-10 max-w-[50%]">
-                    <span className="text-[11px] font-extrabold tracking-[0.2em] uppercase text-blue-200/80">DBS Bank · Exclusive Offer</span>
-                    <h2 className="text-3xl md:text-5xl font-extrabold text-white leading-tight drop-shadow">Save up to <span className="text-green-400">₹1,500</span><br/>on Flights</h2>
-                    <p className="text-white/75 text-sm font-semibold mt-2">Use code <span className="font-extrabold text-green-300 bg-green-400/10 px-2 py-0.5 rounded-lg">DBSDOME12</span> at checkout.</p>
-                  </div>
-                  {/* Right SVG – Credit Card + Plane */}
-                  <div className="absolute right-0 bottom-0 top-0 flex items-center justify-end pointer-events-none" style={{ width: '45%' }}>
-                    <svg viewBox="0 0 300 180" className="w-full h-full" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      {/* Stars bg */}
-                      {[[50,30],[90,20],[130,40],[200,15],[240,35],[170,60],[110,65],[80,80]].map(([cx,cy],i)=>(
-                        <circle key={i} cx={cx} cy={cy} r={i%3===0?2:1.2} fill="white" opacity={0.3+i*0.05}/>
-                      ))}
-                      {/* Floating Credit Card */}
-                      <g transform="rotate(-12, 170, 90)">
-                        <rect x="110" y="55" width="155" height="98" rx="14" fill="url(#cardGrad)" />
-                        <rect x="110" y="55" width="155" height="98" rx="14" stroke="white" strokeWidth="0.8" opacity="0.25" />
-                        <rect x="110" y="84" width="155" height="20" fill="white" opacity="0.08" />
-                        <rect x="122" y="72" width="22" height="16" rx="3" fill="#FFD93D" opacity="0.9" />
-                        <rect x="122" y="72" width="22" height="8" rx="3" fill="#F4A261" opacity="0.6" />
-                        <text x="122" y="133" fontFamily="monospace" fontSize="7" fill="white" opacity="0.7" letterSpacing="2">•••• •••• •••• 8821</text>
-                        <text x="122" y="145" fontFamily="sans-serif" fontSize="6" fill="white" opacity="0.55">DBS BANK</text>
-                        <text x="235" y="145" fontFamily="sans-serif" fontSize="7" fontWeight="bold" fill="white" opacity="0.7">DBS</text>
-                      </g>
-                      <defs>
-                        <linearGradient id="cardGrad" x1="0" y1="0" x2="1" y2="1">
-                          <stop offset="0%" stopColor="#0575E6" />
-                          <stop offset="100%" stopColor="#021B79" />
-                        </linearGradient>
-                      </defs>
-                      {/* Flying Plane */}
-                      <g transform="translate(35, 25) rotate(-20)">
-                        <path d="M0 10 L50 0 L60 10 L50 20 Z" fill="white" opacity="0.95" />
-                        <path d="M35 5 L50 -10 L55 0 Z" fill="#cce4ff" opacity="0.8" />
-                        <path d="M35 15 L50 30 L55 20 Z" fill="#cce4ff" opacity="0.8" />
-                        <path d="M45 9 L52 5 L55 10 Z" fill="#cce4ff" opacity="0.7" />
-                        <circle cx="10" cy="10" r="4" fill="#1e6fa5" opacity="0.9" />
-                      </g>
-                      {/* Plane contrail */}
-                      <path d="M78 42 Q100 48 160 38" stroke="white" strokeWidth="1.5" strokeDasharray="4 3" opacity="0.3" />
-                    </svg>
-                  </div>
-                </div>
-              </motion.div>
-            )}
-            {carouselIndex === 2 && (
-              <motion.div
-                key="slide-2"
-                custom={carouselDir}
-                variants={{
-                  enter: (d: number) => ({ x: d * 80, opacity: 0 }),
-                  center: { x: 0, opacity: 1 },
-                  exit: (d: number) => ({ x: -d * 80, opacity: 0 })
-                }}
-                initial="enter"
-                animate="center"
-                exit="exit"
-                transition={{ duration: 0.5, ease: 'easeInOut' }}
-                className="absolute inset-0"
-              >
-                {/* Slide 3: Luxury Hotel Deals */}
-                <div className="relative w-full h-full flex items-center justify-between max-w-7xl mx-auto px-8 md:px-16 py-8">
-                  <div className="flex flex-col gap-2 z-10 max-w-[50%]">
-                    <span className="text-[11px] font-extrabold tracking-[0.2em] uppercase text-orange-100/80">Luxury · Hotel Deals</span>
-                    <h2 className="text-3xl md:text-5xl font-extrabold text-white leading-tight drop-shadow">Up to <span className="text-yellow-300">50% off</span> on<br/>Luxury Stays</h2>
-                    <p className="text-white/80 text-sm font-semibold mt-2">5-star resorts with pool, spa &amp; butler service.</p>
+                    {heroes[carouselIndex].ctaText && (
+                      <div className="mt-4">
+                        <a href={`/${heroes[carouselIndex].ctaLink}`} className="inline-block bg-white/20 hover:bg-white/30 backdrop-blur-md border border-white/30 text-white text-xs font-bold px-6 py-2.5 rounded-full transition-all cursor-pointer">
+                          {heroes[carouselIndex].ctaText}
+                        </a>
+                      </div>
+                    )}
                   </div>
                 </div>
               </motion.div>
