@@ -140,11 +140,22 @@ export default function Hero({ onSearch, defaultService, isDedicated }: HeroProp
   const [carouselIndex, setCarouselIndex] = useState(0);
   const [carouselDir, setCarouselDir] = useState(1); // 1 = forward, -1 = backward
 
+  const carouselGoTo = (idx: number) => {
+    setCarouselDir(idx > carouselIndex ? 1 : -1);
+    setCarouselIndex(idx);
+  };
   const carouselNext = () => {
     setCarouselDir(1);
     setCarouselIndex(prev => {
       const total = heroes.length || 1;
       return (prev + 1) % total;
+    });
+  };
+  const carouselPrev = () => {
+    setCarouselDir(-1);
+    setCarouselIndex(prev => {
+      const total = heroes.length || 1;
+      return (prev - 1 + total) % total;
     });
   };
 
@@ -388,7 +399,7 @@ export default function Hero({ onSearch, defaultService, isDedicated }: HeroProp
 
           {/* Dot indicators */}
           <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2">
-            {[0,1,2].map(i => (
+            {heroes.map((_, i) => (
               <button
                 key={i}
                 onClick={() => carouselGoTo(i)}
