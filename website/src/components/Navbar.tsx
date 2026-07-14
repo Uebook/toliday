@@ -194,7 +194,7 @@ export default function Navbar({ forceSolid = false, user, onNavigate, currentVi
               }`}
             >
               <Building className="w-3.5 h-3.5" />
-              <span>List your place</span>
+              <span>List your property</span>
             </a>
             <button
               onClick={() => onNavigate(user ? 'profile' : 'auth')}
@@ -269,7 +269,7 @@ export default function Navbar({ forceSolid = false, user, onNavigate, currentVi
                 className="flex items-center gap-3 p-3 rounded-xl hover:bg-zinc-50 text-zinc-700 font-medium"
               >
                 <Building className="w-5 h-5 text-zinc-400" />
-                List your place
+                List your property
               </a>
 
               <button
