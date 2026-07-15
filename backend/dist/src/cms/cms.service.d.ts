@@ -14,12 +14,15 @@ export declare class CmsService implements OnModuleInit {
     private seedDestinations;
     private seedBlogs;
     private seedPolicies;
-    getHero(): Promise<CmsHero>;
+    getHero(): Promise<CmsHero[]>;
+    getAdminHeroes(): Promise<CmsHero[]>;
     getPromos(service?: string): Promise<CmsPromo[]>;
     getDestinations(isInternational?: boolean): Promise<CmsDestination[]>;
     getBlogs(): Promise<CmsBlog[]>;
     getPolicy(key: string): Promise<CmsPolicy | null>;
     updateHero(id: string, data: Partial<CmsHero>): Promise<CmsHero | null>;
+    createHero(data: Partial<CmsHero>): Promise<Partial<CmsHero> & CmsHero>;
+    deleteHero(id: string): Promise<import("typeorm").DeleteResult>;
     updatePromo(id: string, data: Partial<CmsPromo>): Promise<CmsPromo | null>;
     createPromo(data: Partial<CmsPromo>): Promise<Partial<CmsPromo> & CmsPromo>;
     deletePromo(id: string): Promise<import("typeorm").DeleteResult>;

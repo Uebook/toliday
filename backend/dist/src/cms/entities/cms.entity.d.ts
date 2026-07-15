@@ -5,6 +5,9 @@ export declare class CmsHero {
     mediaUrl: string;
     ctaText: string;
     ctaLink: string;
+    textColor: string;
+    isActive: boolean;
+    sortOrder: number;
     createdAt: Date;
     updatedAt: Date;
 }

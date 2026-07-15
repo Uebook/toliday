@@ -39,8 +39,17 @@ let CmsController = class CmsController {
     getPolicy(key) {
         return this.cmsService.getPolicy(key);
     }
+    getAdminHeroes() {
+        return this.cmsService.getAdminHeroes();
+    }
+    createHero(data) {
+        return this.cmsService.createHero(data);
+    }
     updateHero(id, data) {
         return this.cmsService.updateHero(id, data);
+    }
+    deleteHero(id) {
+        return this.cmsService.deleteHero(id);
     }
     createPromo(data) {
         return this.cmsService.createPromo(data);
@@ -110,6 +119,23 @@ __decorate([
 __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, role_guard_1.RoleGuard),
     (0, roles_decorator_1.Roles)('ADMIN', 'superadmin', 'OWNER'),
+    (0, common_1.Get)('admin/cms/hero'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], CmsController.prototype, "getAdminHeroes", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, role_guard_1.RoleGuard),
+    (0, roles_decorator_1.Roles)('ADMIN', 'superadmin', 'OWNER'),
+    (0, common_1.Post)('admin/cms/hero'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], CmsController.prototype, "createHero", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, role_guard_1.RoleGuard),
+    (0, roles_decorator_1.Roles)('ADMIN', 'superadmin', 'OWNER'),
     (0, common_1.Patch)('admin/cms/hero/:id'),
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Body)()),
@@ -117,6 +143,15 @@ __decorate([
     __metadata("design:paramtypes", [String, Object]),
     __metadata("design:returntype", void 0)
 ], CmsController.prototype, "updateHero", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, role_guard_1.RoleGuard),
+    (0, roles_decorator_1.Roles)('ADMIN', 'superadmin', 'OWNER'),
+    (0, common_1.Delete)('admin/cms/hero/:id'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], CmsController.prototype, "deleteHero", null);
 __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, role_guard_1.RoleGuard),
     (0, roles_decorator_1.Roles)('ADMIN', 'superadmin', 'OWNER'),

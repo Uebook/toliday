@@ -41,11 +41,24 @@ let CmsService = class CmsService {
         const count = await this.heroRepository.count();
         if (count === 0) {
             await this.heroRepository.save({
-                title: 'Redefining how the world experiences travel',
-                subtitle: 'At TolidayTrip, we believe that traveling is more than just arriving at a destination.',
-                mediaUrl: 'https://assets.mixkit.co/videos/preview/mixkit-swimming-pool-underwater-shot-1533-large.mp4',
-                ctaText: 'Search Stays',
-                ctaLink: 'hotels',
+                title: 'Enjoy up to 70% off at Duty-Free',
+                subtitle: 'Shop fragrances, cosmetics & spirits before you fly.',
+                mediaUrl: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&q=80&w=1200',
+                ctaText: 'Shop Duty-Free',
+                ctaLink: 'duty-free',
+                textColor: '#ffffff',
+                isActive: true,
+                sortOrder: 0,
+            });
+            await this.heroRepository.save({
+                title: 'Save up to ₹1,500 on Flights',
+                subtitle: 'Use code DBSDOME12 at checkout.',
+                mediaUrl: 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&q=80&w=1200',
+                ctaText: 'Search Flights',
+                ctaLink: 'flights',
+                textColor: '#ffffff',
+                isActive: true,
+                sortOrder: 1,
             });
         }
     }
@@ -105,8 +118,15 @@ let CmsService = class CmsService {
         }
     }
     async getHero() {
-        const heroes = await this.heroRepository.find();
-        return heroes[0] || null;
+        return this.heroRepository.find({
+            where: { isActive: true },
+            order: { sortOrder: 'ASC', createdAt: 'DESC' }
+        });
+    }
+    async getAdminHeroes() {
+        return this.heroRepository.find({
+            order: { sortOrder: 'ASC', createdAt: 'DESC' }
+        });
     }
     async getPromos(service) {
         const where = service ? { service, isActive: true } : { isActive: true };
@@ -125,6 +145,12 @@ let CmsService = class CmsService {
     async updateHero(id, data) {
         await this.heroRepository.update(id, data);
         return this.heroRepository.findOne({ where: { id } });
+    }
+    async createHero(data) {
+        return this.heroRepository.save(data);
+    }
+    async deleteHero(id) {
+        return this.heroRepository.delete(id);
     }
     async updatePromo(id, data) {
         await this.promoRepository.update(id, data);

@@ -18,6 +18,9 @@ let CmsHero = class CmsHero {
     mediaUrl;
     ctaText;
     ctaLink;
+    textColor;
+    isActive;
+    sortOrder;
     createdAt;
     updatedAt;
 };
@@ -46,6 +49,18 @@ __decorate([
     (0, typeorm_1.Column)({ default: 'hotels' }),
     __metadata("design:type", String)
 ], CmsHero.prototype, "ctaLink", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ default: '#ffffff' }),
+    __metadata("design:type", String)
+], CmsHero.prototype, "textColor", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ default: true }),
+    __metadata("design:type", Boolean)
+], CmsHero.prototype, "isActive", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ default: 0 }),
+    __metadata("design:type", Number)
+], CmsHero.prototype, "sortOrder", void 0);
 __decorate([
     (0, typeorm_1.CreateDateColumn)(),
     __metadata("design:type", Date)
