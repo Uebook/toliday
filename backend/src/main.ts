@@ -1,4 +1,9 @@
-global.crypto = require("crypto");
+const crypto = require('crypto');
+Object.defineProperty(globalThis, 'crypto', {
+  value: crypto.webcrypto || crypto,
+  configurable: true,
+  writable: true,
+});
 
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';

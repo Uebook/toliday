@@ -34,7 +34,12 @@ var __importStar = (this && this.__importStar) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createApp = createApp;
-global.crypto = require("crypto");
+const crypto = require('crypto');
+Object.defineProperty(globalThis, 'crypto', {
+    value: crypto.webcrypto || crypto,
+    configurable: true,
+    writable: true,
+});
 const core_1 = require("@nestjs/core");
 const app_module_1 = require("./app.module");
 const common_1 = require("@nestjs/common");
