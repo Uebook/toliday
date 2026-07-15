@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+global.crypto = require("crypto");
 const main_1 = require("../src/main");
 let cachedApp;
 exports.default = async (req, res) => {

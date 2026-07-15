@@ -1,3 +1,5 @@
+global.crypto = require("crypto");
+
 import { createApp } from '../src/main';
 let cachedApp: any;
 
