@@ -25,8 +25,8 @@ export class AdminController {
   constructor(private readonly adminService: AdminService) {}
 
   @Get('stats')
-  getStats() {
-    return this.adminService.getDashboardStats();
+  getStats(@Query('period') period: string) {
+    return this.adminService.getDashboardStats(period);
   }
 
   @Post('finance/settle')

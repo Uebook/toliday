@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, IsNull } from 'typeorm';
+import { Repository, IsNull, MoreThanOrEqual } from 'typeorm';
 import { Hotel, HotelStatus } from '../hotel/entities/hotel.entity';
 import { Review } from '../hotel/entities/review.entity';
 import {
@@ -204,28 +204,53 @@ export class AdminService {
   }
 
   // ... (Rest of the previous methods)
-  async getDashboardStats() {
-    const totalHotels = await this.hotelRepository.count();
-    const totalTourPartners = await this.tourPartnerRepository.count();
-    const totalBusVendors = await this.busVendorRepository.count();
-    const totalCabVendors = await this.cabVendorRepository.count();
+  async getDashboardStats(period?: string) {
+    let startDate: Date | null = null;
+    if (period && period !== 'all') {
+      const now = new Date();
+      if (period === 'today') {
+        startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      } else if (period === 'week') {
+        const day = now.getDay();
+        const diff = now.getDate() - day + (day === 0 ? -6 : 1);
+        startDate = new Date(now.getFullYear(), now.getMonth(), diff);
+        startDate.setHours(0, 0, 0, 0);
+      } else if (period === 'month') {
+        startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+      } else if (period === 'year' || period === 'fy') {
+        startDate = new Date(now.getFullYear(), 0, 1);
+      }
+    }
 
-    const hotelRevenue = await this.bookingRepository
+    const dateCondition = startDate ? { createdAt: MoreThanOrEqual(startDate) } : {};
+    const applyDateQb = (qb: any) => {
+      if (startDate) {
+        return qb.andWhere(`${qb.alias}.createdAt >= :startDate`, { startDate });
+      }
+      return qb;
+    };
+
+    const totalHotels = await this.hotelRepository.count(dateCondition);
+    const totalTourPartners = await this.tourPartnerRepository.count(dateCondition);
+    const totalBusVendors = await this.busVendorRepository.count(dateCondition);
+    const totalCabVendors = await this.cabVendorRepository.count(dateCondition);
+
+    const hotelRevenue = await applyDateQb(this.bookingRepository
       .createQueryBuilder('b')
-      .where('b.hotelId IS NOT NULL')
+      .where('b.hotelId IS NOT NULL'))
       .select('SUM(b.totalAmount)', 'sum')
       .getRawOne();
-    const packageRevenue = await this.bookingRepository
+    const packageRevenue = await applyDateQb(this.bookingRepository
       .createQueryBuilder('b')
-      .where('b.tourPartnerId IS NOT NULL')
+      .where('b.tourPartnerId IS NOT NULL'))
       .select('SUM(b.totalAmount)', 'sum')
       .getRawOne();
-    const busRevenue = await this.busBookingRepository
-      .createQueryBuilder('b')
+    const busRevenue = await applyDateQb(this.busBookingRepository
+      .createQueryBuilder('b'))
       .select('SUM(b.totalFare)', 'sum')
       .getRawOne();
-    const cabRevenue = await this.cabBookingRepository
-      .createQueryBuilder('b')
+    const cabRevenue = await applyDateQb(this.cabBookingRepository
+      .createQueryBuilder('b'))
       .select('SUM(b.totalAmount)', 'sum')
       .getRawOne();
 
@@ -235,28 +260,28 @@ export class AdminService {
     const cRev = parseFloat(cabRevenue.sum || '0');
 
     // Counts of Bookings
-    const hBookingsCount = await this.bookingRepository.count({ where: { tourPartnerId: IsNull() } });
-    const pBookingsCount = await this.bookingRepository.count({ where: { hotelId: IsNull() } });
-    const bBookingsCount = await this.busBookingRepository.count();
-    const cBookingsCount = await this.cabBookingRepository.count();
+    const hBookingsCount = await this.bookingRepository.count({ where: { tourPartnerId: IsNull(), ...dateCondition } });
+    const pBookingsCount = await this.bookingRepository.count({ where: { hotelId: IsNull(), ...dateCondition } });
+    const bBookingsCount = await this.busBookingRepository.count({ where: dateCondition });
+    const cBookingsCount = await this.cabBookingRepository.count({ where: dateCondition });
 
     // Unique Consumers Count
-    const hConsumersRes = await this.bookingRepository
+    const hConsumersRes = await applyDateQb(this.bookingRepository
       .createQueryBuilder('b')
-      .where('b.tourPartnerId IS NULL')
+      .where('b.tourPartnerId IS NULL'))
       .select('COUNT(DISTINCT b.guestEmail)', 'count')
       .getRawOne();
-    const pConsumersRes = await this.bookingRepository
+    const pConsumersRes = await applyDateQb(this.bookingRepository
       .createQueryBuilder('b')
-      .where('b.hotelId IS NULL')
+      .where('b.hotelId IS NULL'))
       .select('COUNT(DISTINCT b.guestEmail)', 'count')
       .getRawOne();
-    const bConsumersRes = await this.busBookingRepository
-      .createQueryBuilder('b')
+    const bConsumersRes = await applyDateQb(this.busBookingRepository
+      .createQueryBuilder('b'))
       .select('COUNT(DISTINCT b.pnr)', 'count')
       .getRawOne();
-    const cConsumersRes = await this.cabBookingRepository
-      .createQueryBuilder('b')
+    const cConsumersRes = await applyDateQb(this.cabBookingRepository
+      .createQueryBuilder('b'))
       .select('COUNT(DISTINCT b.customerPhone)', 'count')
       .getRawOne();
 
