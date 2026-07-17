@@ -20,6 +20,7 @@ import { Bus } from '../buses/entities/bus.entity';
 import { Vehicle } from '../cabs/entities/vehicle.entity';
 import { GlobalSetting } from '../settings/entities/global-setting.entity';
 import { LedgerEntry } from '../finance/entities/ledger-entry.entity';
+import { Review } from '../hotel/entities/review.entity';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { LedgerEntry } from '../finance/entities/ledger-entry.entity';
       Vehicle,
       GlobalSetting,
       LedgerEntry,
+      Review,
     ]),
     SupportModule,
     WhatsappModule,

@@ -8,6 +8,7 @@ import {
   Param,
   Query,
   UseGuards,
+  HttpCode,
 } from '@nestjs/common';
 import { AdminService } from './admin.service';
 import { HotelStatus } from '../hotel/entities/hotel.entity';
@@ -74,6 +75,22 @@ export class AdminController {
     @Body() data: any,
   ) {
     return this.adminService.updateHotelRoom(roomId, data);
+  }
+
+  @Post('hotels')
+  createHotel(@Body() data: any) {
+    return this.adminService.createHotel(data);
+  }
+
+  @Delete('hotels/:id')
+  @HttpCode(200)
+  deleteHotel(@Param('id') id: string) {
+    return this.adminService.deleteHotel(id);
+  }
+
+  @Get('hotels/:id/reviews')
+  getHotelReviews(@Param('id') id: string) {
+    return this.adminService.getHotelReviews(id);
   }
 
   @Post('hotels/:id/rooms')

@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, IsNull } from 'typeorm';
 import { Hotel, HotelStatus } from '../hotel/entities/hotel.entity';
+import { Review } from '../hotel/entities/review.entity';
 import {
   TourPartner,
   PartnerStatus as TourPartnerStatus,
@@ -70,6 +71,8 @@ export class AdminService {
     private settingsRepository: Repository<GlobalSetting>,
     @InjectRepository(LedgerEntry)
     private ledgerRepository: Repository<LedgerEntry>,
+    @InjectRepository(Review)
+    private reviewRepository: Repository<Review>,
     private whatsappService: WhatsappService,
   ) {}
 
@@ -353,6 +356,29 @@ export class AdminService {
 
   async deleteHotelRoom(id: string) {
     return this.roomTypeRepository.delete(id);
+  }
+
+  async createHotel(data: any) {
+    const hotel = this.hotelRepository.create({
+      ...data,
+      status: HotelStatus.APPROVED,
+      isVerified: true,
+    });
+    return this.hotelRepository.save(hotel);
+  }
+
+  async deleteHotel(id: string) {
+    const hotel = await this.hotelRepository.findOne({ where: { id } });
+    if (!hotel) throw new NotFoundException('Hotel not found');
+    await this.hotelRepository.delete(id);
+    return { success: true, message: 'Hotel deleted successfully' };
+  }
+
+  async getHotelReviews(hotelId: string) {
+    return this.reviewRepository.find({
+      where: { hotelId },
+      order: { createdAt: 'DESC' },
+    });
   }
 
   async findAllTourPartners(status?: TourPartnerStatus) {

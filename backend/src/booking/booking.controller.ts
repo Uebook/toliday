@@ -49,6 +49,26 @@ export class BookingController {
     return this.bookingService.findAllGlobal();
   }
 
+  @Get('admin/:id')
+  findOneGlobal(@Request() req, @Param('id') id: string) {
+    if (req.user.role !== 'ADMIN' && req.user.role !== 'OWNER' && req.user.role !== 'superadmin') {
+      throw new ForbiddenException('Unauthorized');
+    }
+    return this.bookingService.findOne(id);
+  }
+
+  @Patch('admin/:id/status')
+  updateStatusGlobal(
+    @Request() req,
+    @Param('id') id: string,
+    @Body() updateDto: UpdateBookingStatusDto,
+  ) {
+    if (req.user.role !== 'ADMIN' && req.user.role !== 'OWNER' && req.user.role !== 'superadmin') {
+      throw new ForbiddenException('Unauthorized');
+    }
+    return this.bookingService.updateStatus(id, undefined, updateDto);
+  }
+
   @Get()
   findAll(@Request() req) {
     if (req.user.tourPartnerId) {
